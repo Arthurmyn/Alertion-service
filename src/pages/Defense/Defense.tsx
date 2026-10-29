@@ -5,6 +5,7 @@ import {
   type BacklogItem,
 } from '../../data/backlogItems.ts';
 import { LIMITS } from '../../data/limits.ts';
+import { sprintNumbers } from '../../data/metrics.ts';
 import { developers, productOwner, scrumMaster } from '../../data/team.ts';
 import { accountSlug } from '../../routing.ts';
 import { useStore } from '../../state/store.tsx';
@@ -15,15 +16,13 @@ import { MetricsSection } from './MetricsSection.tsx';
 import { TeamSection } from './TeamSection.tsx';
 
 function hoursText(item: BacklogItem): string {
-  const entries = Object.entries(item.hoursBySprint).filter(
-    (entry): entry is [string, number] => typeof entry[1] === 'number',
-  );
   const total = `${workHours(item)} ч`;
-  if (entries.length < 2) return total;
-  const split = entries
-    .map(([sprint, hours]) => `${hours} ч в спринте ${sprint}`)
-    .join(', ');
-  return `${total}, из них ${split}`;
+  const parts = sprintNumbers.flatMap((sprint) => {
+    const hours = item.hoursBySprint[sprint];
+    return hours === undefined ? [] : [`${hours} ч в спринте ${sprint}`];
+  });
+  if (parts.length < 2) return total;
+  return `${total}, из них ${parts.join(', ')}`;
 }
 
 export function Defense() {

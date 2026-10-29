@@ -1,5 +1,6 @@
 import type { SprintNumber } from '../data/backlogItems.ts';
 import { pointsAttr, seriesPoints } from '../data/metrics.ts';
+import page from '../pages/Defense/Defense.module.css';
 import styles from './BurndownChart.module.css';
 
 const width = 640;
@@ -61,8 +62,8 @@ export function BurndownChart({
           <polyline className={styles.simLine} points={simLine} />
         </svg>
       </div>
-      <div className={styles.scroll}>
-        <table className={styles.table}>
+      <div className={page.scroll}>
+        <table className={page.table}>
           <caption>Спринт {sprint}, оставшиеся часы</caption>
           <thead>
             <tr>

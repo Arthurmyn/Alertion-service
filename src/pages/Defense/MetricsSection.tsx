@@ -4,19 +4,17 @@ import {
   sprintWorkHours,
   totalWorkHours,
   workHours,
-  type SprintNumber,
 } from '../../data/backlogItems.ts';
 import {
   completedHours,
   planRemaining,
   simulatedRemaining,
+  sprintNumbers,
   sprintStart,
   WORKING_DAYS,
   workingDays,
 } from '../../data/metrics.ts';
 import styles from './Defense.module.css';
-
-const sprints = [1, 2, 3] as const satisfies readonly SprintNumber[];
 
 export function MetricsSection() {
   return (
@@ -39,7 +37,7 @@ export function MetricsSection() {
                 {item.id}. {item.title}
               </p>
               <p>
-                {sprints.map((sprint) => {
+                {sprintNumbers.map((sprint) => {
                   const hours = item.hoursBySprint[sprint];
                   if (!hours) return null;
                   return (
@@ -55,8 +53,10 @@ export function MetricsSection() {
         </ul>
         <p>
           По спринтам:{' '}
-          {sprints.map((sprint) => `${sprintWorkHours(sprint)} ч`).join(', ')}.
-          Вместе {totalWorkHours()} ч.
+          {sprintNumbers
+            .map((sprint) => `${sprintWorkHours(sprint)} ч`)
+            .join(', ')}
+          . Вместе {totalWorkHours()} ч.
         </p>
       </section>
 
@@ -71,7 +71,7 @@ export function MetricsSection() {
           за {WORKING_DAYS} рабочих дней. Линия плана подписана «план». Вторая
           линия подписана «симуляция».
         </p>
-        {sprints.map((sprint) => (
+        {sprintNumbers.map((sprint) => (
           <BurndownChart
             key={sprint}
             sprint={sprint}
@@ -91,7 +91,7 @@ export function MetricsSection() {
               </tr>
             </thead>
             <tbody>
-              {sprints.map((sprint) => (
+              {sprintNumbers.map((sprint) => (
                 <tr key={sprint}>
                   <th scope="row">{sprint}</th>
                   <td>{sprintWorkHours(sprint)}</td>

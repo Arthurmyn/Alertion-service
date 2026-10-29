@@ -2,6 +2,10 @@ import { sprintWorkHours, type SprintNumber } from './backlogItems.ts';
 
 export const WORKING_DAYS = 5;
 
+export const sprintNumbers = [
+  1, 2, 3,
+] as const satisfies readonly SprintNumber[];
+
 export const sprintStart: Record<SprintNumber, string> = {
   1: '2026-10-28',
   2: '2026-11-04',

@@ -80,39 +80,3 @@
   stroke-width: 2;
   stroke-dasharray: 6 4;
 }
-
-.scroll {
-  overflow-x: auto;
-  max-width: 100%;
-}
-
-.table {
-  width: max-content;
-  min-width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-ui);
-  font-size: var(--text-sm);
-  line-height: 1.4;
-  text-align: left;
-}
-
-.table caption {
-  caption-side: top;
-  padding: 0 0 6px;
-  text-align: left;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.table th,
-.table td {
-  padding: 6px 12px 6px 0;
-  border: 0;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
-  font-weight: 400;
-}
-
-.table th {
-  font-weight: 600;
-}

@@ -1,11 +1,10 @@
+import { sprintNumbers } from '../../data/metrics.ts';
 import {
   EMPTY_SLOT_LABEL,
   evidenceFileName,
   evidenceSlots,
 } from '../../data/sprintEvidence.ts';
 import styles from './Defense.module.css';
-
-const sprints = [1, 2, 3] as const;
 
 export function EvidenceLogSection() {
   return (
@@ -18,7 +17,7 @@ export function EvidenceLogSection() {
       <p>
         Слоты названы по спринту, пункту и проверке. Ни один слот не заполнен.
       </p>
-      {sprints.map((sprint) => (
+      {sprintNumbers.map((sprint) => (
         <div key={sprint}>
           <h3 id={`evidence-s${sprint}`}>Спринт {sprint}</h3>
           <ul className={styles.stack} aria-labelledby={`evidence-s${sprint}`}>
