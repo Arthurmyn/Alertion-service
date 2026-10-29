@@ -22,8 +22,7 @@
 .name,
 .file,
 .size,
-.mark,
-.note {
+.mark {
   margin: 0;
 }
 
@@ -79,8 +78,12 @@
   max-width: 100%;
 }
 
-.note,
 .reason {
   max-width: 100%;
   margin: 0;
+}
+
+.note {
+  max-width: 100%;
+  margin: 16px 0 0;
 }

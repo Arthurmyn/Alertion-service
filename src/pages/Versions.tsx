@@ -181,13 +181,13 @@ export function Versions() {
             </p>
           </div>
         ) : null}
-        {pending === null && !candidate ? (
-          <p className={styles.note}>
-            Кандидата нет.{' '}
-            <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
-          </p>
-        ) : null}
       </div>
+      {pending === null && !candidate ? (
+        <p className={styles.note}>
+          Кандидата нет.{' '}
+          <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
+        </p>
+      ) : null}
       {pending === 'publish' && candidate && active ? (
         <PublishDialog
           activeLabel={active.label}
