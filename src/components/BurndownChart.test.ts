@@ -28,5 +28,8 @@ describe('BurndownChart', () => {
     expect(html).toContain(
       'aria-label="Спринт 1: линия плана и линия симуляции"',
     );
+    expect(html).toContain('aria-describedby="burndown-s1"');
+    expect(html).toContain('id="burndown-s1"');
+    expect(html).toContain('>30 ч<');
   });
 });

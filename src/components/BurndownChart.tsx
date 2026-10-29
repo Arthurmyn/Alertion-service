@@ -7,6 +7,11 @@ const width = 640;
 const height = 160;
 const frame = { x0: 6, y0: 6, x1: width - 6, y1: height - 6 };
 
+function tick(value: number): string {
+  const rounded = Math.round(value * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 export function BurndownChart({
   sprint,
   dates,
@@ -22,6 +27,9 @@ export function BurndownChart({
   const planLine = pointsAttr(seriesPoints(plan, frame, max));
   const simLine = pointsAttr(seriesPoints(simulated, frame, max));
   const end = dates[dates.length - 1] ?? '';
+  const midY = (frame.y0 + frame.y1) / 2;
+  const tableId = `burndown-s${sprint}`;
+  const dayLabels = ['старт', ...dates];
 
   return (
     <div className={styles.block}>
@@ -34,14 +42,17 @@ export function BurndownChart({
       </p>
       <div className={styles.plot}>
         <div className={styles.axis} aria-hidden="true">
-          <span>{max}</span>
+          <span>{tick(max)} ч</span>
+          <span>{tick(max / 2)}</span>
           <span>0</span>
         </div>
         <svg
           className={styles.chart}
           viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="none"
           role="img"
           aria-label={`Спринт ${sprint}: линия плана и линия симуляции`}
+          aria-describedby={tableId}
         >
           <title>{`Спринт ${sprint}`}</title>
           <line
@@ -54,16 +65,36 @@ export function BurndownChart({
           <line
             className={styles.grid}
             x1={frame.x0}
+            y1={midY}
+            x2={frame.x1}
+            y2={midY}
+          />
+          <line
+            className={styles.grid}
+            x1={frame.x0}
             y1={frame.y1}
             x2={frame.x1}
             y2={frame.y1}
           />
-          <polyline className={styles.planLine} points={planLine} />
-          <polyline className={styles.simLine} points={simLine} />
+          <polyline
+            className={styles.planLine}
+            points={planLine}
+            vectorEffect="non-scaling-stroke"
+          />
+          <polyline
+            className={styles.simLine}
+            points={simLine}
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
+        <div className={styles.days} aria-hidden="true">
+          {dayLabels.map((label) => (
+            <span key={label}>{label}</span>
+          ))}
+        </div>
       </div>
       <div className={page.scroll}>
-        <table className={page.table}>
+        <table className={page.table} id={tableId}>
           <caption>Спринт {sprint}, оставшиеся часы</caption>
           <thead>
             <tr>
