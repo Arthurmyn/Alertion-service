@@ -1,0 +1,32 @@
+.pending,
+.active,
+.failed {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 600;
+  border-radius: var(--radius-block);
+  box-shadow: none;
+}
+
+.pending {
+  color: var(--warn-text);
+  background: var(--warn-bg);
+  padding: 0 4px;
+}
+
+.active {
+  color: var(--ok-text);
+}
+
+.failed {
+  color: var(--danger-text);
+}
+
+.deferred {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 400;
+  color: var(--ink-2);
+  border-radius: var(--radius-block);
+  box-shadow: none;
+}
