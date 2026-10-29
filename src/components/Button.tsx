@@ -6,11 +6,13 @@ export function Button({
   onClick,
   type = 'button',
   disabled = false,
+  describedBy,
 }: {
   children: ReactNode;
   onClick?: () => void;
   type?: 'button' | 'submit';
   disabled?: boolean;
+  describedBy?: string;
 }) {
   return (
     <button
@@ -18,6 +20,7 @@ export function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      aria-describedby={describedBy}
     >
       {children}
     </button>

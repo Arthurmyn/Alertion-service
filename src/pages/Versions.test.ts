@@ -10,14 +10,18 @@ import { writeSession } from '../state/store.tsx';
 import type { AppState } from '../state/types.ts';
 import {
   activeVersionLine,
+  confirmChangeText,
   formatMb,
   publishButtonLabel,
-  publishConfirmText,
   publishConfirmTitle,
   publishFailedLine,
+  rollbackButtonLabel,
+  rollbackConfirmTitle,
+  rollbackFailedLine,
+  rollbackUnavailable,
   versionSizeLine,
 } from './Versions.copy.ts';
-import { PublishDialog } from './Versions.tsx';
+import { PublishDialog, RollbackDialog } from './Versions.tsx';
 
 function memoryStorage() {
   const data = new Map<string, string>();
@@ -76,6 +80,20 @@ function withCandidate(): AppState {
   });
 }
 
+function publishedB(): AppState {
+  return reducer(withCandidate(), { type: 'publish', slug: 'nan' });
+}
+
+function describedReason(html: string): void {
+  const describedBy = /aria-describedby="([^"]+)"/.exec(html)?.[1];
+  expect(describedBy).toBeTruthy();
+  expect(html).toContain(`id="${describedBy}"`);
+  expect(html).toContain(`>${rollbackUnavailable}</p>`);
+  expect(html).toContain('disabled');
+  expect(html).toContain('>Вернуть версию</button>');
+  expect(html).not.toContain('Вернуть версию A');
+}
+
 function row(html: string, archiveName: string): string {
   const item = html
     .split('<li')
@@ -92,8 +110,19 @@ describe('version copy', () => {
     );
     expect(publishButtonLabel('B')).toBe('Опубликовать версию B');
     expect(publishConfirmTitle('B')).toBe('Опубликовать версию B?');
-    expect(publishConfirmText('A', 'B')).toBe(
+    expect(confirmChangeText('A', 'B')).toBe(
       'Сейчас активна версия A. После подтверждения активной станет версия B.',
+    );
+    expect(rollbackButtonLabel('A')).toBe('Вернуть версию A');
+    expect(rollbackConfirmTitle('A')).toBe('Вернуть версию A?');
+    expect(rollbackFailedLine('B')).toBe(
+      'Откат не прошёл. Активная версия: B.',
+    );
+    expect(rollbackUnavailable).toBe(
+      'Откат недоступен: предыдущей версии нет.',
+    );
+    expect(confirmChangeText('B', 'A')).toBe(
+      'Сейчас активна версия B. После подтверждения активной станет версия A.',
     );
     expect(versionSizeLine(baseline.sites.nan.versions[0])).toBe(
       'Архив 4,2 МБ, распакованный 12 МБ',
@@ -109,7 +138,7 @@ describe('Versions', () => {
     vi.unstubAllGlobals();
   });
 
-  it('lists the active version and does not offer publish or rollback without a candidate', () => {
+  it('lists the active version and disables rollback when there is no history', () => {
     const html = renderAt('/manage/nan/versions');
     expect(html).toContain('<h1>Версии</h1>');
     expect(html).toContain('Активна версия A');
@@ -121,8 +150,7 @@ describe('Versions', () => {
     expect(html).toContain('href="/manage/nan/upload"');
     expect(html).toContain('>Загрузить архив</a>');
     expect(html).not.toContain('Опубликовать');
-    expect(html).not.toContain('Вернуть');
-    expect(html).not.toContain('<button');
+    describedReason(html);
     expect(html).not.toContain('role="dialog"');
   });
 
@@ -132,7 +160,7 @@ describe('Versions', () => {
     expect(html).toContain('temir-v1.zip');
     expect(row(html, 'temir-v1.zip')).toContain('активная версия');
     expect(html).not.toContain('Опубликовать');
-    expect(html).not.toContain('Вернуть');
+    describedReason(html);
   });
 
   it('B3-AC1 keeps A active while B is only the candidate', () => {
@@ -145,23 +173,23 @@ describe('Versions', () => {
     expect(html).toContain('>Опубликовать версию B</button>');
     expect(html).not.toContain('Кандидата нет.');
     expect(html).not.toContain('role="dialog"');
-    expect(html).not.toContain('Вернуть');
+    describedReason(html);
   });
 
   it('B3-AC2 confirmation makes B active', () => {
-    const published = reducer(withCandidate(), {
-      type: 'publish',
-      slug: 'nan',
-    });
-    const html = renderAt('/manage/nan/versions', published);
+    const html = renderAt('/manage/nan/versions', publishedB());
     expect(html).toContain('Активна версия B');
     expect(html).not.toContain('Активна версия A');
     expect(row(html, 'nan-v2.zip')).toContain('активная версия');
     expect(row(html, 'nan-v1.zip')).not.toContain('активная версия');
+    expect(html).toContain('nan-v1.zip');
     expect(html).not.toContain('кандидат');
     expect(html).not.toContain('Опубликовать');
     expect(html).not.toContain('Публикация не прошла');
-    expect(html).not.toContain('Вернуть');
+    expect(html).toContain('>Вернуть версию A</button>');
+    expect(html).not.toContain('disabled');
+    expect(html).not.toContain('role="dialog"');
+    expect(html).not.toContain(rollbackUnavailable);
   });
 
   it('B3-AC3 a failed publication keeps A active', () => {
@@ -180,7 +208,8 @@ describe('Versions', () => {
     expect(row(html, 'nan-v1.zip')).toContain('активная версия');
     expect(row(html, 'nan-v2.zip')).toContain('кандидат');
     expect(html).toContain('>Опубликовать версию B</button>');
-    expect(html).not.toContain('Вернуть');
+    describedReason(html);
+    expect(html).not.toContain('Откат не прошёл');
   });
 
   it('asks for confirmation before the active version changes', () => {
@@ -200,6 +229,100 @@ describe('Versions', () => {
     expect(html).toContain(
       'Сейчас активна версия A. После подтверждения активной станет версия B.',
     );
+  });
+
+  it('asks before rollback changes the active version', () => {
+    const html = renderToStaticMarkup(
+      createElement(RollbackDialog, {
+        activeLabel: 'B',
+        previousLabel: 'A',
+        onConfirm() {},
+        onClose() {},
+      }),
+    );
+    expect(html).toContain('role="dialog"');
+    expect(html).toContain('aria-modal="true"');
+    expect(html).toContain('Вернуть версию A?');
+    expect(html).toContain('>Вернуть версию A</button>');
+    expect(html).toContain('>Отмена</button>');
+    expect(html).toContain(
+      'Сейчас активна версия B. После подтверждения активной станет версия A.',
+    );
+  });
+
+  it('B4-AC1 rolling back after publishing B restores A and keeps both versions', () => {
+    const rolled = reducer(publishedB(), { type: 'rollback', slug: 'nan' });
+    const kept = rolled.sites.nan?.versions.find(
+      (version) => version.archiveName === 'nan-v2.zip',
+    );
+    const html = renderAt('/manage/nan/versions', rolled);
+    expect(kept).toBeTruthy();
+    expect(html).toContain('Активна версия A');
+    expect(html).not.toContain('Активна версия B');
+    expect(row(html, 'nan-v1.zip')).toContain('активная версия');
+    expect(row(html, 'nan-v2.zip')).not.toContain('активная версия');
+    expect(row(html, 'nan-v2.zip')).not.toContain('кандидат');
+    expect(html).toContain('nan-v2.zip');
+    if (kept) expect(html).toContain(versionSizeLine(kept));
+    describedReason(html);
+    expect(html).not.toContain('Откат не прошёл');
+    expect(html).not.toContain('role="dialog"');
+  });
+
+  it('B4-AC2 disables rollback and explains why when there is no history', () => {
+    describedReason(renderAt('/manage/nan/versions'));
+    describedReason(renderAt('/manage/temir/versions'));
+    const withUpload = renderAt('/manage/nan/versions', withCandidate());
+    describedReason(withUpload);
+    expect(withUpload).toContain('Активна версия A');
+    expect(withUpload).toContain('>Опубликовать версию B</button>');
+  });
+
+  it('B4-AC3 a failed rollback keeps the current version label', () => {
+    const published = publishedB();
+    const html = renderAt(
+      '/manage/nan/versions',
+      reducer(
+        {
+          ...published,
+          simulate: { ...published.simulate, rollbackFails: true },
+        },
+        { type: 'rollback', slug: 'nan' },
+      ),
+    );
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Откат не прошёл. Активная версия: B.');
+    expect(html).toContain('Активна версия B');
+    expect(html).not.toContain('Активна версия A');
+    expect(row(html, 'nan-v2.zip')).toContain('активная версия');
+    expect(row(html, 'nan-v1.zip')).not.toContain('активная версия');
+    expect(html).toContain('nan-v1.zip');
+    expect(html).toContain('nan-v2.zip');
+    expect(html).toContain('>Вернуть версию A</button>');
+    expect(html).not.toContain('disabled');
+    expect(html).not.toContain(rollbackUnavailable);
+    expect(html).not.toContain('Публикация не прошла');
+  });
+
+  it('offers publish and rollback together when both are possible', () => {
+    const html = renderAt(
+      '/manage/nan/versions',
+      reducer(publishedB(), {
+        type: 'upload',
+        slug: 'nan',
+        archive: archives['nan-v3.zip'],
+        uploadedAt: '2026-10-29T13:00:00.000Z',
+      }),
+    );
+    expect(html).toContain('Активна версия B');
+    expect(html).toContain('>Опубликовать версию C</button>');
+    expect(html).toContain('>Вернуть версию A</button>');
+    expect(html).toContain('nan-v1.zip');
+    expect(html).toContain('nan-v2.zip');
+    expect(html).toContain('nan-v3.zip');
+    expect(row(html, 'nan-v3.zip')).toContain('кандидат');
+    expect(html).not.toContain('role="dialog"');
+    expect(html).not.toContain(rollbackUnavailable);
   });
 
   it('shows the not-found page for an unknown site', () => {
