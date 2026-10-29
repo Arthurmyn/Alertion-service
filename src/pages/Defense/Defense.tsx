@@ -10,6 +10,7 @@ import { developers, productOwner, scrumMaster } from '../../data/team.ts';
 import { accountSlug } from '../../routing.ts';
 import { useStore } from '../../state/store.tsx';
 import styles from './Defense.module.css';
+import { DemoSection } from './DemoSection.tsx';
 import { EvidenceLogSection } from './EvidenceLogSection.tsx';
 import { GoalsSection } from './GoalsSection.tsx';
 import {
@@ -113,6 +114,8 @@ export function Defense() {
           ))}
         </ol>
       </section>
+
+      <DemoSection />
 
       <section
         className={styles.section}

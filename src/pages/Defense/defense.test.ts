@@ -79,12 +79,20 @@ describe('defense page', () => {
     expect(html).toContain(
       'Отказ в доступе чужому аккаунту тоже имитация: настоящая изоляция аккаунтов, хостинг и сервер в прототип не входят.',
     );
-    expect(html).not.toContain('Запустить демо');
+    expect(html).toContain('id="demo"');
+    expect(html).toContain('>3. Демо');
+    expect(html).toContain('Запустить демо');
+    expect(html).toContain('scenario=b-opens-a');
+    expect(html).toContain('scenario=publish-fail');
+    expect(html).toContain('scenario=domain-pending');
+    expect(html).toContain('scenario=reject-archive-size');
+    expect(html).toContain('scenario=rollback-fail');
+    expect(html).toContain('>Открыть</a>');
     const manageHrefs = [...html.matchAll(/href="(\/manage\/[^"]*)"/g)].map(
       (match) => match[1] ?? '',
     );
     expect(manageHrefs.length).toBeGreaterThan(0);
-    expect(manageHrefs.every((href) => href.includes('scenario='))).toBe(true);
+    expect(manageHrefs.every((href) => href.includes('?scenario='))).toBe(true);
     expect(html).toContain('>Подготовить файлы</a>');
     expect(html).toContain('>Вернуть версию</a>');
     expect(html).toContain('Preview and explicit publish');
@@ -100,7 +108,7 @@ describe('defense page', () => {
     expect(html).toContain('План, часы по людям');
     expect(html).not.toContain('Фактические часы');
     expect(html).toContain('Демо-материал');
-    expect(html).not.toContain('>3. Демо');
+    expect(html).toContain('>3. Демо');
     expect(html).toContain('5. Результаты сценариев');
     expect(html).toContain('6. Цели G1–G5');
     expect(html).toContain('7. Невыполненные и непроверяемые критерии');
@@ -175,10 +183,10 @@ describe('defense page', () => {
     expect(goalsHtml).toContain('Лист наблюдений');
     expect(goalsHtml).toContain('проверено в прототипе');
     expect(goalsHtml).toContain('e2e/b3-g2.spec.ts');
+    expect(goalsHtml).toContain('e2e/b4-g2.spec.ts');
     expect(goalsHtml).toContain('e2e/b1-g3-access.spec.ts');
     expect(goalsHtml).toContain('e2e/b2-g3.spec.ts');
     expect(goalsHtml).toContain('e2e/b5-g4.spec.ts');
-    expect(goalsHtml).not.toContain('b4-g2');
     expect(html).toContain('сдвиньте её вбок');
     for (const goal of goals) {
       expect(goalsHtml).toContain(goal.id);

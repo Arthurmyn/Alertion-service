@@ -309,7 +309,7 @@ export const results: readonly ResultRow[] = [
   row(
     'B5-AC4',
     'Section 3.2 describes the smaller version if scope needs to change.',
-    q(scopeNote),
+    'Фраза записана в разделе целей.',
     [],
     '/defense#goals',
   ),
@@ -389,7 +389,7 @@ export const goals: readonly GoalRow[] = [
     reason: checked,
     decision: `${q(activeVersionLine(labelA))} при предпросмотре версии ${labelB}. ${confirmChangeText(labelA, labelB)} ${q(rollbackButtonLabel(labelA))} возвращает версию ${labelA}. ${q(publishFailedLine(labelA))} ${q(rollbackFailedLine(labelB))}`,
     scenarioId: 'rollback-ok',
-    spec: 'e2e/b3-g2.spec.ts',
+    spec: 'e2e/b3-g2.spec.ts и e2e/b4-g2.spec.ts',
   },
   {
     id: 'G3',

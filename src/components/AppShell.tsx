@@ -6,10 +6,12 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
+import { demoRunning } from '../data/scenarios.ts';
 import { accountSlug } from '../routing.ts';
 import { consumeScenarioQuery, useStore } from '../state/store.tsx';
-import { ScenarioPanel } from './ScenarioPanel.tsx';
 import styles from './AppShell.module.css';
+import { DemoBar } from './DemoBar.tsx';
+import { ScenarioPanel } from './ScenarioPanel.tsx';
 
 const sections = [
   { suffix: '', label: 'Управление сайтом' },
@@ -45,6 +47,7 @@ export function AppShell() {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const { state } = useStore();
+  const running = demoRunning(state.demo);
 
   useEffect(() => {
     consumeScenarioQuery(search, pathname, navigate);
@@ -54,7 +57,9 @@ export function AppShell() {
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
 
   return (
-    <div className={styles.shell}>
+    <div
+      className={running ? `${styles.shell} ${styles.withDemo}` : styles.shell}
+    >
       <header className={publicSite ? styles.publicHeader : styles.header}>
         <Link to="/" className={styles.brand}>
           <img src="/logo.png" alt="" width={260} height={308} />
@@ -99,6 +104,7 @@ export function AppShell() {
       <main className={styles.main}>
         <Outlet />
       </main>
+      <DemoBar />
     </div>
   );
 }

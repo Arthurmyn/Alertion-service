@@ -158,7 +158,7 @@ describe('routes', () => {
     const manageHrefs = [...defense.matchAll(/href="(\/manage\/[^"]*)"/g)].map(
       (match) => match[1] ?? '',
     );
-    expect(manageHrefs.every((href) => href.includes('scenario='))).toBe(true);
+    expect(manageHrefs.every((href) => href.includes('?scenario='))).toBe(true);
 
     const storage = memoryStorage();
     writeSession(

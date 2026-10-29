@@ -34,6 +34,7 @@ describe('defense links', () => {
     expect(defenseOutline).toEqual([
       'goal',
       'path',
+      'demo',
       'status',
       'results',
       'goals',
@@ -49,6 +50,7 @@ describe('defense links', () => {
     expect(defenseOutline.map((id) => sectionTitle[id])).toContain(
       '4. Статус B1–B8',
     );
+    expect(sectionTitle.demo).toBe('3. Демо');
     expect(sectionTitle.plan).toBe('8. План и симуляция');
     expect(sectionTitle.results).toBe('5. Результаты сценариев');
     expect(sectionTitle.goals).toBe('6. Цели G1–G5');

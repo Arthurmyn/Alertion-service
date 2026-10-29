@@ -18,6 +18,7 @@ import {
   rollbackConfirmTitle,
   rollbackFailedLine,
   rollbackUnavailable,
+  rollbackVersion,
   uploadArchiveLink,
   versionById,
   versionSizeLine,
@@ -206,7 +207,7 @@ export function Versions() {
           activeLabel={active.label}
           previousLabel={previous.label}
           onConfirm={() => {
-            dispatch({ type: 'rollback', slug });
+            dispatch(rollbackVersion(slug));
             finish('result');
           }}
           onClose={() => finish('rollback')}

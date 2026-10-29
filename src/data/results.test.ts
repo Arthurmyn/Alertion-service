@@ -156,7 +156,6 @@ describe('result registry', () => {
         expect(goal.reason).toBe('проверено в прототипе');
         expect(goal.scenarioId).toBeTruthy();
         expect(goal.spec).toBeTruthy();
-        expect(goal.spec).not.toMatch(/b4/i);
       } else {
         expect(goal.spec).toBeNull();
       }
@@ -164,7 +163,7 @@ describe('result registry', () => {
       expect(goal.decision.length).toBeGreaterThan(0);
     }
     expect(goals.find((goal) => goal.id === 'G2')?.spec).toBe(
-      'e2e/b3-g2.spec.ts',
+      'e2e/b3-g2.spec.ts и e2e/b4-g2.spec.ts',
     );
     expect(goals.find((goal) => goal.id === 'G3')?.spec).toBe(
       'e2e/b1-g3-access.spec.ts и e2e/b2-g3.spec.ts',

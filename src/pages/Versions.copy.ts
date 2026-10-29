@@ -1,3 +1,4 @@
+import type { Action } from '../state/reducer.ts';
 import type { Site, Version } from '../state/types.ts';
 
 export function activeVersionLine(label: string): string {
@@ -38,6 +39,10 @@ export function rollbackFailedLine(label: string): string {
 }
 
 export const rollbackUnavailable = 'Откат недоступен: предыдущей версии нет.';
+
+export function rollbackVersion(slug: string): Action {
+  return { type: 'rollback', slug };
+}
 
 export const previewAudience =
   'Предпросмотр видите только вы, пока выполнен вход в аккаунт этого сайта. Посетители и другие аккаунты видят активную версию.';

@@ -1,6 +1,7 @@
 export const sectionTitle = {
   goal: '1. Цель проекта',
   path: '2. Путь пользователя',
+  demo: '3. Демо',
   status: '4. Статус B1–B8',
   results: '5. Результаты сценариев',
   goals: '6. Цели G1–G5',
@@ -17,6 +18,7 @@ export const sectionTitle = {
 export const defenseOutline = [
   'goal',
   'path',
+  'demo',
   'status',
   'results',
   'goals',
