@@ -2,6 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import { accounts, baselineUpdatedAt } from '../src/data/accounts.ts';
 import { archives } from '../src/data/archives.ts';
 import { LIMITS } from '../src/data/limits.ts';
+import { scenarioById as presetById } from '../src/data/scenarios.ts';
 
 const deploymentText = {
   published: 'Опубликовано',
@@ -150,48 +151,78 @@ export function storagePattern(usedMb: number): RegExp {
   );
 }
 
+function pathOf(page: Page): string {
+  return new URL(page.url()).pathname;
+}
+
+/** `?scenario=` replaces the URL once the signed-in home redirect has finished. */
+async function settledPath(page: Page, pattern: RegExp): Promise<void> {
+  await expect(async () => {
+    expect(pathOf(page)).toMatch(pattern);
+    expect(page.url()).not.toMatch(/[?&]scenario=/);
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        }),
+    );
+    expect(pathOf(page)).toMatch(pattern);
+  }).toPass();
+}
+
+function definition(page: Page, term: string) {
+  return page
+    .getByRole('main')
+    .locator('dt')
+    .filter({ hasText: new RegExp(`^${escapeRegExp(term)}$`) })
+    .locator('xpath=following-sibling::dd');
+}
+
 export async function openDashboard(
   page: Page,
   scenarioId: string,
   slug: string,
 ): Promise<void> {
   page.setDefaultTimeout(15_000);
+  const preset = presetById(scenarioId);
+  if (!preset) throw new Error(`missing scenario ${scenarioId}`);
+
   await page.goto(`/?scenario=${encodeURIComponent(scenarioId)}`);
-  await expect(page).not.toHaveURL(/[?&]scenario=/);
+  await settledPath(page, new RegExp(`${escapeRegExp(preset.route)}$`));
 
   const dashboard = new RegExp(`/manage/${escapeRegExp(slug)}$`);
-  if (!dashboard.test(new URL(page.url()).pathname)) {
+  if (!dashboard.test(pathOf(page))) {
     await page
       .getByRole('navigation', { name: 'Разделы' })
       .getByRole('link', { name: 'Управление сайтом', exact: true })
       .click();
+    await settledPath(page, dashboard);
   }
-  await expect(page).toHaveURL(dashboard);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Управление сайтом' }),
+  ).toBeVisible();
 }
 
 export async function expectActiveVersion(
   page: Page,
   label: string,
 ): Promise<void> {
-  await expect(
-    page.getByText(
-      new RegExp(
-        `активн\\S*\\s+верси\\S*\\s*[:—–-]?\\s*${escapeRegExp(label)}\\b`,
-        'i',
-      ),
-    ),
-  ).toBeVisible();
+  await expect(definition(page, 'Активная версия')).toHaveText(label);
 }
 
 export async function expectStorage(page: Page, usedMb: number): Promise<void> {
-  await expect(page.getByText(storagePattern(usedMb))).toBeVisible();
+  await expect(
+    definition(page, 'Хранилище').getByText(storagePattern(usedMb)),
+  ).toBeVisible();
 }
 
 export async function expectDeployment(
   page: Page,
   deployment: string,
 ): Promise<void> {
-  await expect(page.getByText(deployment, { exact: true })).toBeVisible();
+  await expect(
+    definition(page, 'Публикация').getByText(deployment, { exact: true }),
+  ).toBeVisible();
 }
 
 function exampleLink(page: Page, slug: string) {
@@ -224,23 +255,36 @@ export async function followExampleLink(
   );
 }
 
+const domainWord = {
+  pending: 'Ожидание',
+  active: 'Активен',
+  failed: 'Ошибка',
+} as const;
+
+function onDashboard(page: Page): boolean {
+  return /\/manage\/[^/]+$/.test(pathOf(page));
+}
+
 export async function expectDomainState(
   page: Page,
   domain: NonNullable<DashboardScenario['domain']>,
 ): Promise<void> {
-  if (domain === 'pending') {
-    await expect(page.getByText('Ожидание', { exact: true })).toBeVisible();
+  if (domain === 'deferred') {
+    if (onDashboard(page)) {
+      await expect(definition(page, 'Домен')).toHaveText(
+        deferredDashboardPattern(),
+      );
+      return;
+    }
+    await expect(
+      page.getByRole('main').getByText(deferredStatus, { exact: true }).first(),
+    ).toBeVisible();
     return;
   }
-  if (domain === 'active') {
-    await expect(page.getByText('Активен', { exact: true })).toBeVisible();
-    return;
-  }
-  if (domain === 'failed') {
-    await expect(page.getByText('Ошибка', { exact: true })).toBeVisible();
-    return;
-  }
-  await expect(page.getByText(deferredStatus)).toBeVisible();
+
+  await expect(
+    definition(page, 'Домен').getByText(domainWord[domain], { exact: true }),
+  ).toBeVisible();
 }
 
 export async function openDomainScreen(
@@ -251,9 +295,10 @@ export async function openDomainScreen(
     .getByRole('navigation', { name: 'Разделы' })
     .getByRole('link', { name: 'Домен', exact: true })
     .click();
-  await expect(page).toHaveURL(
-    new RegExp(`/manage/${escapeRegExp(slug)}/domain$`),
-  );
+  await settledPath(page, new RegExp(`/manage/${escapeRegExp(slug)}/domain$`));
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Домен' }),
+  ).toBeVisible();
 }
 
 export async function expectStaleNotice(page: Page): Promise<void> {
