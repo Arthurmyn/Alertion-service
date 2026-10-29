@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { demoCaption, demoRoute, demoState } from '../data/demoSteps.ts';
 import { StoreProvider, writeSession } from '../state/store.tsx';
-import { DemoBar } from './DemoBar.tsx';
+import { DemoBar, shouldCloseDemo } from './DemoBar.tsx';
 
 function memoryStorage() {
   const data = new Map<string, string>();
@@ -42,6 +42,12 @@ function tag(html: string, name: string, label: string): string {
 describe('DemoBar', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it('closes from escape, and leaves an open dialog alone', () => {
+    expect(shouldCloseDemo('Escape', false)).toBe(true);
+    expect(shouldCloseDemo('Escape', true)).toBe(false);
+    expect(shouldCloseDemo('Enter', false)).toBe(false);
   });
 
   it('stays hidden until a demo step is set', () => {

@@ -37,6 +37,17 @@ export function DemoScenarioList({
   );
 }
 
+export function shouldCloseDemo(key: string, dialogOpen: boolean): boolean {
+  return key === 'Escape' && !dialogOpen;
+}
+
+function focusPage(): void {
+  const heading = document.querySelector('main h1');
+  if (!(heading instanceof HTMLElement)) return;
+  heading.setAttribute('tabindex', '-1');
+  heading.focus();
+}
+
 export function DemoBar() {
   const { state, dispatch } = useStore();
   const navigate = useNavigate();
@@ -54,6 +65,19 @@ export function DemoBar() {
     stepRef.current?.focus({ preventScroll: true });
   }, [step, pathname]);
 
+  useEffect(() => {
+    if (step === null) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      const dialogOpen = document.querySelector('[role="dialog"]') !== null;
+      if (!shouldCloseDemo(event.key, dialogOpen)) return;
+      event.preventDefault();
+      dispatch({ type: 'setDemo', demo: null });
+      focusPage();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [step, dispatch]);
+
   if (step === null) return null;
 
   const backLocked = step <= 1;
@@ -66,6 +90,7 @@ export function DemoBar() {
 
   function exit() {
     dispatch({ type: 'setDemo', demo: null });
+    focusPage();
   }
 
   return (
