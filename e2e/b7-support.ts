@@ -157,12 +157,17 @@ export async function expectUploadLimits(page: Page): Promise<void> {
 
 async function checkArchive(page: Page, fileName: string): Promise<void> {
   await openSection(page, 'Загрузка');
+  const status = main(page).locator('[aria-live="polite"]');
+  const before = await status.innerText();
   await page
     .getByRole('radio', { name: new RegExp(escapeRegExp(fileName)) })
     .check();
   await page
     .getByRole('button', { name: 'Проверить архив', exact: true })
     .click();
+  // Leaving the page during «Проверяем архив…» cancels the check.
+  await expect.poll(async () => status.innerText()).not.toBe(before);
+  await expect(status).not.toContainText('Проверяем архив…');
 }
 
 async function publishCandidate(page: Page, label: string): Promise<void> {
