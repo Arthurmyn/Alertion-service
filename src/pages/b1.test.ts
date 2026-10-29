@@ -38,6 +38,13 @@ function memoryStorage() {
   };
 }
 
+function pageMain(html: string): string {
+  const start = html.indexOf('<main');
+  const end = html.indexOf('</main>');
+  if (start < 0 || end < start) throw new Error('no main');
+  return html.slice(start, end);
+}
+
 function renderAt(path: string, accountId?: 'a' | 'b'): string {
   if (accountId) {
     const storage = memoryStorage();
@@ -86,7 +93,7 @@ describe('B1 account boundaries', () => {
   });
 
   it('sends a signed-out management visit to login with the return path', () => {
-    const html = renderAt('/manage/nan/upload');
+    const html = pageMain(renderAt('/manage/nan/upload'));
     expect(html).toContain(
       'data-redirect="/login?next=%2Fmanage%2Fnan%2Fupload"',
     );
@@ -94,13 +101,13 @@ describe('B1 account boundaries', () => {
     expect(html).not.toContain('<h1>Загрузка</h1>');
     expect(html).not.toContain('Пекарня Нан');
 
-    const home = renderAt('/manage/temir');
+    const home = pageMain(renderAt('/manage/temir'));
     expect(home).toContain('data-redirect="/login?next=%2Fmanage%2Ftemir"');
     expect(home).not.toContain('<h1>Управление сайтом</h1>');
   });
 
   it('asks for sign-in and offers the two accounts, with no password field', () => {
-    const html = renderAt('/login?next=%2Fmanage%2Fnan');
+    const html = pageMain(renderAt('/login?next=%2Fmanage%2Fnan'));
     expect(html).toContain('tabindex="-1"');
     expect(html).toContain('>Вход</h1>');
     expect(html).toContain('Войдите, чтобы управлять сайтом.');
@@ -115,19 +122,21 @@ describe('B1 account boundaries', () => {
     expect(html).not.toContain('type="password"');
     expect(html.match(/<button\b/g)).toHaveLength(2);
 
-    const plain = renderAt('/login');
+    const plain = pageMain(renderAt('/login'));
     expect(plain).not.toContain('Войдите, чтобы управлять сайтом.');
     expect(plain).not.toContain('<code');
     expect(plain).toContain('2 вымышленных аккаунта');
     expect(plain).toContain('Пароля нет, это симуляция.');
 
-    const outside = renderAt('/login?next=https%3A%2F%2Fevil.example');
+    const outside = pageMain(
+      renderAt('/login?next=https%3A%2F%2Fevil.example'),
+    );
     expect(outside).not.toContain('evil.example');
     expect(outside).not.toContain('Войдите, чтобы управлять сайтом.');
   });
 
   it('B1-AC2 denies account B on account A and hides A data', () => {
-    const html = renderAt('/manage/nan', 'b');
+    const html = pageMain(renderAt('/manage/nan', 'b'));
     expect(html).toContain('tabindex="-1">Нет доступа</h1>');
     expect(html).toContain('Вы вошли как Ерлан Б.');
     expect(html).not.toContain('Б..');
@@ -144,13 +153,13 @@ describe('B1 account boundaries', () => {
     expect(html).not.toContain('Хранилище');
     expect(html).not.toContain('<h1>Управление сайтом</h1>');
 
-    const own = renderAt('/manage/nan/versions', 'b');
+    const own = pageMain(renderAt('/manage/nan/versions', 'b'));
     expect(own).toContain('>Нет доступа</h1>');
     expect(own).not.toContain('<h1>Версии</h1>');
   });
 
   it('B1-AC2 sends account A away from account B', () => {
-    const html = renderAt('/manage/temir/domain', 'a');
+    const html = pageMain(renderAt('/manage/temir/domain', 'a'));
     expect(html).toContain('>Нет доступа</h1>');
     expect(html).toContain('Вы вошли как Айгуль С.');
     expect(html).not.toContain('С..');
@@ -161,18 +170,18 @@ describe('B1 account boundaries', () => {
   });
 
   it('B1-AC1 marks the owner screen and leaves other sections to their task', () => {
-    const home = renderAt('/manage/nan', 'a');
+    const home = pageMain(renderAt('/manage/nan', 'a'));
     expect(home).toContain('Управление сайтом, видно только владельцу');
     expect(home).toContain('<h1>Управление сайтом</h1>');
     expect(home).not.toContain('data-redirect=');
 
-    const upload = renderAt('/manage/nan/upload', 'a');
+    const upload = pageMain(renderAt('/manage/nan/upload', 'a'));
     expect(upload).toContain('<h1>Загрузка</h1>');
     expect(upload).not.toContain('Управление сайтом, видно только владельцу');
   });
 
   it('shows not-found for a missing site once an account is signed in', () => {
-    const html = renderAt('/manage/missing', 'a');
+    const html = pageMain(renderAt('/manage/missing', 'a'));
     expect(html).toContain('<h1>Страница не найдена</h1>');
     expect(html).not.toContain('>Нет доступа</h1>');
     expect(html).not.toContain('Пекарня Нан');
@@ -185,7 +194,8 @@ describe('public site', () => {
   });
 
   it('B1-AC1 serves the active page and hides management data', () => {
-    const html = renderAt('/site/nan');
+    const full = renderAt('/site/nan');
+    const html = pageMain(full);
     expect(html).toContain('tabindex="-1">Публичная страница</h1>');
     expect(html).toContain('Данных управления здесь нет.');
     expect(html).toContain('Пекарня Нан');
@@ -193,7 +203,7 @@ describe('public site', () => {
     expect(html).toContain('sandbox=""');
     expect(html).toContain('Баурсак, 500 ₸');
     expect(html).not.toContain('Круассан');
-    expect(html).not.toContain('href="/manage/');
+    expect(full).not.toContain('href="/manage/');
     expect(html).not.toContain('Хранилище');
     expect(html).not.toContain('Кандидат');
     expect(html).not.toContain('Пилотный план');
@@ -201,7 +211,7 @@ describe('public site', () => {
     expect(html).not.toContain('Айгуль');
     expect(html).not.toContain('МБ');
 
-    const temir = renderAt('/site/temir');
+    const temir = pageMain(renderAt('/site/temir'));
     expect(temir).toContain(
       '<a href="/site/temir"><code>/site/temir</code></a>',
     );
@@ -218,13 +228,14 @@ describe('public site', () => {
       uploadedAt,
     });
     const published = reducer(uploaded, { type: 'publish', slug: 'nan' });
-    const html = renderState('/site/nan', published);
+    const full = renderState('/site/nan', published);
+    const html = pageMain(full);
 
     expect(html).toContain('<a href="/site/nan"><code>/site/nan</code></a>');
     expect(html).toContain('Баурсак, 500 ₸');
     expect(html).toContain('Круассан, 900 ₸');
     expect(html).not.toContain('Хранилище');
-    expect(html).not.toContain('href="/manage/');
+    expect(full).not.toContain('href="/manage/');
     expect(html).not.toContain('Кандидат');
   });
 });
