@@ -120,12 +120,11 @@ export async function expectRejection(
   await expect(page.locator('main').getByText(message)).toBeVisible();
   await nav(page).getByRole('link', { name: 'Управление сайтом' }).click();
   await expect(page).toHaveURL(new RegExp(`/manage/${ownerA.slug}$`));
-  await expect(page.locator('main')).toContainText(
-    new RegExp(
-      `активн\\p{L}*\\s+верси[\\s\\S]{0,120}(?<![\\p{L}\\p{N}])${escapeRegExp(active.label)}(?![\\p{L}\\p{N}])|(?<![\\p{L}\\p{N}])${escapeRegExp(active.label)}(?![\\p{L}\\p{N}])[\\s\\S]{0,120}активн\\p{L}*\\s+верси`,
-      'iu',
-    ),
-  );
+  const activeFact = page.locator('main dl > div').filter({
+    has: page.getByRole('term').filter({ hasText: /^Активная версия$/ }),
+  });
+  await expect(activeFact).toHaveCount(1);
+  await expect(activeFact.getByRole('definition')).toHaveText(active.label);
   await page.goto(`/site/${ownerA.slug}`);
   await expectActiveSample(page, active.archiveName);
 }

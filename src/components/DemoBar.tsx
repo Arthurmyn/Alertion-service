@@ -65,6 +65,7 @@ export function DemoBar() {
   useEffect(() => {
     if (step === null) return;
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
       const dialogOpen = document.querySelector('[role="dialog"]') !== null;
       if (!shouldCloseDemo(event.key, dialogOpen)) return;
       event.preventDefault();

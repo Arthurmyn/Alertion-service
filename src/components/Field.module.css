@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 4px;
-  margin: 0 0 16px;
+  gap: var(--space-xs);
+  margin: 0 0 var(--space-lg);
   border: 0;
   border-radius: var(--radius-block);
   box-shadow: none;
@@ -26,7 +26,8 @@
   border: 1px solid var(--ink);
   border-radius: var(--radius-input);
   box-shadow: none;
-  padding: 6px 8px;
+  min-height: var(--control-h);
+  padding: 4px var(--space-sm);
   font-family: var(--font-ui);
   font-size: var(--text-md);
 }
