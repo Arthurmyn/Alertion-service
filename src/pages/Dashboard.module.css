@@ -51,14 +51,35 @@
   overflow-wrap: anywhere;
 }
 
-.fact dd.ok {
+.ok {
   color: var(--ok-text);
   font-weight: 600;
 }
 
-.fact dd.bad {
+.bad {
   color: var(--danger-text);
   font-weight: 600;
+}
+
+.pending {
+  color: var(--warn-text);
+  font-weight: 600;
+}
+
+.state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+.state a {
+  white-space: nowrap;
+}
+
+.next {
+  font-weight: 400;
+  color: var(--ink);
 }
 
 .stale {
@@ -67,6 +88,31 @@
   align-items: flex-start;
   gap: 8px;
   margin-top: 12px;
+}
+
+.refresh {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  box-shadow: none;
+}
+
+.refresh:hover {
+  color: var(--on-ink);
+  background: var(--ink);
+}
+
+.live {
+  margin: 0;
+}
+
+.feedback {
+  display: inline-block;
+  max-width: 100%;
+  margin: 12px 0 0;
+  font-weight: 400;
+  color: var(--ink);
 }
 
 .actions {

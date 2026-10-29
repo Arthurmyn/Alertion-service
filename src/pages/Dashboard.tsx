@@ -1,7 +1,6 @@
+import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Alert } from '../components/Alert.tsx';
-import { Button } from '../components/Button.tsx';
-import { StatusLabel } from '../components/StatusLabel.tsx';
 import { StorageMeter } from '../components/StorageMeter.tsx';
 import { LIMITS } from '../data/limits.ts';
 import { exampleUrl, storageUsedMb } from '../state/selectors.ts';
@@ -42,23 +41,54 @@ function staleStorageText(updatedAt: string): string {
   return `Данные устарели, обновлено ${formatUpdatedAt(updatedAt)}`;
 }
 
+function freshStorageText(updatedAt: string): string {
+  return `Данные обновлены, ${formatUpdatedAt(updatedAt)}`;
+}
+
 function DomainValue({ slug, domain }: { slug: string; domain: DomainState }) {
+  const to = `/manage/${slug}/domain`;
   switch (domain.status) {
     case 'notStarted':
-      return <Link to={`/manage/${slug}/domain`}>Подключить домен</Link>;
+      return <Link to={to}>Подключить домен</Link>;
     case 'deferred':
       return <>Домен: недоступно в этой версии прототипа</>;
     case 'pending':
+      return (
+        <span className={styles.state}>
+          <span className={styles.pending}>Ожидание</span>
+          <span className={styles.next}>
+            Запись ещё не видна. <Link to={to}>Проверить снова</Link>
+          </span>
+        </span>
+      );
     case 'active':
+      return <span className={styles.ok}>Активен</span>;
     case 'failed':
-      return <StatusLabel status={domain.status} />;
+      return (
+        <span className={styles.state}>
+          <span className={styles.bad}>Ошибка</span>
+          <span className={styles.next}>
+            Значение TXT не совпало. <Link to={to}>Исправить запись</Link>
+          </span>
+        </span>
+      );
   }
 }
 
 export function Dashboard() {
   const { slug = '' } = useParams();
   const { state, dispatch } = useStore();
+  const staleId = useId();
+  const feedbackRef = useRef<HTMLParagraphElement>(null);
+  const [refreshedSlug, setRefreshedSlug] = useState<string | null>(null);
+  const [focusFeedback, setFocusFeedback] = useState(0);
   const site = state.sites[slug];
+
+  useEffect(() => {
+    if (focusFeedback === 0) return;
+    feedbackRef.current?.focus();
+  }, [focusFeedback]);
+
   if (!site) return <NotFound />;
 
   const active = site.versions.find(
@@ -66,6 +96,17 @@ export function Dashboard() {
   );
   const url = exampleUrl(site);
   const tone = deploymentTone(site.deployment);
+  const storageFeedback =
+    refreshedSlug === site.slug && site.storageDataStatus === 'current'
+      ? freshStorageText(site.lastUpdatedAt)
+      : '';
+
+  function refreshStorage() {
+    const updatedAt = new Date().toISOString();
+    dispatch({ type: 'refreshStorage', slug: site.slug, updatedAt });
+    setRefreshedSlug(site.slug);
+    setFocusFeedback((nonce) => nonce + 1);
+  }
 
   return (
     <>
@@ -86,8 +127,15 @@ export function Dashboard() {
         </div>
         <div className={styles.fact}>
           <dt>Публикация</dt>
-          <dd className={tone === 'ok' ? styles.ok : styles.bad}>
-            {deploymentText(site.deployment)}
+          <dd>
+            <span className={styles.state}>
+              <span className={tone === 'ok' ? styles.ok : styles.bad}>
+                {deploymentText(site.deployment)}
+              </span>
+              {tone === 'bad' ? (
+                <Link to={`/manage/${site.slug}/versions`}>Открыть версии</Link>
+              ) : null}
+            </span>
           </dd>
         </div>
         <div className={styles.fact}>
@@ -106,21 +154,27 @@ export function Dashboard() {
             {site.storageDataStatus === 'stale' ? (
               <div className={styles.stale}>
                 <Alert tone="warn">
-                  {staleStorageText(site.lastUpdatedAt)}
+                  <span id={staleId}>
+                    {staleStorageText(site.lastUpdatedAt)}
+                  </span>
                 </Alert>
-                <Button
-                  onClick={() =>
-                    dispatch({
-                      type: 'refreshStorage',
-                      slug: site.slug,
-                      updatedAt: new Date().toISOString(),
-                    })
-                  }
+                <button
+                  type="button"
+                  className={styles.refresh}
+                  aria-describedby={staleId}
+                  onClick={refreshStorage}
                 >
                   Обновить
-                </Button>
+                </button>
               </div>
             ) : null}
+            <div className={styles.live} aria-live="polite" aria-atomic="true">
+              {storageFeedback ? (
+                <p ref={feedbackRef} tabIndex={-1} className={styles.feedback}>
+                  {storageFeedback}
+                </p>
+              ) : null}
+            </div>
           </dd>
         </div>
       </dl>

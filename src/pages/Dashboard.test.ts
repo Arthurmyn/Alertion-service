@@ -120,6 +120,8 @@ describe('Dashboard', () => {
     expect(html).toContain('Подключить домен');
     expect(html).not.toContain('Ожидание');
     expect(html).not.toContain('Активен');
+    expect(html).not.toContain('Проверить снова');
+    expect(html).not.toContain('Открыть версии');
     expect(html).not.toContain('Домен: недоступно');
     expect(html).toContain(
       `${storageUsedMb(baseline.sites.nan)} МБ из ${LIMITS.storageMb} МБ`,
@@ -172,17 +174,20 @@ describe('Dashboard', () => {
       type: 'publish',
       slug: 'nan',
     });
-    expect(renderAt('/manage/nan', publishFailed)).toContain(
-      'Ошибка публикации',
-    );
-    expect(renderAt('/manage/nan', publishFailed)).toContain('>A</dd>');
+    const publishFailedHtml = renderAt('/manage/nan', publishFailed);
+    expect(publishFailedHtml).toContain('Ошибка публикации');
+    expect(publishFailedHtml).toContain('href="/manage/nan/versions"');
+    expect(publishFailedHtml).toContain('Открыть версии');
+    expect(publishFailedHtml).toContain('>A</dd>');
 
     const rolled = reducer(publishVersionB(), {
       type: 'rollback',
       slug: 'nan',
     });
-    expect(renderAt('/manage/nan', rolled)).toContain('Откат выполнен');
-    expect(renderAt('/manage/nan', rolled)).toContain('>A</dd>');
+    const rolledHtml = renderAt('/manage/nan', rolled);
+    expect(rolledHtml).toContain('Откат выполнен');
+    expect(rolledHtml).not.toContain('Открыть версии');
+    expect(rolledHtml).toContain('>A</dd>');
 
     const rollbackFailed = reducer(
       {
@@ -193,25 +198,39 @@ describe('Dashboard', () => {
     );
     const failedHtml = renderAt('/manage/nan', rollbackFailed);
     expect(failedHtml).toContain('Ошибка отката');
+    expect(failedHtml).toContain('href="/manage/nan/versions"');
     expect(failedHtml).toContain('>B</dd>');
   });
 
   it('uses the same domain status as the site record', () => {
-    expect(
-      renderAt('/manage/nan', patchSite('nan', { domain: domain('pending') })),
-    ).toContain('Ожидание');
-    expect(
-      renderAt(
-        '/manage/nan',
-        patchSite('nan', { domain: domain('active', true) }),
-      ),
-    ).toContain('Активен');
+    const pending = renderAt(
+      '/manage/nan',
+      patchSite('nan', { domain: domain('pending') }),
+    );
+    expect(pending).toContain('Ожидание');
+    expect(pending).toContain('Запись ещё не видна.');
+    expect(pending).toContain('Проверить снова');
+    expect(pending).toContain('href="/manage/nan/domain"');
+    expect(pending).not.toContain('Подключить домен');
+
+    const active = renderAt(
+      '/manage/nan',
+      patchSite('nan', { domain: domain('active', true) }),
+    );
+    expect(active).toContain('Активен');
+    expect(active).not.toContain('Подключить домен');
+    expect(active).not.toContain('Проверить снова');
+
     const failed = renderAt(
       '/manage/nan',
       patchSite('nan', { domain: domain('failed') }),
     );
     expect(failed).toContain('>Ошибка<');
+    expect(failed).toContain('Значение TXT не совпало.');
+    expect(failed).toContain('Исправить запись');
+    expect(failed).toContain('href="/manage/nan/domain"');
     expect(failed).not.toContain('Подключить домен');
+    expect(failed).not.toContain('Запись ещё не видна.');
 
     const deferred = renderAt(
       '/manage/nan',
@@ -219,6 +238,8 @@ describe('Dashboard', () => {
     );
     expect(deferred).toContain('Домен: недоступно в этой версии прототипа');
     expect(deferred).not.toContain('Подключить домен');
+    expect(deferred).not.toContain('Проверить снова');
+    expect(deferred).not.toContain('Исправить запись');
     expect(deferred).not.toContain('Ожидание');
   });
 
@@ -229,6 +250,10 @@ describe('Dashboard', () => {
     );
     expect(html).toContain('Данные устарели, обновлено 28.10.2026, 09:00');
     expect(html).toContain('>Обновить</button>');
+    expect(html).toContain('aria-describedby=');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('role="status"');
+    expect(html).not.toContain('Данные обновлены');
     expect(html).toContain(
       `${storageUsedMb(baseline.sites.nan)} МБ из ${LIMITS.storageMb} МБ`,
     );
