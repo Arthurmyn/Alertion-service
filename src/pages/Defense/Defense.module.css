@@ -70,6 +70,8 @@
   overflow-x: auto;
   max-width: 100%;
   margin: 0 0 16px;
+  border-bottom: 1px solid var(--rule);
+  scrollbar-color: var(--ink-2) var(--paper);
 }
 
 .table {
@@ -101,6 +103,31 @@
 
 .table th {
   font-weight: 600;
+}
+
+.criteria {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow-wrap: break-word;
+}
+
+.criteria th,
+.criteria td {
+  min-width: 11rem;
+  max-width: 22rem;
+}
+
+.criteria > thead > tr > th:first-child,
+.criteria > tbody > tr > th[scope='row'] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 6.5rem;
+  max-width: 11rem;
+  background: var(--paper);
+  border-right: 1px solid var(--rule);
 }
 
 .mono {

@@ -6,21 +6,19 @@ import { LIMITS } from '../data/limits.ts';
 import { exampleUrl, storageUsedMb } from '../state/selectors.ts';
 import { useStore } from '../state/store.tsx';
 import type { DeploymentState, DomainState } from '../state/types.ts';
+import {
+  statusActive,
+  statusFailed,
+  statusPending,
+} from '../components/statusWords.ts';
+import { uploadArchiveLink } from './Versions.copy.ts';
+import {
+  activeVersionTerm,
+  deferredDomainLine,
+  deploymentLabel,
+} from './Dashboard.copy.ts';
 import { NotFound } from './NotFound.tsx';
 import styles from './Dashboard.module.css';
-
-function deploymentText(deployment: DeploymentState): string {
-  switch (deployment) {
-    case 'published':
-      return 'Опубликовано';
-    case 'publishFailed':
-      return 'Ошибка публикации';
-    case 'rolledBack':
-      return 'Откат выполнен';
-    case 'rollbackFailed':
-      return 'Ошибка отката';
-  }
-}
 
 function deploymentTone(deployment: DeploymentState): 'ok' | 'bad' {
   if (deployment === 'publishFailed' || deployment === 'rollbackFailed') {
@@ -51,22 +49,22 @@ function DomainValue({ slug, domain }: { slug: string; domain: DomainState }) {
     case 'notStarted':
       return <Link to={to}>Подключить домен</Link>;
     case 'deferred':
-      return <>Домен: недоступно в этой версии прототипа</>;
+      return <>{deferredDomainLine}</>;
     case 'pending':
       return (
         <span className={styles.state}>
-          <span className={styles.pending}>Ожидание</span>
+          <span className={styles.pending}>{statusPending}</span>
           <span className={styles.next}>
             Запись ещё не видна. <Link to={to}>Проверить снова</Link>
           </span>
         </span>
       );
     case 'active':
-      return <span className={styles.ok}>Активен</span>;
+      return <span className={styles.ok}>{statusActive}</span>;
     case 'failed':
       return (
         <span className={styles.state}>
-          <span className={styles.bad}>Ошибка</span>
+          <span className={styles.bad}>{statusFailed}</span>
           <span className={styles.next}>
             Значение TXT не совпало. <Link to={to}>Исправить запись</Link>
           </span>
@@ -114,7 +112,7 @@ export function Dashboard() {
       <p className={styles.business}>{site.businessName}</p>
       <dl className={styles.facts}>
         <div className={styles.fact}>
-          <dt>Активная версия</dt>
+          <dt>{activeVersionTerm}</dt>
           <dd>{active?.label ?? site.activeVersionId}</dd>
         </div>
         <div className={styles.fact}>
@@ -130,7 +128,7 @@ export function Dashboard() {
           <dd>
             <span className={styles.state}>
               <span className={tone === 'ok' ? styles.ok : styles.bad}>
-                {deploymentText(site.deployment)}
+                {deploymentLabel[site.deployment]}
               </span>
               {tone === 'bad' ? (
                 <Link to={`/manage/${site.slug}/versions`}>Открыть версии</Link>
@@ -180,7 +178,7 @@ export function Dashboard() {
       </dl>
       <p className={styles.actions}>
         <Link className={styles.primary} to={`/manage/${site.slug}/upload`}>
-          Загрузить архив
+          {uploadArchiveLink}
         </Link>
       </p>
     </>

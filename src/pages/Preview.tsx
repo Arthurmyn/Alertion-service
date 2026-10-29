@@ -4,10 +4,14 @@ import { sampleSites } from '../data/sampleSites.ts';
 import { useStore } from '../state/store.tsx';
 import { NotFound } from './NotFound.tsx';
 import styles from './Preview.module.css';
-import { activeVersionLine, versionById } from './Versions.copy.ts';
-
-const previewAudience =
-  'Предпросмотр видите только вы, пока выполнен вход в аккаунт этого сайта. Посетители и другие аккаунты видят активную версию.';
+import {
+  activeVersionLine,
+  candidateVersionLine,
+  noCandidateLine,
+  previewAudience,
+  uploadArchiveLink,
+  versionById,
+} from './Versions.copy.ts';
 
 export function Preview() {
   const { slug = '' } = useParams();
@@ -18,7 +22,7 @@ export function Preview() {
   const active = versionById(site, site.activeVersionId);
   const candidate = versionById(site, site.candidateVersionId);
   const html = candidate ? sampleSites[candidate.archiveName] : undefined;
-  const candidateLine = candidate ? `Кандидат: версия ${candidate.label}` : '';
+  const candidateLine = candidate ? candidateVersionLine(candidate.label) : '';
 
   return (
     <>
@@ -36,9 +40,9 @@ export function Preview() {
       ) : null}
       {!candidate ? (
         <>
-          <p>Кандидата нет.</p>
+          <p>{noCandidateLine}</p>
           <p>
-            <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
+            <Link to={`/manage/${slug}/upload`}>{uploadArchiveLink}</Link>
           </p>
         </>
       ) : null}

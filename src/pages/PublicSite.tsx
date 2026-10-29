@@ -5,6 +5,7 @@ import { sampleSites } from '../data/sampleSites.ts';
 import { exampleUrl } from '../state/selectors.ts';
 import { useStore } from '../state/store.tsx';
 import { NotFound } from './NotFound.tsx';
+import { publicBoundary, publicHeading } from './PublicSite.copy.ts';
 import styles from './PublicSite.module.css';
 
 export function PublicSite() {
@@ -28,9 +29,9 @@ export function PublicSite() {
   return (
     <>
       <h1 ref={headingRef} className={styles.title} tabIndex={-1}>
-        Публичная страница
+        {publicHeading}
       </h1>
-      <p>Опубликованная страница. Данных управления здесь нет.</p>
+      <p>{publicBoundary}</p>
       <p>
         Адрес сайта{' '}
         <a href={url}>

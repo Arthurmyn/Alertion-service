@@ -6,6 +6,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
+import { demoRunning } from '../data/scenarios.ts';
 import { accountSlug } from '../routing.ts';
 import { consumeScenarioQuery, useStore } from '../state/store.tsx';
 import {
@@ -26,8 +27,9 @@ import {
   readNavCollapsed,
   writeNavCollapsed,
 } from './navState.ts';
-import { ScenarioPanel } from './ScenarioPanel.tsx';
 import styles from './AppShell.module.css';
+import { DemoBar } from './DemoBar.tsx';
+import { ScenarioPanel } from './ScenarioPanel.tsx';
 
 const sections = [
   { suffix: '', label: 'Управление сайтом', Icon: IconDashboard },
@@ -133,6 +135,7 @@ export function AppShell() {
   const siteSlug = publicSlug(pathname);
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
   const isPublic = Boolean(publicSite);
+  const running = demoRunning(state.demo);
 
   useEffect(() => {
     consumeScenarioQuery(search, pathname, navigate);
@@ -220,7 +223,11 @@ export function AppShell() {
 
   if (publicSite) {
     return (
-      <div className={styles.public}>
+      <div
+        className={
+          running ? `${styles.public} ${styles.withDemo}` : styles.public
+        }
+      >
         <header className={styles.publicHeader}>
           <Link to="/" className={styles.publicBrand}>
             <img src="/logo.png" alt="" width={260} height={308} />
@@ -234,6 +241,7 @@ export function AppShell() {
         <main className={styles.main}>
           <Outlet />
         </main>
+        <DemoBar />
       </div>
     );
   }
@@ -242,7 +250,15 @@ export function AppShell() {
   const menuLabel = drawerOpen ? 'Закрыть меню' : 'Открыть меню';
 
   return (
-    <div className={collapsed ? `${styles.app} ${styles.rail}` : styles.app}>
+    <div
+      className={[
+        styles.app,
+        collapsed ? styles.rail : '',
+        running ? styles.withDemo : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <header
         ref={sidebarRef}
         className={
@@ -334,6 +350,7 @@ export function AppShell() {
         <main className={styles.main} inert={drawerOpen ? true : undefined}>
           <Outlet />
         </main>
+        <DemoBar />
       </div>
     </div>
   );

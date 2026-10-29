@@ -15,6 +15,34 @@
   background: var(--paper);
 }
 
+.withDemo {
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.public.withDemo {
+  display: flex;
+  flex-direction: column;
+}
+
+.withDemo .workspace {
+  min-height: 0;
+  height: 100%;
+}
+
+.withDemo .topbar,
+.withDemo .publicHeader {
+  flex: none;
+}
+
+.withDemo .main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
 .sidebar {
   position: sticky;
   top: 0;
