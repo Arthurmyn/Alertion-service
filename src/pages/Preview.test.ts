@@ -54,6 +54,10 @@ describe('Preview', () => {
     expect(html).toContain('Кандидата нет.');
     expect(html).toContain('href="/manage/nan/upload"');
     expect(html).toContain('>Загрузить архив</a>');
+    expect(html.indexOf(audience)).toBeLessThan(html.indexOf('Кандидата нет.'));
+    expect(html.indexOf('Кандидата нет.')).toBeLessThan(
+      html.indexOf('Загрузить архив'),
+    );
     expect(html).not.toContain('<iframe');
     expect(html).not.toContain('Круассан');
     expect(html).toContain(audience);
@@ -63,6 +67,12 @@ describe('Preview', () => {
     const html = renderAt('/manage/nan/preview', withCandidate());
     expect(html).toContain('Активна версия A');
     expect(html).toContain('Кандидат: версия B');
+    expect(html.indexOf(audience)).toBeLessThan(
+      html.indexOf('Кандидат: версия B'),
+    );
+    expect(html.indexOf('Кандидат: версия B')).toBeLessThan(
+      html.indexOf('<iframe'),
+    );
     expect(html).toContain('<iframe');
     expect(html).toContain('sandbox=""');
     expect(html).toContain('Круассан, 900 ₸');

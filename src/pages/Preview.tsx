@@ -18,26 +18,30 @@ export function Preview() {
   const active = versionById(site, site.activeVersionId);
   const candidate = versionById(site, site.candidateVersionId);
   const html = candidate ? sampleSites[candidate.archiveName] : undefined;
+  const candidateLine = candidate ? `Кандидат: версия ${candidate.label}` : '';
 
   return (
     <>
       <h1>Предпросмотр</h1>
       {active ? <p>{activeVersionLine(active.label)}</p> : null}
-      {candidate ? (
-        <>
-          <p>{previewAudience}</p>
-          <p className={styles.candidate}>Кандидат: версия {candidate.label}</p>
-          {html ? <SampleSite html={html} /> : null}
-        </>
-      ) : (
+      <p>{previewAudience}</p>
+      {candidate && html ? (
+        <div className={styles.frame}>
+          <p className={styles.caption}>{candidateLine}</p>
+          <SampleSite html={html} />
+        </div>
+      ) : null}
+      {candidate && !html ? (
+        <p className={styles.caption}>{candidateLine}</p>
+      ) : null}
+      {!candidate ? (
         <>
           <p>Кандидата нет.</p>
           <p>
             <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
           </p>
-          <p>{previewAudience}</p>
         </>
-      )}
+      ) : null}
     </>
   );
 }
