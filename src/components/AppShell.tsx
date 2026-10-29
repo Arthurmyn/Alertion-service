@@ -1,6 +1,13 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { accountSlug } from '../routing.ts';
-import { useStore } from '../state/store.tsx';
+import { consumeScenarioQuery, useStore } from '../state/store.tsx';
 import { ScenarioPanel } from './ScenarioPanel.tsx';
 import styles from './AppShell.module.css';
 
@@ -35,8 +42,13 @@ function linkClass({ isActive }: { isActive: boolean }): string {
 }
 
 export function AppShell() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const { state } = useStore();
+
+  useEffect(() => {
+    consumeScenarioQuery(search, pathname, navigate);
+  }, [pathname, search, navigate]);
   const navSlug = manageSlug(pathname) ?? accountSlug(state.sessionAccountId);
   const siteSlug = publicSlug(pathname);
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;

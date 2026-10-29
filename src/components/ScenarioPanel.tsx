@@ -19,17 +19,21 @@ export function ScenarioPanel() {
   const reasonId = useId();
   const locked = demoRunning(state.demo);
 
+  function reset() {
+    if (locked) return;
+    dispatch({ type: 'load', state: baseline });
+  }
+
   function choose(id: string) {
     if (locked) return;
+    if (id === '') {
+      reset();
+      return;
+    }
     const scenario = scenarioById(id);
     if (!scenario) return;
     dispatch({ type: 'load', state: scenarioState(scenario) });
     navigate(scenario.route);
-  }
-
-  function reset() {
-    if (locked) return;
-    dispatch({ type: 'load', state: baseline });
   }
 
   return (
@@ -45,24 +49,21 @@ export function ScenarioPanel() {
         aria-describedby={locked ? reasonId : undefined}
         onChange={(event) => choose(event.target.value)}
       >
-        <option value="" disabled>
-          Не выбран
-        </option>
+        <option value="">Не выбран</option>
         {scenarios.map((item) => (
           <option key={item.id} value={item.id}>
             {item.title}
           </option>
         ))}
       </select>
-      <button
+      <input
         className={styles.reset}
         type="button"
+        value="Сбросить"
         disabled={locked}
         aria-describedby={locked ? reasonId : undefined}
         onClick={reset}
-      >
-        Сбросить
-      </button>
+      />
       {locked ? (
         <p className={styles.reason} id={reasonId}>
           {lockedReason}

@@ -111,8 +111,8 @@ const fillStorage: readonly Action[] = [
 
 export const scenarios: readonly Scenario[] = [
   scenario('signed-out', 'Выход', '/login', null),
-  scenario('a-home', 'Пекарня Нан', manage(nan.slug), 'a'),
-  scenario('b-home', 'Мастерская Темир', manage(temir.slug), 'b'),
+  scenario('a-home', 'Аккаунт Нан', manage(nan.slug), 'a'),
+  scenario('b-home', 'Аккаунт Темир', manage(temir.slug), 'b'),
   scenario('b-opens-a', 'Чужой аккаунт', manage(nan.slug), 'b'),
   scenario(
     'plan-not-selected',
@@ -216,7 +216,7 @@ export const scenarios: readonly Scenario[] = [
   scenario('domain-deferred', 'Домен недоступен', manage(nan.slug), 'a', [], {
     domainStatus: 'deferred',
   }),
-  scenario('storage-stale', 'Данные устарели', manage(nan.slug), 'a', [], {
+  scenario('storage-stale', 'Хранилище устарело', manage(nan.slug), 'a', [], {
     storageDataStatus: 'stale',
   }),
 ];

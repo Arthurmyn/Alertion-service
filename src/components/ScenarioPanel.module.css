@@ -28,6 +28,7 @@
 }
 
 .reset {
+  appearance: none;
   font-family: var(--font-ui);
   font-size: var(--text-sm);
   font-weight: 600;

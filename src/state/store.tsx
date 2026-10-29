@@ -8,7 +8,6 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { baseline } from '../data/accounts.ts';
 import { scenarioById, scenarioState } from '../data/scenarios.ts';
 import { reducer, type Action } from './reducer.ts';
@@ -125,17 +124,11 @@ function mountState(fallback: AppState): AppState {
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, baseline, mountState);
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     if (typeof sessionStorage === 'undefined') return;
     writeSession(sessionStorage, state);
   }, [state]);
-
-  useEffect(() => {
-    consumeScenarioQuery(location.search, location.pathname, navigate);
-  }, [location.pathname, location.search, navigate]);
 
   const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
