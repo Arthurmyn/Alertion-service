@@ -3,6 +3,9 @@ export const sectionTitle = {
   path: '2. Путь пользователя',
   demo: '3. Демо',
   status: '4. Статус B1–B8',
+  results: '5. Результаты сценариев',
+  goals: '6. Цели G1–G5',
+  unmet: '7. Невыполненные и непроверяемые критерии',
   plan: '8. План и симуляция',
   burndown: '9. Сгорание и скорость',
   feedback: '10. Обратная связь',
@@ -17,6 +20,9 @@ export const defenseOutline = [
   'path',
   'demo',
   'status',
+  'results',
+  'goals',
+  'unmet',
   'plan',
   'burndown',
   'feedback',
@@ -44,6 +50,9 @@ const screenLabels: Record<string, string> = {
   '/manage/nan/domain': 'Домен',
   '/manage/nan/plan': 'Пилотный план',
 };
+
+export const tableScrollNote =
+  'Если таблица шире колонки, сдвиньте её вбок. Первая колонка остаётся на месте.';
 
 export function screenLabel(link: string): string {
   return screenLabels[link] ?? link;

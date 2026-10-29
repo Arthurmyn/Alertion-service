@@ -9,6 +9,7 @@ import styles from './Versions.module.css';
 import {
   activeVersionLine,
   confirmChangeText,
+  noCandidateLine,
   publishButtonLabel,
   publishConfirmTitle,
   publishFailedLine,
@@ -18,6 +19,7 @@ import {
   rollbackFailedLine,
   rollbackUnavailable,
   rollbackVersion,
+  uploadArchiveLink,
   versionById,
   versionSizeLine,
 } from './Versions.copy.ts';
@@ -185,8 +187,8 @@ export function Versions() {
       </div>
       {pending === null && !candidate ? (
         <p className={styles.note}>
-          Кандидата нет.{' '}
-          <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
+          {noCandidateLine}{' '}
+          <Link to={`/manage/${slug}/upload`}>{uploadArchiveLink}</Link>
         </p>
       ) : null}
       {pending === 'publish' && candidate && active ? (

@@ -5,6 +5,7 @@ import {
   screenLabel,
   sectionTitle,
   stepHref,
+  tableScrollNote,
   userPath,
 } from './links.ts';
 
@@ -35,6 +36,9 @@ describe('defense links', () => {
       'path',
       'demo',
       'status',
+      'results',
+      'goals',
+      'unmet',
       'plan',
       'burndown',
       'feedback',
@@ -48,10 +52,16 @@ describe('defense links', () => {
     );
     expect(sectionTitle.demo).toBe('3. Демо');
     expect(sectionTitle.plan).toBe('8. План и симуляция');
+    expect(sectionTitle.results).toBe('5. Результаты сценариев');
+    expect(sectionTitle.goals).toBe('6. Цели G1–G5');
+    expect(sectionTitle.unmet).toBe(
+      '7. Невыполненные и непроверяемые критерии',
+    );
   });
 
   it('names the login screen without the nav label', () => {
     expect(screenLabel('/login')).toBe('Экран входа');
     expect(screenLabel('/manage/nan')).toBe('Управление сайтом');
+    expect(tableScrollNote).toContain('вбок');
   });
 });

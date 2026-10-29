@@ -12,6 +12,7 @@ import { useStore } from '../../state/store.tsx';
 import styles from './Defense.module.css';
 import { DemoSection } from './DemoSection.tsx';
 import { EvidenceLogSection } from './EvidenceLogSection.tsx';
+import { GoalsSection } from './GoalsSection.tsx';
 import {
   defenseHref,
   defenseOutline,
@@ -21,7 +22,9 @@ import {
   userPath,
 } from './links.ts';
 import { MetricsSection } from './MetricsSection.tsx';
+import { ResultsSection } from './ResultsSection.tsx';
 import { TeamSection } from './TeamSection.tsx';
+import { UnmetSection } from './UnmetSection.tsx';
 
 function hoursText(item: BacklogItem): string {
   const total = `${workHours(item)} ч`;
@@ -143,6 +146,9 @@ export function Defense() {
         </ul>
       </section>
 
+      <ResultsSection />
+      <GoalsSection />
+      <UnmetSection />
       <MetricsSection />
       <TeamSection />
       <EvidenceLogSection />

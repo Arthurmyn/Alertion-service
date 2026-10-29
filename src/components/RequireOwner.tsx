@@ -9,6 +9,7 @@ import {
 import { AccessDenied } from '../pages/AccessDenied.tsx';
 import { NotFound } from '../pages/NotFound.tsx';
 import { useStore } from '../state/store.tsx';
+import { ownerOnlyNote } from './ownerCopy.ts';
 import styles from './RequireOwner.module.css';
 
 export function RequireOwner() {
@@ -54,7 +55,7 @@ export function RequireOwner() {
     <div ref={panelRef}>
       {dashboard ? (
         <p ref={noteRef} className={styles.note}>
-          Управление сайтом, видно только владельцу
+          {ownerOnlyNote}
         </p>
       ) : null}
       <Outlet />

@@ -4,6 +4,12 @@ import { Alert } from '../components/Alert.tsx';
 import { accounts } from '../data/accounts.ts';
 import { accountSlug } from '../routing.ts';
 import { useStore } from '../state/store.tsx';
+import {
+  deniedBody,
+  deniedLead,
+  deniedTitle,
+  ownSiteLink,
+} from './AccessDenied.copy.ts';
 import styles from './AccessDenied.module.css';
 
 export function AccessDenied() {
@@ -20,17 +26,16 @@ export function AccessDenied() {
   return (
     <>
       <h1 ref={headingRef} className={styles.title} tabIndex={-1}>
-        Нет доступа
+        {deniedTitle}
       </h1>
       <Alert>
-        {account ? `Вы вошли как ${account.ownerName} ` : null}
-        Этот сайт принадлежит другому аккаунту. Симуляция: данные управления
-        здесь не показываются.
+        {account ? `${deniedLead(account.ownerName)} ` : null}
+        {deniedBody}
       </Alert>
       {slug !== null && account ? (
         <p>
           <Link to={`/manage/${slug}`}>
-            К своему сайту «{account.businessName}»
+            {ownSiteLink(account.businessName)}
           </Link>
         </p>
       ) : (
