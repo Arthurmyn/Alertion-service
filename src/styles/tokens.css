@@ -1,0 +1,40 @@
+:root {
+  color-scheme: light;
+
+  --ink: #231F20;
+  --on-ink: #FFFFFF;
+  --on-ink-2: #B8B1B2;
+  --ink-2: #5C5657;
+  --paper: #F7F5F4;
+  --surface: #FFFFFF;
+  --rule: #E4E0DF;
+  --brand: #ED1B24;
+  --danger-text: #C4141C;
+  --link: #0060CC;
+  --focus: #0077FC;
+  --ok-text: #1E7A3E;
+  --warn-text: #8A5A00;
+  --warn-bg: #FFF4DB;
+
+  --font-ui: 'Onest', sans-serif;
+  --font-prose: 'Literata', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+
+  --radius-block: 0;
+  --radius-button: 4px;
+  --radius-input: 2px;
+
+  --shadow-dialog: 0 12px 32px rgb(35 31 32 / 0.18);
+  --motion: 150ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0ms;
+  }
+}

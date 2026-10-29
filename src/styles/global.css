@@ -1,0 +1,158 @@
+@import '@fontsource/onest/400.css';
+@import '@fontsource/onest/600.css';
+@import '@fontsource/literata/400.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  font-synthesis: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+h1 {
+  font-size: var(--text-xl);
+  margin: 0 0 12px;
+}
+
+h2 {
+  font-size: var(--text-lg);
+  margin: 24px 0 8px;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--text-md);
+  margin: 20px 0 8px;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+small {
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+a:link,
+a:visited {
+  color: var(--link);
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+code {
+  font-family: var(--font-mono);
+}
+
+hr {
+  height: 0;
+  margin: 24px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  line-height: 1.25;
+  box-shadow: none;
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--motion);
+}
+
+button {
+  font-weight: 600;
+  color: var(--on-ink);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+button:disabled,
+button:hover:disabled {
+  color: var(--ink-2);
+  background: var(--paper);
+  border-color: var(--ink-2);
+  cursor: not-allowed;
+}
+
+input,
+select,
+textarea {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-input);
+  padding: 6px 8px;
+}
+
+::placeholder {
+  color: var(--ink-2);
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
