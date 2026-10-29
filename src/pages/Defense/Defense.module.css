@@ -1,0 +1,150 @@
+.contents {
+  margin: 0 0 8px;
+}
+
+.contents ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contents li {
+  margin: 0 0 4px;
+}
+
+.section {
+  margin: 0;
+  padding: 20px 0 8px;
+  scroll-margin-top: 16px;
+}
+
+.section + .section {
+  border-top: 1px solid var(--rule);
+}
+
+.prose {
+  font-family: var(--font-prose);
+  font-size: var(--text-md);
+  line-height: 1.55;
+}
+
+.note {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.limits {
+  display: grid;
+  grid-template-columns: max-content auto;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin: 0 0 12px;
+  font-family: var(--font-ui);
+}
+
+.limits dt,
+.limits dd {
+  margin: 0;
+}
+
+.limits dt {
+  color: var(--ink-2);
+}
+
+.limits dd {
+  font-weight: 600;
+}
+
+.path {
+  margin: 0 0 12px;
+  padding: 0 0 0 20px;
+}
+
+.path li {
+  margin: 0 0 6px;
+}
+
+.scroll {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0 0 16px;
+}
+
+.table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  text-align: left;
+}
+
+.table caption {
+  caption-side: top;
+  padding: 0 0 6px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.table th,
+.table td {
+  padding: 6px 12px 6px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.table th {
+  font-weight: 600;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.review {
+  margin: 0 0 16px;
+}
+
+.review blockquote {
+  margin: 0;
+}
+
+.review figcaption {
+  margin: 0 0 4px;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--ink-2);
+}
+
+.wrap {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.empty {
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.stack {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.stack li {
+  margin: 0 0 12px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.stack p {
+  margin: 0;
+}
