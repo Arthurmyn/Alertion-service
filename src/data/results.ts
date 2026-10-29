@@ -1,5 +1,9 @@
 import { ownerOnlyNote } from '../components/ownerCopy.ts';
 import {
+  criterionEvidence,
+  type EvidenceScreenshot,
+} from './criterionEvidence.ts';
+import {
   statusActive,
   statusFailed,
   statusPending,
@@ -50,8 +54,6 @@ import { dishBaursak } from './sampleSites.ts';
 import { LIMITS } from './limits.ts';
 import { scenarioById, scenarioState, scenarios } from './scenarios.ts';
 
-export const SCREENSHOT_EMPTY = 'скриншота нет';
-
 export const scopeNote =
   'B5 не сокращали; сокращённый вариант из §3.2 не понадобился';
 
@@ -77,7 +79,7 @@ export interface ResultRow {
   shown: string;
   scenarioIds: readonly string[];
   href?: string;
-  screenshot: null;
+  screenshot: EvidenceScreenshot;
 }
 
 export type GoalMark = 'отложено' | 'выполнено';
@@ -208,7 +210,7 @@ function row(
     shown,
     scenarioIds: scenarioIdsForRow,
     ...(href === undefined ? {} : { href }),
-    screenshot: null,
+    screenshot: criterionEvidence(id),
   };
 }
 

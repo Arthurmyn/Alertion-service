@@ -1,9 +1,4 @@
-import {
-  results,
-  scenarioHref,
-  SCREENSHOT_EMPTY,
-  type ResultRow,
-} from '../../data/results.ts';
+import { results, scenarioHref, type ResultRow } from '../../data/results.ts';
 import { scenarioById } from '../../data/scenarios.ts';
 import styles from './Defense.module.css';
 import { sectionTitle } from './links.ts';
@@ -47,8 +42,8 @@ export function ResultsSection() {
     >
       <h2 id="results-title">{sectionTitle.results}</h2>
       <p>
-        Строка ведёт в сценарий или в раздел целей. Колонка скриншота без
-        файлов.
+        Строка ведёт в сценарий или в раздел целей. Скриншот показывает
+        состояние прототипа для этого критерия.
       </p>
       <WideTable noteId="results-scroll">
         <table className={`${styles.table} ${styles.criteria}`}>
@@ -73,14 +68,27 @@ export function ResultsSection() {
                 <td>
                   <ResultLinks item={item} />
                 </td>
-                <td className={styles.empty}>
-                  {item.screenshot ?? SCREENSHOT_EMPTY}
+                <td>
+                  <a href={item.screenshot.src}>
+                    <img
+                      className={styles.screenshot}
+                      src={item.screenshot.src}
+                      alt={`${item.id}: ${item.screenshot.alt}`}
+                      width={item.screenshot.width}
+                      height={item.screenshot.height}
+                      loading="lazy"
+                    />
+                  </a>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </WideTable>
+      <p className={styles.note}>
+        Скриншоты сняты с текущего прототипа. Полный размер открывается по
+        нажатию. Это не записи работы во время прошлых спринтов.
+      </p>
     </section>
   );
 }

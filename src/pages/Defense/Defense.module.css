@@ -113,6 +113,14 @@
   overflow-wrap: break-word;
 }
 
+.screenshot {
+  display: block;
+  width: 14rem;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+}
+
 .criteria th,
 .criteria td {
   min-width: 11rem;
