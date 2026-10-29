@@ -4,7 +4,17 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { baseline } from '../../data/accounts.ts';
 import { LIMITS } from '../../data/limits.ts';
+import {
+  goals,
+  results,
+  scenarioHref,
+  scopeNote,
+  scopeVolumeNote,
+  SCREENSHOT_EMPTY,
+  unmetRows,
+} from '../../data/results.ts';
 import { EMPTY_SLOT_LABEL, evidenceSlots } from '../../data/sprintEvidence.ts';
+import { memberShort } from '../../data/team.ts';
 import { reducer } from '../../state/reducer.ts';
 import { StoreProvider, writeSession } from '../../state/store.tsx';
 import { Defense } from './Defense.tsx';
@@ -70,7 +80,11 @@ describe('defense page', () => {
       'Отказ в доступе чужому аккаунту тоже имитация: настоящая изоляция аккаунтов, хостинг и сервер в прототип не входят.',
     );
     expect(html).not.toContain('Запустить демо');
-    expect(html).not.toContain('href="/manage/');
+    const manageHrefs = [...html.matchAll(/href="(\/manage\/[^"]*)"/g)].map(
+      (match) => match[1] ?? '',
+    );
+    expect(manageHrefs.length).toBeGreaterThan(0);
+    expect(manageHrefs.every((href) => href.includes('scenario='))).toBe(true);
     expect(html).toContain('>Подготовить файлы</a>');
     expect(html).toContain('>Вернуть версию</a>');
     expect(html).toContain('Preview and explicit publish');
@@ -87,9 +101,9 @@ describe('defense page', () => {
     expect(html).not.toContain('Фактические часы');
     expect(html).toContain('Демо-материал');
     expect(html).not.toContain('>3. Демо');
-    expect(html).not.toContain('>5. Результаты');
-    expect(html).not.toContain('>6. Цели');
-    expect(html).not.toContain('>7. Невыполненные');
+    expect(html).toContain('5. Результаты сценариев');
+    expect(html).toContain('6. Цели G1–G5');
+    expect(html).toContain('7. Невыполненные и непроверяемые критерии');
   });
 
   it('shows plan, team and empty evidence slots', () => {
@@ -107,11 +121,81 @@ describe('defense page', () => {
     expect(html).toContain('26 story points');
     expect(html).toContain('рабочих часах');
     expect(html.match(/<svg\b/g)).toHaveLength(3);
-    expect(html.split(EMPTY_SLOT_LABEL).length - 1).toBe(evidenceSlots.length);
+    const evidenceHtml = html.slice(
+      html.indexOf('id="evidence-log"'),
+      html.indexOf('id="boundaries"'),
+    );
+    expect(evidenceHtml.split(EMPTY_SLOT_LABEL).length - 1).toBe(
+      evidenceSlots.length,
+    );
     expect(html).toContain('s1-B1-public-private');
     expect(html).toContain('s3-B8-sprint-record');
     expect(html).not.toContain('<img');
     expect(html).not.toContain('пройдено');
+  });
+
+  it('links every result to a scenario and marks the goals', () => {
+    const html = renderDefense();
+    const goalsHtml = html.slice(
+      html.indexOf('id="goals"'),
+      html.indexOf('id="unmet"'),
+    );
+    const unmetHtml = html.slice(
+      html.indexOf('id="unmet"'),
+      html.indexOf('id="plan"'),
+    );
+
+    expect(html.indexOf('id="results"')).toBeGreaterThan(
+      html.indexOf('id="status"'),
+    );
+    expect(html.indexOf('id="goals"')).toBeGreaterThan(
+      html.indexOf('id="results"'),
+    );
+    expect(html.indexOf('id="unmet"')).toBeGreaterThan(
+      html.indexOf('id="goals"'),
+    );
+    expect(html.indexOf('id="plan"')).toBeGreaterThan(
+      html.indexOf('id="unmet"'),
+    );
+
+    for (const item of results) {
+      expect(html).toContain(item.id);
+      expect(html).toContain(item.quote.replaceAll("'", '&#x27;'));
+      for (const id of item.scenarioIds) {
+        expect(html).toContain(`href="${scenarioHref(id)}"`);
+      }
+      if (item.href) expect(html).toContain(`href="${item.href}"`);
+      expect(item.screenshot).toBeNull();
+    }
+    expect(html.split(SCREENSHOT_EMPTY).length - 1).toBe(results.length);
+    expect(html).not.toContain('<img');
+
+    expect(goalsHtml).toContain(scopeNote);
+    expect(goalsHtml).toContain(scopeVolumeNote);
+    expect(goalsHtml).toContain('Лист наблюдений');
+    expect(goalsHtml).toContain('проверено в прототипе');
+    for (const goal of goals) {
+      expect(goalsHtml).toContain(goal.id);
+      expect(goalsHtml).toContain(goal.quote);
+      expect(goalsHtml).toContain(goal.mark);
+      if (goal.scenarioId) {
+        expect(goalsHtml).toContain(`href="${scenarioHref(goal.scenarioId)}"`);
+      }
+    }
+    for (const name of memberShort) {
+      expect(goalsHtml).toContain(`>${name}<`);
+    }
+    expect(goalsHtml).toContain(EMPTY_SLOT_LABEL);
+
+    expect(unmetHtml).toContain('B8-AC3');
+    expect(unmetHtml).toContain('не выполнено');
+    expect(unmetHtml).toContain('4.2');
+    expect(unmetHtml).toMatch(/ревью/);
+    expect(unmetHtml).toMatch(/час/);
+    expect(unmetHtml).toMatch(/рол/);
+    expect(unmetHtml).toMatch(/IEEE|оформлен/);
+    expect(unmetHtml).toMatch(/реч|выступлен/);
+    expect(unmetRows.map((item) => item.title)).toContain('Ротация ролей');
   });
 
   it('opens the signed-in path on that account’s screens', () => {

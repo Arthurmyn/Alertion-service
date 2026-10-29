@@ -102,6 +102,25 @@
   font-weight: 600;
 }
 
+.criteria {
+  width: 100%;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 520px) {
+  .criteria {
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+  }
+
+  .criteria th,
+  .criteria td {
+    max-width: 18rem;
+  }
+}
+
 .mono {
   font-family: var(--font-mono);
   font-size: var(--text-sm);

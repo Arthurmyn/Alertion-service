@@ -34,6 +34,9 @@ describe('defense links', () => {
       'goal',
       'path',
       'status',
+      'results',
+      'goals',
+      'unmet',
       'plan',
       'burndown',
       'feedback',
@@ -46,6 +49,11 @@ describe('defense links', () => {
       '4. Статус B1–B8',
     );
     expect(sectionTitle.plan).toBe('8. План и симуляция');
+    expect(sectionTitle.results).toBe('5. Результаты сценариев');
+    expect(sectionTitle.goals).toBe('6. Цели G1–G5');
+    expect(sectionTitle.unmet).toBe(
+      '7. Невыполненные и непроверяемые критерии',
+    );
   });
 
   it('names the login screen without the nav label', () => {
