@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { defenseHref, screenLabel, stepHref, userPath } from './links.ts';
+import {
+  defenseHref,
+  defenseOutline,
+  screenLabel,
+  sectionTitle,
+  stepHref,
+  userPath,
+} from './links.ts';
 
 describe('defense links', () => {
   it('lists the five steps of the publication path', () => {
@@ -20,6 +27,25 @@ describe('defense links', () => {
     expect(defenseHref('/manage/nan/upload', true)).toBe('/manage/nan/upload');
     expect(defenseHref('/login', false)).toBe('/login');
     expect(defenseHref('/defense', true)).toBe('/defense');
+  });
+
+  it('lists the sections that are on this page', () => {
+    expect(defenseOutline).toEqual([
+      'goal',
+      'path',
+      'status',
+      'plan',
+      'burndown',
+      'feedback',
+      'retro',
+      'roles',
+      'evidence-log',
+      'boundaries',
+    ]);
+    expect(defenseOutline.map((id) => sectionTitle[id])).toContain(
+      '4. Статус B1–B8',
+    );
+    expect(sectionTitle.plan).toBe('8. План и симуляция');
   });
 
   it('names the login screen without the nav label', () => {

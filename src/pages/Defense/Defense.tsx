@@ -11,7 +11,14 @@ import { accountSlug } from '../../routing.ts';
 import { useStore } from '../../state/store.tsx';
 import styles from './Defense.module.css';
 import { EvidenceLogSection } from './EvidenceLogSection.tsx';
-import { defenseHref, screenLabel, stepHref, userPath } from './links.ts';
+import {
+  defenseHref,
+  defenseOutline,
+  screenLabel,
+  sectionTitle,
+  stepHref,
+  userPath,
+} from './links.ts';
 import { MetricsSection } from './MetricsSection.tsx';
 import { TeamSection } from './TeamSection.tsx';
 
@@ -33,13 +40,23 @@ export function Defense() {
   return (
     <article>
       <h1>Защита проекта</h1>
+      <nav className={styles.contents} aria-label="Содержание">
+        <p className={styles.note}>Содержание</p>
+        <ul>
+          {defenseOutline.map((id) => (
+            <li key={id}>
+              <a href={`#${id}`}>{sectionTitle[id]}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
       <section
         className={styles.section}
         id="goal"
         aria-labelledby="goal-title"
       >
-        <h2 id="goal-title">1. Цель проекта</h2>
+        <h2 id="goal-title">{sectionTitle.goal}</h2>
         <p className={styles.prose}>
           Сервис для владельца малого бизнеса, у которого статический сайт уже
           есть и его нужно опубликовать или обновить. Второй пользователь:
@@ -75,7 +92,7 @@ export function Defense() {
         id="path"
         aria-labelledby="path-title"
       >
-        <h2 id="path-title">2. Путь пользователя</h2>
+        <h2 id="path-title">{sectionTitle.path}</h2>
         <p>
           Пять шагов. Файлы выбирают на экране загрузки. Публикация и откат
           открывают экран версий.
@@ -99,7 +116,7 @@ export function Defense() {
         id="status"
         aria-labelledby="status-title"
       >
-        <h2 id="status-title">4. Статус B1–B8</h2>
+        <h2 id="status-title">{sectionTitle.status}</h2>
         <p className={styles.note}>
           {signedIn
             ? 'Ссылки ведут на сайт nan.'
@@ -114,7 +131,7 @@ export function Defense() {
                   {item.id}. {item.title}
                 </p>
                 <p>
-                  {hoursText(item)}. Спринт {item.sprint}. {item.status}.{' '}
+                  План: {hoursText(item)}. Спринт {item.sprint}. {item.status}.{' '}
                   <Link to={href}>{screenLabel(item.link)}</Link>
                 </p>
               </li>
@@ -132,7 +149,7 @@ export function Defense() {
         id="boundaries"
         aria-labelledby="boundaries-title"
       >
-        <h2 id="boundaries-title">14. Границы прототипа</h2>
+        <h2 id="boundaries-title">{sectionTitle.boundaries}</h2>
         <p className={styles.prose}>
           Публикация, адрес сайта, DNS, HTTPS, вход и проверка архивов
           имитируются в браузере. Отказ в доступе чужому аккаунту тоже имитация:

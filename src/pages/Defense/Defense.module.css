@@ -1,6 +1,21 @@
+.contents {
+  margin: 0 0 8px;
+}
+
+.contents ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contents li {
+  margin: 0 0 4px;
+}
+
 .section {
   margin: 0;
   padding: 20px 0 8px;
+  scroll-margin-top: 16px;
 }
 
 .section + .section {
@@ -98,13 +113,19 @@
 }
 
 .review blockquote {
-  margin: 0 0 4px;
+  margin: 0;
 }
 
 .review figcaption {
+  margin: 0 0 4px;
   font-family: var(--font-ui);
   font-size: var(--text-sm);
   color: var(--ink-2);
+}
+
+.wrap {
+  width: 100%;
+  table-layout: fixed;
 }
 
 .empty {

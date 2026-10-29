@@ -5,6 +5,7 @@ import {
   evidenceSlots,
 } from '../../data/sprintEvidence.ts';
 import styles from './Defense.module.css';
+import { sectionTitle } from './links.ts';
 
 export function EvidenceLogSection() {
   return (
@@ -13,7 +14,7 @@ export function EvidenceLogSection() {
       id="evidence-log"
       aria-labelledby="evidence-title"
     >
-      <h2 id="evidence-title">13. Журнал доказательств</h2>
+      <h2 id="evidence-title">{sectionTitle['evidence-log']}</h2>
       <p>
         Слоты названы по спринту, пункту и проверке. Ни один слот не заполнен.
       </p>

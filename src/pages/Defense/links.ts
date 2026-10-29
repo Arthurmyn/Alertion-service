@@ -1,3 +1,29 @@
+export const sectionTitle = {
+  goal: '1. Цель проекта',
+  path: '2. Путь пользователя',
+  status: '4. Статус B1–B8',
+  plan: '8. План и симуляция',
+  burndown: '9. Сгорание и скорость',
+  feedback: '10. Обратная связь',
+  retro: '11. Ретроспектива и выводы',
+  roles: '12. Роли',
+  'evidence-log': '13. Журнал доказательств',
+  boundaries: '14. Границы прототипа',
+} as const;
+
+export const defenseOutline = [
+  'goal',
+  'path',
+  'status',
+  'plan',
+  'burndown',
+  'feedback',
+  'retro',
+  'roles',
+  'evidence-log',
+  'boundaries',
+] as const satisfies readonly (keyof typeof sectionTitle)[];
+
 export const userPath = [
   { label: 'Подготовить файлы', suffix: '/upload' },
   { label: 'Загрузить и проверить', suffix: '/upload' },

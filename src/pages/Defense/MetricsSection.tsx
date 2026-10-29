@@ -4,6 +4,7 @@ import {
   sprintWorkHours,
   totalWorkHours,
   workHours,
+  type BacklogItem,
 } from '../../data/backlogItems.ts';
 import {
   completedHours,
@@ -15,6 +16,15 @@ import {
   workingDays,
 } from '../../data/metrics.ts';
 import styles from './Defense.module.css';
+import { sectionTitle } from './links.ts';
+
+function planHours(item: BacklogItem): string {
+  const parts = sprintNumbers.flatMap((sprint) => {
+    const hours = item.hoursBySprint[sprint];
+    return hours === undefined ? [] : [`спринт ${sprint}: ${hours} ч`];
+  });
+  return `${parts.join(', ')}. Всего ${workHours(item)} ч.`;
+}
 
 export function MetricsSection() {
   return (
@@ -24,33 +34,33 @@ export function MetricsSection() {
         id="plan"
         aria-labelledby="plan-title"
       >
-        <h2 id="plan-title">8. План и симуляция</h2>
+        <h2 id="plan-title">{sectionTitle.plan}</h2>
         <p>
-          Часы пунктов по спринтам. В каждом спринте {sprintWorkHours(1)}{' '}
-          рабочих часов. Фактические часы подписаны «симуляция» на графиках
-          ниже.
+          Часы в таблице подписаны как план. В каждом спринте{' '}
+          {sprintWorkHours(1)} рабочих часов. На графиках ниже линия «план» и
+          линия «симуляция».
         </p>
-        <ul className={styles.stack}>
-          {backlogItems.map((item) => (
-            <li key={item.id}>
-              <p>
-                {item.id}. {item.title}
-              </p>
-              <p>
-                {sprintNumbers.map((sprint) => {
-                  const hours = item.hoursBySprint[sprint];
-                  if (!hours) return null;
-                  return (
-                    <span key={sprint}>
-                      Спринт {sprint}: {hours} ч.{' '}
-                    </span>
-                  );
-                })}
-                Всего {workHours(item)} ч.
-              </p>
-            </li>
-          ))}
-        </ul>
+        <div className={styles.scroll}>
+          <table className={`${styles.table} ${styles.wrap}`}>
+            <caption>План, рабочие часы</caption>
+            <thead>
+              <tr>
+                <th scope="col">Пункт</th>
+                <th scope="col">Часы</th>
+              </tr>
+            </thead>
+            <tbody>
+              {backlogItems.map((item) => (
+                <tr key={item.id}>
+                  <th scope="row">
+                    {item.id}. {item.title}
+                  </th>
+                  <td>{planHours(item)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <p>
           По спринтам:{' '}
           {sprintNumbers
@@ -65,11 +75,11 @@ export function MetricsSection() {
         id="burndown"
         aria-labelledby="burndown-title"
       >
-        <h2 id="burndown-title">9. Сгорание и скорость</h2>
+        <h2 id="burndown-title">{sectionTitle.burndown}</h2>
         <p>
           Три графика. В плане оставшиеся часы идут от {sprintWorkHours(1)} к 0
-          за {WORKING_DAYS} рабочих дней. Линия плана подписана «план». Вторая
-          линия подписана «симуляция».
+          за {WORKING_DAYS} рабочих дней. Линия «план» сплошная. Линия
+          «симуляция» пунктирная. Таблица под графиком повторяет те же числа.
         </p>
         {sprintNumbers.map((sprint) => (
           <BurndownChart

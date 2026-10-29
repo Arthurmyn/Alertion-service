@@ -75,6 +75,16 @@ describe('defense page', () => {
     expect(html).toContain('>Вернуть версию</a>');
     expect(html).toContain('Preview and explicit publish');
     expect(html).toContain('12 ч, из них 2 ч в спринте 1, 10 ч в спринте 2');
+    expect(html).toContain(
+      'План: 12 ч, из них 2 ч в спринте 1, 10 ч в спринте 2',
+    );
+    expect(html).toContain('aria-label="Содержание"');
+    expect(html.indexOf('Гипотетический отзыв заказчика')).toBeLessThan(
+      html.indexOf('Залила новое меню'),
+    );
+    expect(html).toContain('План, рабочие часы');
+    expect(html).toContain('План, часы по людям');
+    expect(html).not.toContain('Фактические часы');
     expect(html).toContain('Демо-материал');
     expect(html).not.toContain('>3. Демо');
     expect(html).not.toContain('>5. Результаты');
