@@ -1,0 +1,67 @@
+.steps {
+  margin: 0 0 16px;
+  padding-left: 1.25rem;
+  list-style: decimal;
+}
+
+.steps li {
+  margin: 0 0 4px;
+}
+
+.current {
+  font-weight: 600;
+}
+
+.records,
+.states {
+  margin: 0 0 16px;
+}
+
+.records > div,
+.states > div {
+  margin: 0 0 10px;
+}
+
+.states > div {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.records dt,
+.states dt {
+  font-weight: 600;
+}
+
+.records dd {
+  margin: 2px 0 0;
+}
+
+.states dd {
+  margin: 0;
+}
+
+.value {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.example {
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+}
+
+.reason {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.confirmed {
+  font-weight: 600;
+}
+
+.action {
+  margin: 0 0 8px;
+}
