@@ -1,4 +1,3 @@
-import { useId } from 'react';
 import styles from './StorageMeter.module.css';
 
 function formatMegabytes(value: number): string {
@@ -24,37 +23,36 @@ export function StorageMeter({
   usedMb: number;
   limitMb: number;
 }) {
-  const captionId = useId();
   const caption = storageCaption(usedMb, limitMb);
   const percent = storagePercent(usedMb, limitMb);
   const max = limitMb > 0 ? limitMb : 0;
   const now = Math.min(Math.max(usedMb, 0), max);
 
   return (
-    <div
-      className={styles.meter}
-      role="meter"
-      aria-labelledby={captionId}
-      aria-valuemin={0}
-      aria-valuemax={max}
-      aria-valuenow={now}
-      aria-valuetext={caption}
-    >
-      <svg
-        className={styles.track}
-        viewBox="0 0 100 12"
-        width="100%"
-        height="12"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-        focusable="false"
+    <div className={styles.meter}>
+      <div
+        className={styles.bar}
+        role="meter"
+        aria-label="Хранилище"
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-valuenow={now}
+        aria-valuetext={caption}
       >
-        <rect x="0" y="11" width="100" height="1" fill="var(--ink)" />
-        <rect x="0" y="1" width={percent} height="10" fill="var(--ink)" />
-      </svg>
-      <p className={styles.caption} id={captionId}>
-        {caption}
-      </p>
+        <svg
+          className={styles.track}
+          viewBox="0 0 100 12"
+          width="100%"
+          height="12"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect x="0" y="11" width="100" height="1" fill="var(--ink)" />
+          <rect x="0" y="1" width={percent} height="10" fill="var(--ink)" />
+        </svg>
+      </div>
+      <p className={styles.caption}>{caption}</p>
     </div>
   );
 }

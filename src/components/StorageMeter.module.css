@@ -11,6 +11,11 @@
   background: transparent;
 }
 
+.bar {
+  width: 100%;
+  line-height: 0;
+}
+
 .track {
   display: block;
   width: 100%;
