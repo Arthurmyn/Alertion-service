@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { accounts, domainExamples } from '../src/data/accounts.ts';
+import { scenarioById } from '../src/data/scenarios.ts';
 
 const accountA = accounts.find((account) => account.id === 'a');
 
@@ -42,16 +43,32 @@ export async function openDomainScenario(
   page: Page,
   scenarioId: string,
 ): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/domain`);
+  const scenario = scenarioById(scenarioId);
+  if (scenario === undefined) {
+    throw new Error(`Unknown scenario ${scenarioId}`);
+  }
+
+  const domainPath = `/manage/${owner.slug}/domain`;
+  await page.goto('/login');
+  await page.evaluate(() => sessionStorage.clear());
+  await page.goto(domainPath);
   await expect(page).toHaveURL(/\/login\?next=/);
   await expect(page.getByText('Войдите, чтобы управлять сайтом')).toBeVisible();
-  await page.getByRole('button', { name: owner.businessName }).click();
-  await expect(page).toHaveURL(new RegExp(`/manage/${owner.slug}/domain$`));
+  await page
+    .getByRole('button', {
+      name: `Войти как ${owner.ownerName}, ${owner.businessName}`,
+    })
+    .click();
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(domainPath)}$`));
 
   await page.goto(`/?scenario=${scenarioId}`);
-  await expect(page).toHaveURL(new RegExp(`/manage/${owner.slug}/domain$`));
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(scenario.route)}$`));
+  if (scenario.route !== domainPath) {
+    await page.goto(domainPath);
+  }
+  await expect(page).toHaveURL(new RegExp(`${escapeRegExp(domainPath)}$`));
   await expect(
-    page.getByRole('heading', { level: 1, name: /Домен/ }),
+    page.getByRole('heading', { level: 1, name: 'Домен', exact: true }),
   ).toBeVisible();
 }
 
@@ -117,8 +134,10 @@ export async function expectDomainExamples(page: Page): Promise<void> {
   }
 
   const main = page.getByRole('main');
-  await expect(main.getByText(/TXT/)).toBeVisible();
-  await expect(main.getByText(/CNAME/)).toBeVisible();
+  await expect(main.getByRole('heading', { name: 'Запись TXT' })).toBeVisible();
+  await expect(
+    main.getByRole('heading', { name: 'Запись CNAME' }),
+  ).toBeVisible();
 
   const seen = new Set<string>();
   for (const value of exampleValues) {
@@ -133,7 +152,8 @@ export async function expectSetupOrder(page: Page): Promise<void> {
   const nameAt = boundedIndex(text, owner.domainName);
   const txtNameAt = boundedIndex(text, domainExamples.txtName);
   const txtValueAt = text.indexOf(domainExamples.txtValue);
-  const checkAt = text.indexOf('Проверить');
+  // The step list repeats «Проверить» before the records. The control is last.
+  const checkAt = text.lastIndexOf('Проверить');
 
   expect(nameAt).toBeGreaterThanOrEqual(0);
   expect(txtNameAt).toBeGreaterThan(nameAt);
