@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { demoRunning } from '../data/scenarios.ts';
-import { accountSlug } from '../routing.ts';
+import { accountSlug, homePath } from '../routing.ts';
 import { consumeScenarioQuery, useStore } from '../state/store.tsx';
 import {
   IconCollapse,
@@ -138,8 +138,10 @@ export function AppShell() {
   const running = demoRunning(state.demo);
 
   useEffect(() => {
-    consumeScenarioQuery(search, pathname, navigate);
-  }, [pathname, search, navigate]);
+    const fallbackPath =
+      pathname === '/' ? homePath(state.sessionAccountId) : pathname;
+    consumeScenarioQuery(search, fallbackPath, navigate);
+  }, [pathname, search, navigate, state.sessionAccountId]);
 
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;

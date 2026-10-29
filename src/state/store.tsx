@@ -97,14 +97,14 @@ export function consumeScenarioQuery(
 
 export function initialState(storage: SessionRead, search = ''): AppState {
   const id = readScenarioId(search);
-  if (id !== null) {
+  const scenario = id === null ? undefined : scenarioById(id);
+  if (scenario) {
     try {
       storage.removeItem(SESSION_KEY);
     } catch {
       // sessionStorage may be unavailable.
     }
-    const scenario = scenarioById(id);
-    return scenario ? scenarioState(scenario) : baseline;
+    return scenarioState(scenario);
   }
 
   const saved = readSession(storage);

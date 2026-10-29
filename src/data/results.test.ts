@@ -73,7 +73,10 @@ describe('result registry', () => {
     ]);
 
     for (const item of results) {
-      expect(item.screenshot).toBeNull();
+      expect(item.screenshot.alt.length).toBeGreaterThan(0);
+      expect(item.screenshot.src).toMatch(/^\/evidence\/[a-z0-9-]+\.png$/);
+      expect(item.screenshot.width).toBeGreaterThan(0);
+      expect(item.screenshot.height).toBeGreaterThan(0);
       expect(item.shown.length).toBeGreaterThan(0);
       if (quotes[item.id]) expect(item.quote).toBe(quotes[item.id]);
       for (const id of item.scenarioIds) {
