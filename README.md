@@ -109,4 +109,4 @@ The repository can be configured as a static Vite application with these project
 
 These values follow the local scripts and Vercel's [build configuration guidance](https://vercel.com/docs/builds/configure-a-build). [`vercel.json`](vercel.json) already rewrites `/(.*)` to `/index.html` so direct requests to client routes can reach the SPA, matching Vercel's [Vite deep-linking guidance](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).
 
-No Vercel deployment was performed as part of this work. After a separately authorized deployment, check direct navigation and reload on `/defense`, `/manage/nan` and `/site/nan`, along with the logo and screenshot assets. Hosting this frontend does not add the backend capabilities listed above.
+After deployment, check direct navigation and reload on `/defense`, `/manage/nan` and `/site/nan`, along with the logo and screenshot assets. Hosting this frontend does not add the backend capabilities listed above.

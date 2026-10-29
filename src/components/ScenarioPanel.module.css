@@ -17,7 +17,7 @@
 }
 
 .select {
-  width: min(14rem, 100%);
+  width: 14rem;
   min-width: 0;
   font-family: var(--font-ui);
   font-size: var(--text-sm);

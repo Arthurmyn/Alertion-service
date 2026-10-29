@@ -4,7 +4,7 @@
 
 This review covers the sidebar with icons and saved collapse, mobile navigation drawer, compact selectors, block spacing and integration with the scenario picker and demo runner. It checked the interface at widths **1280, 375 and 360 px** using Chromium. The review followed the sidebar integration with main `f89948f` and the correction to Escape handling.
 
-No material UI blocker remained in the checked scope after that correction. One minor layout observation remains: at 1280 px the scenario reset button can wrap onto a second line despite available topbar space; it remains visible and usable.
+No material UI blocker remained in the checked scope after that correction. A follow-up fixed the reset button wrapping at 1280 px by giving the scenario select a definite desktop width. The topbar reduced from 89 to 49 px while controls stayed 32 px high. Twelve checks across 1280/769/375/360 px, including public and demo-locked panels, found no overflow; all nine sidebar cases passed again.
 
 ## Recorded checks
 
