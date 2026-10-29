@@ -21,7 +21,7 @@ import { sectionTitle } from './links.ts';
 function planHours(item: BacklogItem): string {
   const parts = sprintNumbers.flatMap((sprint) => {
     const hours = item.hoursBySprint[sprint];
-    return hours === undefined ? [] : [`спринт ${sprint}: ${hours} ч`];
+    return hours === undefined ? [] : [`Спринт ${sprint}: ${hours} ч`];
   });
   return `${parts.join(', ')}. Всего ${workHours(item)} ч.`;
 }
