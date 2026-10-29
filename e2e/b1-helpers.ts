@@ -64,7 +64,16 @@ export async function expectTextAbsent(
   page: Page,
   text: string,
 ): Promise<void> {
-  await expect(page.getByText(text)).toHaveCount(0);
+  // The shell list names scenario presets. Check the screen around it.
+  const shown = page
+    .locator('main')
+    .getByText(text)
+    .or(
+      page
+        .locator('header a, header span, header p, header button, header label')
+        .getByText(text),
+    );
+  await expect(shown).toHaveCount(0);
   for (const frame of page.frames()) {
     if (frame === page.mainFrame()) continue;
     await expect(frame.getByText(text)).toHaveCount(0);

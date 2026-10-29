@@ -31,10 +31,14 @@ test('B1-AC1 public website content and private management data are distinguishe
     inkHeader,
   );
   await expect(page.getByText(ownerOnlyLine)).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Версии' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Домен' })).toBeVisible();
-  await expect(page.getByText('Заточка ножа, 2 000 ₸')).toHaveCount(0);
-  await expect(page.getByText('Мастерская Темир')).toHaveCount(0);
+  await expect(
+    page.getByRole('link', { name: 'Версии', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Домен', exact: true }),
+  ).toBeVisible();
+  await expectTextAbsent(page, 'Заточка ножа, 2 000 ₸');
+  await expectTextAbsent(page, 'Мастерская Темир');
 
   await page.goto('/site/nan');
   await expect(page).toHaveURL(/\/site\/nan$/);
