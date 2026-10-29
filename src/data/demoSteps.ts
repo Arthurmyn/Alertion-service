@@ -1,4 +1,4 @@
-import { formatMb } from '../pages/Versions.copy.ts';
+import { formatMb, rollbackVersion } from '../pages/Versions.copy.ts';
 import { reducer, type Action } from '../state/reducer.ts';
 import { storageUsedMb } from '../state/selectors.ts';
 import type { AppState, Site } from '../state/types.ts';
@@ -72,7 +72,7 @@ const steps: readonly DemoStep[] = [
   {
     n: 8,
     route: `/manage/${owner.slug}/versions`,
-    actions: [{ type: 'rollback', slug: owner.slug }],
+    actions: [rollbackVersion(owner.slug)],
   },
   {
     n: 9,

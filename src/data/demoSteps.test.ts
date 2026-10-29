@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { formatMb } from '../pages/Versions.copy.ts';
+import { formatMb, rollbackVersion } from '../pages/Versions.copy.ts';
+import { reducer } from '../state/reducer.ts';
 import { storageUsedMb } from '../state/selectors.ts';
 import { archives } from './archives.ts';
 import { LIMITS } from './limits.ts';
@@ -71,7 +72,13 @@ describe('demo steps', () => {
     expect(published.sites.nan?.previousActiveId).toBe('nan-v1');
     expect(published.sites.nan?.deployment).toBe('published');
 
+    const beforeRollback = demoState(7);
+    const throughScreen = reducer(
+      beforeRollback,
+      rollbackVersion(beforeRollback.sites.nan?.slug ?? ''),
+    );
     const rolled = demoState(8);
+    expect(rolled.sites.nan).toEqual(throughScreen.sites.nan);
     expect(rolled.sites.nan?.activeVersionId).toBe('nan-v1');
     expect(rolled.sites.nan?.previousActiveId).toBeNull();
     expect(rolled.sites.nan?.deployment).toBe('rolledBack');
