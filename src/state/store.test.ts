@@ -1,12 +1,16 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { baseline } from '../data/accounts.ts';
+import { scenarioById, scenarioState } from '../data/scenarios.ts';
 import { reducer } from './reducer.ts';
 import {
   SESSION_KEY,
   StoreProvider,
+  consumeScenarioQuery,
   initialState,
+  scenarioQueryRoute,
   useStore,
   writeSession,
 } from './store.tsx';
@@ -20,7 +24,20 @@ function memoryStorage() {
     setItem(key: string, value: string) {
       data.set(key, value);
     },
+    removeItem(key: string) {
+      data.delete(key);
+    },
   };
+}
+
+function renderStore(): string {
+  return renderToStaticMarkup(
+    createElement(
+      MemoryRouter,
+      null,
+      createElement(StoreProvider, null, createElement(SessionAccount)),
+    ),
+  );
 }
 
 function SessionAccount() {
@@ -84,6 +101,9 @@ describe('store', () => {
       setItem() {
         throw new Error('full');
       },
+      removeItem() {
+        throw new Error('blocked');
+      },
     };
     expect(() => writeSession(storage, baseline)).not.toThrow();
     expect(initialState(storage)).toEqual(baseline);
@@ -97,17 +117,76 @@ describe('store', () => {
     );
     vi.stubGlobal('sessionStorage', storage);
 
-    const html = renderToStaticMarkup(
-      createElement(StoreProvider, null, createElement(SessionAccount)),
-    );
-    expect(html).toBe('<p>b</p>');
+    expect(renderStore()).toBe('<p>b</p>');
   });
 
   it('starts from the baseline when the session is empty', () => {
     vi.stubGlobal('sessionStorage', memoryStorage());
-    const html = renderToStaticMarkup(
-      createElement(StoreProvider, null, createElement(SessionAccount)),
+    expect(renderStore()).toBe('<p>none</p>');
+  });
+
+  it('lets ?scenario= replace a saved session', () => {
+    const storage = memoryStorage();
+    writeSession(
+      storage,
+      reducer(baseline, { type: 'signIn', accountId: 'b' }),
     );
-    expect(html).toBe('<p>none</p>');
+    const home = scenarioById('a-home');
+    if (!home) throw new Error('missing a-home');
+
+    const state = initialState(storage, '?scenario=a-home');
+    expect(storage.getItem(SESSION_KEY)).toBeNull();
+    expect(state).toEqual(scenarioState(home));
+    expect(state.sessionAccountId).toBe('a');
+    expect(scenarioQueryRoute('?scenario=a-home', '/login')).toBe(
+      '/manage/nan',
+    );
+  });
+
+  it('drops an unknown scenario id and the saved session', () => {
+    const storage = memoryStorage();
+    writeSession(
+      storage,
+      reducer(baseline, { type: 'signIn', accountId: 'b' }),
+    );
+
+    expect(initialState(storage, '?scenario=missing')).toEqual(baseline);
+    expect(storage.getItem(SESSION_KEY)).toBeNull();
+    expect(scenarioQueryRoute('?scenario=missing', '/manage/nan')).toBe(
+      '/manage/nan',
+    );
+    expect(scenarioQueryRoute('', '/login')).toBeNull();
+    expect(scenarioQueryRoute('?other=1', '/login')).toBeNull();
+  });
+
+  it('removes ?scenario= with replace', () => {
+    const calls: Array<[string, { replace: true }]> = [];
+    const navigate = (route: string, options: { replace: true }) => {
+      calls.push([route, options]);
+    };
+
+    consumeScenarioQuery('?scenario=preview-b', '/login', navigate);
+    consumeScenarioQuery('?scenario=missing', '/defense', navigate);
+    consumeScenarioQuery('', '/login', navigate);
+
+    expect(calls).toEqual([
+      ['/manage/nan/preview', { replace: true }],
+      ['/defense', { replace: true }],
+    ]);
+  });
+
+  it('reads ?scenario= from the address when the provider mounts', () => {
+    const storage = memoryStorage();
+    writeSession(
+      storage,
+      reducer(baseline, { type: 'signIn', accountId: 'b' }),
+    );
+    vi.stubGlobal('sessionStorage', storage);
+    vi.stubGlobal('window', {
+      location: { search: '?scenario=signed-out', pathname: '/manage/nan' },
+    });
+
+    expect(renderStore()).toBe('<p>none</p>');
+    expect(storage.getItem(SESSION_KEY)).toBeNull();
   });
 });

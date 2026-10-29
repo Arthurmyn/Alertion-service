@@ -24,12 +24,39 @@ function memoryStorage() {
   };
 }
 
+function pageMain(html: string): string {
+  const start = html.indexOf('<main');
+  const end = html.indexOf('</main>');
+  if (start < 0 || end < start) throw new Error('no main');
+  return html.slice(start, end);
+}
+
+function withOwner(path: string, state: AppState): AppState {
+  if (state.sessionAccountId !== null) return state;
+  const slug = /^\/manage\/([^/]+)/.exec(path)?.[1];
+  if (!slug) return state;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    decoded = slug;
+  }
+  const ownerId = state.sites[decoded]?.ownerId ?? 'a';
+  return { ...state, sessionAccountId: ownerId };
+}
+
 function renderAt(path: string, state: AppState = baseline): string {
   const storage = memoryStorage();
-  writeSession(storage, state);
+  writeSession(storage, withOwner(path, state));
   vi.stubGlobal('sessionStorage', storage);
-  return renderToStaticMarkup(
-    createElement(MemoryRouter, { initialEntries: [path] }, createElement(App)),
+  return pageMain(
+    renderToStaticMarkup(
+      createElement(
+        MemoryRouter,
+        { initialEntries: [path] },
+        createElement(App),
+      ),
+    ),
   );
 }
 

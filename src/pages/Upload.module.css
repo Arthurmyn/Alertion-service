@@ -1,0 +1,84 @@
+.choices {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+
+.legend {
+  margin: 0 0 8px;
+  padding: 0;
+  font-weight: 600;
+}
+
+.req {
+  color: var(--danger-text);
+}
+
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 12px;
+  cursor: pointer;
+}
+
+.choices:disabled .choice {
+  cursor: default;
+}
+
+.radio {
+  width: 16px;
+  height: 16px;
+  margin: 4px 0 0;
+  padding: 0;
+  flex: none;
+  accent-color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-block);
+  box-shadow: none;
+}
+
+.choiceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.file,
+.url {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.reason {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.status {
+  outline: none;
+}
+
+.checking {
+  font-weight: 600;
+}
