@@ -10,7 +10,6 @@ import {
   scenarioHref,
   scopeNote,
   scopeVolumeNote,
-  SCREENSHOT_EMPTY,
   unmetRows,
 } from '../../data/results.ts';
 import { EMPTY_SLOT_LABEL, evidenceSlots } from '../../data/sprintEvidence.ts';
@@ -138,7 +137,7 @@ describe('defense page', () => {
     );
     expect(html).toContain('s1-B1-public-private');
     expect(html).toContain('s3-B8-sprint-record');
-    expect(html).not.toContain('<img');
+    expect(evidenceHtml).not.toContain('<img');
     expect(html).not.toContain('пройдено');
   });
 
@@ -173,10 +172,10 @@ describe('defense page', () => {
         expect(html).toContain(`href="${scenarioHref(id)}"`);
       }
       if (item.href) expect(html).toContain(`href="${item.href}"`);
-      expect(item.screenshot).toBeNull();
+      expect(html).toContain(`src="${item.screenshot.src}"`);
+      expect(html).toContain(`alt="${item.id}: ${item.screenshot.alt}"`);
     }
-    expect(html.split(SCREENSHOT_EMPTY).length - 1).toBe(results.length);
-    expect(html).not.toContain('<img');
+    expect(html.match(/<img\b/g)).toHaveLength(results.length);
 
     expect(goalsHtml).toContain(scopeNote);
     expect(goalsHtml).toContain(scopeVolumeNote);

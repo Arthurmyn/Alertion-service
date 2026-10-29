@@ -143,15 +143,17 @@ describe('store', () => {
     );
   });
 
-  it('drops an unknown scenario id and the saved session', () => {
+  it('ignores an unknown scenario id and preserves the saved session', () => {
     const storage = memoryStorage();
     writeSession(
       storage,
       reducer(baseline, { type: 'signIn', accountId: 'b' }),
     );
 
-    expect(initialState(storage, '?scenario=missing')).toEqual(baseline);
-    expect(storage.getItem(SESSION_KEY)).toBeNull();
+    const saved = reducer(baseline, { type: 'signIn', accountId: 'b' });
+    expect(initialState(storage, '?scenario=missing')).toEqual(saved);
+    expect(storage.getItem(SESSION_KEY)).toBe(JSON.stringify(saved));
+    expect(initialState(storage, '?scenario=')).toEqual(saved);
     expect(scenarioQueryRoute('?scenario=missing', '/manage/nan')).toBe(
       '/manage/nan',
     );
