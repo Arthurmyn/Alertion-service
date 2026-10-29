@@ -13,6 +13,7 @@ import {
   formatMb,
   publishButtonLabel,
   publishConfirmText,
+  publishConfirmTitle,
   publishFailedLine,
   versionSizeLine,
 } from './Versions.copy.ts';
@@ -63,8 +64,12 @@ describe('version copy', () => {
       'Публикация не прошла. Активная версия: A.',
     );
     expect(publishButtonLabel('B')).toBe('Опубликовать версию B');
+    expect(publishConfirmTitle('B')).toBe('Опубликовать версию B?');
     expect(publishConfirmText('A', 'B')).toBe(
       'Сейчас активна версия A. После подтверждения активной станет версия B.',
+    );
+    expect(versionSizeLine(baseline.sites.nan.versions[0])).toBe(
+      'Архив 4,2 МБ, распакованный 12 МБ',
     );
     expect(formatMb(4.2)).toBe('4,2 МБ');
     expect(formatMb(12)).toBe('12 МБ');
@@ -85,6 +90,9 @@ describe('Versions', () => {
     expect(html).toContain(versionSizeLine(baseline.sites.nan.versions[0]));
     expect(row(html, 'nan-v1.zip')).toContain('активная версия');
     expect(html).not.toContain('кандидат');
+    expect(html).toContain('Кандидата нет.');
+    expect(html).toContain('href="/manage/nan/upload"');
+    expect(html).toContain('>Загрузить архив</a>');
     expect(html).not.toContain('Опубликовать');
     expect(html).not.toContain('Вернуть');
     expect(html).not.toContain('<button');
@@ -108,6 +116,7 @@ describe('Versions', () => {
     expect(row(html, 'nan-v2.zip')).toContain('кандидат');
     expect(row(html, 'nan-v2.zip')).not.toContain('активная версия');
     expect(html).toContain('>Опубликовать версию B</button>');
+    expect(html).not.toContain('Кандидата нет.');
     expect(html).not.toContain('role="dialog"');
     expect(html).not.toContain('Вернуть');
   });
@@ -158,7 +167,8 @@ describe('Versions', () => {
     );
     expect(html).toContain('role="dialog"');
     expect(html).toContain('aria-modal="true"');
-    expect(html).toContain('Опубликовать версию B');
+    expect(html).toContain('Опубликовать версию B?');
+    expect(html).toContain('>Опубликовать версию B</button>');
     expect(html).toContain('>Отмена</button>');
     expect(html).toContain(
       'Сейчас активна версия A. После подтверждения активной станет версия B.',

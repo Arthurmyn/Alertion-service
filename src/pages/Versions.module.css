@@ -12,19 +12,40 @@
   padding: 12px 0;
 }
 
-.name {
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+.name,
+.file,
+.size,
+.mark,
+.note {
   margin: 0;
+}
+
+.name {
   font-weight: 600;
 }
 
+.file {
+  margin-top: 2px;
+}
+
+.file code {
+  overflow-wrap: anywhere;
+}
+
 .size {
-  margin: 4px 0 0;
+  margin-top: 2px;
   color: var(--ink-2);
   font-size: var(--text-sm);
 }
 
 .mark {
-  margin: 8px 0 0;
   font-weight: 600;
 }
 
@@ -36,6 +57,7 @@
   color: var(--link);
 }
 
-.actions {
+.actions,
+.note {
   margin-top: 16px;
 }

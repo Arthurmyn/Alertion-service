@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Alert } from '../components/Alert.tsx';
 import { Button } from '../components/Button.tsx';
 import { ConfirmDialog } from '../components/ConfirmDialog.tsx';
@@ -10,6 +10,7 @@ import {
   activeVersionLine,
   publishButtonLabel,
   publishConfirmText,
+  publishConfirmTitle,
   publishFailedLine,
   versionById,
   versionSizeLine,
@@ -26,11 +27,10 @@ export function PublishDialog({
   onConfirm: () => void;
   onClose: () => void;
 }) {
-  const label = publishButtonLabel(candidateLabel);
   return (
     <ConfirmDialog
-      title={label}
-      confirmLabel={label}
+      title={publishConfirmTitle(candidateLabel)}
+      confirmLabel={publishButtonLabel(candidateLabel)}
       onConfirm={onConfirm}
       onClose={onClose}
     >
@@ -43,20 +43,40 @@ export function Versions() {
   const { slug = '' } = useParams();
   const { state, dispatch } = useStore();
   const [confirming, setConfirming] = useState(false);
+  const [focusNonce, setFocusNonce] = useState(0);
+  const focusKind = useRef<'result' | 'publish'>('result');
+  const statusRef = useRef<HTMLParagraphElement>(null);
+  const failureRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
   const site = state.sites[slug];
+
+  useEffect(() => {
+    if (focusNonce === 0) return;
+    if (focusKind.current === 'publish') {
+      actionsRef.current?.querySelector('button')?.focus();
+      return;
+    }
+    (failureRef.current ?? statusRef.current)?.focus();
+  }, [focusNonce]);
+
   if (!site) return <NotFound />;
 
   const active = versionById(site, site.activeVersionId);
   const candidate = versionById(site, site.candidateVersionId);
+  const failed = site.deployment === 'publishFailed' && active;
 
   return (
     <>
       <h1>Версии</h1>
       {active ? (
-        <p aria-live="polite">{activeVersionLine(active.label)}</p>
+        <p ref={statusRef} tabIndex={-1} aria-live="polite">
+          {activeVersionLine(active.label)}
+        </p>
       ) : null}
-      {site.deployment === 'publishFailed' && active ? (
-        <Alert>{publishFailedLine(active.label)}</Alert>
+      {failed ? (
+        <div ref={failureRef} tabIndex={-1}>
+          <Alert>{publishFailedLine(active.label)}</Alert>
+        </div>
       ) : null}
       <ul className={styles.list}>
         {site.versions.map((version) => {
@@ -64,39 +84,56 @@ export function Versions() {
           const isCandidate = version.id === site.candidateVersionId;
           return (
             <li key={version.id} className={styles.row}>
-              <p className={styles.name}>Версия {version.label}</p>
-              <p>
+              <div className={styles.head}>
+                <p className={styles.name}>Версия {version.label}</p>
+                {isActive ? (
+                  <p className={`${styles.mark} ${styles.active}`}>
+                    активная версия
+                  </p>
+                ) : null}
+                {isCandidate ? (
+                  <p className={`${styles.mark} ${styles.candidate}`}>
+                    кандидат
+                  </p>
+                ) : null}
+              </div>
+              <p className={styles.file}>
                 <code>{version.archiveName}</code>
               </p>
               <p className={styles.size}>{versionSizeLine(version)}</p>
-              {isActive ? (
-                <p className={`${styles.mark} ${styles.active}`}>
-                  активная версия
-                </p>
-              ) : null}
-              {isCandidate ? (
-                <p className={`${styles.mark} ${styles.candidate}`}>кандидат</p>
-              ) : null}
             </li>
           );
         })}
       </ul>
       {candidate ? (
-        <div className={styles.actions}>
-          <Button onClick={() => setConfirming(true)}>
-            {publishButtonLabel(candidate.label)}
-          </Button>
+        <div className={styles.actions} ref={actionsRef}>
+          {confirming ? null : (
+            <Button onClick={() => setConfirming(true)}>
+              {publishButtonLabel(candidate.label)}
+            </Button>
+          )}
         </div>
-      ) : null}
+      ) : (
+        <p className={styles.note}>
+          Кандидата нет.{' '}
+          <Link to={`/manage/${slug}/upload`}>Загрузить архив</Link>
+        </p>
+      )}
       {confirming && candidate && active ? (
         <PublishDialog
           activeLabel={active.label}
           candidateLabel={candidate.label}
           onConfirm={() => {
+            focusKind.current = 'result';
             dispatch({ type: 'publish', slug });
             setConfirming(false);
+            setFocusNonce((nonce) => nonce + 1);
           }}
-          onClose={() => setConfirming(false)}
+          onClose={() => {
+            focusKind.current = 'publish';
+            setConfirming(false);
+            setFocusNonce((nonce) => nonce + 1);
+          }}
         />
       ) : null}
     </>

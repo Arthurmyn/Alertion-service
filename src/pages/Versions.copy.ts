@@ -12,6 +12,10 @@ export function publishButtonLabel(label: string): string {
   return `Опубликовать версию ${label}`;
 }
 
+export function publishConfirmTitle(label: string): string {
+  return `${publishButtonLabel(label)}?`;
+}
+
 export function publishConfirmText(
   activeLabel: string,
   nextLabel: string,
@@ -28,7 +32,7 @@ export function formatMb(value: number): string {
 }
 
 export function versionSizeLine(version: Version): string {
-  return `Сжатый архив ${formatMb(version.archiveMb)}. Распакованный размер ${formatMb(version.unpackedMb)}.`;
+  return `Архив ${formatMb(version.archiveMb)}, распакованный ${formatMb(version.unpackedMb)}`;
 }
 
 export function versionById(
