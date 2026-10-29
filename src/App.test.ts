@@ -50,10 +50,22 @@ function memoryStorage() {
   };
 }
 
-function renderAt(path: string): string {
+function renderAt(path: string, accountId?: 'a' | 'b'): string {
+  if (accountId) {
+    const storage = memoryStorage();
+    writeSession(storage, reducer(baseline, { type: 'signIn', accountId }));
+    vi.stubGlobal('sessionStorage', storage);
+  }
+
   return renderToStaticMarkup(
     createElement(MemoryRouter, { initialEntries: [path] }, createElement(App)),
   );
+}
+
+function ownerFor(path: string): 'a' | 'b' | undefined {
+  if (path.startsWith('/manage/temir')) return 'b';
+  if (path.startsWith('/manage/')) return 'a';
+  return undefined;
 }
 
 function anchors(html: string): string[] {
@@ -74,8 +86,10 @@ describe('routes', () => {
 
   it('renders every screen', () => {
     for (const [path, heading] of screens) {
-      const html = renderAt(path);
-      expect(html, path).toContain(`<h1>${heading}</h1>`);
+      const accountId = ownerFor(path);
+      if (!accountId) vi.unstubAllGlobals();
+      const html = renderAt(path, accountId);
+      expect(html, path).toContain(`>${heading}</h1>`);
       expect(html, path).toContain('src="/logo.png"');
     }
   });
@@ -123,16 +137,17 @@ describe('routes', () => {
   });
 
   it('marks the open section in the nav', () => {
-    const upload = renderAt('/manage/nan/upload');
+    const upload = renderAt('/manage/nan/upload', 'a');
     expect(isCurrent(upload, '/manage/nan/upload')).toBe(true);
     expect(isCurrent(upload, '/manage/nan')).toBe(false);
     expect(isCurrent(upload, '/defense')).toBe(false);
 
-    const home = renderAt('/manage/temir');
+    const home = renderAt('/manage/temir', 'b');
     expect(isCurrent(home, '/manage/temir')).toBe(true);
     expect(isCurrent(home, '/manage/temir/plan')).toBe(false);
     expect(home).toContain('href="/manage/temir/plan"');
 
+    vi.unstubAllGlobals();
     const login = renderAt('/login');
     expect(isCurrent(login, '/login')).toBe(true);
     expect(isCurrent(login, '/defense')).toBe(false);

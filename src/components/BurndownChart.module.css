@@ -1,0 +1,95 @@
+.block {
+  margin: 0 0 20px;
+}
+
+.caption {
+  margin: 0 0 8px;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+}
+
+.planKey,
+.simKey {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.planKey::before,
+.simKey::before {
+  content: '';
+  width: 28px;
+  height: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.simKey::before {
+  border-top-style: dashed;
+  border-top-color: var(--link);
+}
+
+.plot {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  row-gap: 4px;
+  align-items: stretch;
+  margin: 0 0 8px;
+}
+
+.axis {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.chart {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  width: 100%;
+  height: 200px;
+}
+
+.days {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  line-height: 1.2;
+}
+
+.grid {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.planLine {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.simLine {
+  fill: none;
+  stroke: var(--link);
+  stroke-width: 2;
+  stroke-dasharray: 14 10;
+}

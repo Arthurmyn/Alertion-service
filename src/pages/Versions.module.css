@@ -1,0 +1,63 @@
+.list {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row + .row {
+  border-top: 1px solid var(--rule);
+}
+
+.row {
+  padding: 12px 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+.name,
+.file,
+.size,
+.mark,
+.note {
+  margin: 0;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.file {
+  margin-top: 2px;
+}
+
+.file code {
+  overflow-wrap: anywhere;
+}
+
+.size {
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+
+.mark {
+  font-weight: 600;
+}
+
+.active {
+  color: var(--ok-text);
+}
+
+.candidate {
+  color: var(--link);
+}
+
+.actions,
+.note {
+  margin-top: 16px;
+}
