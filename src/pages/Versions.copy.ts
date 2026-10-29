@@ -1,3 +1,4 @@
+import type { Action } from '../state/reducer.ts';
 import type { Site, Version } from '../state/types.ts';
 
 export function activeVersionLine(label: string): string {
@@ -16,11 +17,42 @@ export function publishConfirmTitle(label: string): string {
   return `${publishButtonLabel(label)}?`;
 }
 
-export function publishConfirmText(
+export function confirmChangeText(
   activeLabel: string,
   nextLabel: string,
 ): string {
   return `Сейчас активна версия ${activeLabel}. После подтверждения активной станет версия ${nextLabel}.`;
+}
+
+export const rollbackAction = 'Вернуть версию';
+
+export function rollbackButtonLabel(label: string): string {
+  return `${rollbackAction} ${label}`;
+}
+
+export function rollbackConfirmTitle(label: string): string {
+  return `${rollbackButtonLabel(label)}?`;
+}
+
+export function rollbackFailedLine(label: string): string {
+  return `Откат не прошёл. Активная версия: ${label}.`;
+}
+
+export const rollbackUnavailable = 'Откат недоступен: предыдущей версии нет.';
+
+export function rollbackVersion(slug: string): Action {
+  return { type: 'rollback', slug };
+}
+
+export const previewAudience =
+  'Предпросмотр видите только вы, пока выполнен вход в аккаунт этого сайта. Посетители и другие аккаунты видят активную версию.';
+
+export const noCandidateLine = 'Кандидата нет.';
+
+export const uploadArchiveLink = 'Загрузить архив';
+
+export function candidateVersionLine(label: string): string {
+  return `Кандидат: версия ${label}`;
 }
 
 const megabytes = new Intl.NumberFormat('ru-RU', {

@@ -1,7 +1,17 @@
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
+import { demoRunning } from '../data/scenarios.ts';
 import { accountSlug } from '../routing.ts';
-import { useStore } from '../state/store.tsx';
+import { consumeScenarioQuery, useStore } from '../state/store.tsx';
 import styles from './AppShell.module.css';
+import { DemoBar } from './DemoBar.tsx';
+import { ScenarioPanel } from './ScenarioPanel.tsx';
 
 const sections = [
   { suffix: '', label: 'Управление сайтом' },
@@ -34,14 +44,22 @@ function linkClass({ isActive }: { isActive: boolean }): string {
 }
 
 export function AppShell() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const navigate = useNavigate();
   const { state } = useStore();
+  const running = demoRunning(state.demo);
+
+  useEffect(() => {
+    consumeScenarioQuery(search, pathname, navigate);
+  }, [pathname, search, navigate]);
   const navSlug = manageSlug(pathname) ?? accountSlug(state.sessionAccountId);
   const siteSlug = publicSlug(pathname);
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
 
   return (
-    <div className={styles.shell}>
+    <div
+      className={running ? `${styles.shell} ${styles.withDemo}` : styles.shell}
+    >
       <header className={publicSite ? styles.publicHeader : styles.header}>
         <Link to="/" className={styles.brand}>
           <img src="/logo.png" alt="" width={260} height={308} />
@@ -81,10 +99,12 @@ export function AppShell() {
             </ul>
           </nav>
         )}
+        <ScenarioPanel />
       </header>
       <main className={styles.main}>
         <Outlet />
       </main>
+      <DemoBar />
     </div>
   );
 }

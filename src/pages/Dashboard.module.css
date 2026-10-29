@@ -1,0 +1,160 @@
+.business {
+  margin: 0 0 8px;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.facts {
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+  gap: 4px 20px;
+  align-items: start;
+  margin: 0;
+  padding: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.fact:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.fact dt,
+.fact dd {
+  margin: 0;
+}
+
+.fact dt {
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+.fact dd {
+  min-width: 0;
+  color: var(--ink);
+  font-size: var(--text-md);
+}
+
+.url {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+
+.ok {
+  color: var(--ok-text);
+  font-weight: 600;
+}
+
+.bad {
+  color: var(--danger-text);
+  font-weight: 600;
+}
+
+.pending {
+  color: var(--warn-text);
+  font-weight: 600;
+}
+
+.state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+}
+
+.state a {
+  white-space: nowrap;
+}
+
+.next {
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.stale {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.refresh {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  box-shadow: none;
+}
+
+.refresh:hover {
+  color: var(--on-ink);
+  background: var(--ink);
+}
+
+.live {
+  margin: 0;
+}
+
+.feedback {
+  display: inline-block;
+  max-width: 100%;
+  margin: 12px 0 0;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.actions {
+  margin: 24px 0 0;
+}
+
+.primary {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  color: var(--on-ink);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+  box-shadow: none;
+  padding: 8px 14px;
+  transition-property: color, background-color, border-color;
+  transition-duration: var(--motion);
+}
+
+.primary:link,
+.primary:visited,
+.primary:hover {
+  text-decoration: none;
+}
+
+.primary:link,
+.primary:visited {
+  color: var(--on-ink);
+}
+
+.primary:hover {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+@media (max-width: 480px) {
+  .fact {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+}
