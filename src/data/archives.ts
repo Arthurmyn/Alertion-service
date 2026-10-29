@@ -76,6 +76,6 @@ export const archives: Record<string, ArchiveFixture> = {
     archiveMb: 12,
     unpackedMb: 40,
     files: ['index.html', 'styles.css'],
-    label: null,
+    label: 'E',
   },
 };
