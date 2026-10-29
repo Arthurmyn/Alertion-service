@@ -63,7 +63,12 @@ test('B8 demo runner walks the ten steps', async ({ page }) => {
       await expect(
         page.getByRole('navigation', { name: 'Разделы' }),
       ).toHaveCount(0);
-      await expect(page.getByText(accountA.businessName)).toBeVisible();
+      await expect(
+        page
+          .getByRole('banner')
+          .getByText(accountA.businessName, { exact: true })
+          .and(page.locator('span')),
+      ).toBeVisible();
       await expectMenu(page, false);
     }
     if (step.n === 7) await expectMenu(page, true);
@@ -72,7 +77,7 @@ test('B8 demo runner walks the ten steps', async ({ page }) => {
       const failures = page.locator(
         'a[href*="scenario=reject-"], a[href*="scenario=publish-fail"], a[href*="scenario=rollback-fail"]',
       );
-      expect(await failures.count()).toBeGreaterThanOrEqual(2);
+      await expect.poll(() => failures.count()).toBeGreaterThanOrEqual(2);
     }
   }
 });

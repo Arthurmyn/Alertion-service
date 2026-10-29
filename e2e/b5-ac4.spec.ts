@@ -3,10 +3,6 @@ import { expect, test } from '@playwright/test';
 test('B5-AC4 section 3.2 smaller version is recorded on goals', async ({
   page,
 }) => {
-  test.fixme(
-    true,
-    'B5-AC4 needs /defense#goals, which another pull request is building now',
-  );
   await page.goto('/defense#goals');
   await expect(page).toHaveURL(/\/defense#goals$/);
   await expect(

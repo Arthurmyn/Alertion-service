@@ -4,8 +4,9 @@ import { archives, type ArchiveFixture } from '../src/data/archives.ts';
 import { LIMITS } from '../src/data/limits.ts';
 import { sampleSites } from '../src/data/sampleSites.ts';
 import { reducer } from '../src/state/reducer.ts';
-import { SESSION_KEY } from '../src/state/store.tsx';
 import type { AccountId } from '../src/state/types.ts';
+
+const SESSION_KEY = 'alertion.session';
 
 export const accountA = accounts[0];
 export const accountB = accounts[1];
