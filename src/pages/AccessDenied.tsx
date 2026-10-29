@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Alert } from '../components/Alert.tsx';
 import { accounts } from '../data/accounts.ts';
 import { accountSlug } from '../routing.ts';
 import { useStore } from '../state/store.tsx';
@@ -11,8 +12,11 @@ export function AccessDenied() {
   return (
     <>
       <h1>Нет доступа</h1>
-      <p>Этот сайт принадлежит другому аккаунту.</p>
-      <p>Симуляция: данные управления здесь не показываются.</p>
+      <Alert>
+        {account ? `Вы вошли как ${account.ownerName} ` : null}
+        Этот сайт принадлежит другому аккаунту. Симуляция: данные управления
+        здесь не показываются.
+      </Alert>
       {slug !== null && account ? (
         <p>
           <Link to={`/manage/${slug}`}>

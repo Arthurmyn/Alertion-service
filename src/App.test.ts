@@ -89,7 +89,7 @@ describe('routes', () => {
       const accountId = ownerFor(path);
       if (!accountId) vi.unstubAllGlobals();
       const html = renderAt(path, accountId);
-      expect(html, path).toContain(`<h1>${heading}</h1>`);
+      expect(html, path).toContain(`>${heading}</h1>`);
       expect(html, path).toContain('src="/logo.png"');
     }
   });

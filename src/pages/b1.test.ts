@@ -101,22 +101,38 @@ describe('B1 account boundaries', () => {
 
   it('asks for sign-in and offers the two accounts, with no password field', () => {
     const html = renderAt('/login?next=%2Fmanage%2Fnan');
-    expect(html).toContain('<h1>Вход</h1>');
+    expect(html).toContain('<h1');
+    expect(html).toContain('>Вход</h1>');
     expect(html).toContain('Войдите, чтобы управлять сайтом.');
-    expect(html).toContain('Айгуль С., Пекарня Нан');
-    expect(html).toContain('Ерлан Б., Мастерская Темир');
+    expect(html).toContain('<code');
+    expect(html).toContain('>/manage/nan</code>');
+    expect(html).toContain('2 вымышленных аккаунта');
+    expect(html).toContain('симуляция');
+    expect(html).toContain('Войти как Айгуль С., Пекарня Нан');
+    expect(html).toContain('Войти как Ерлан Б., Мастерская Темир');
+    expect(html).toContain('aria-labelledby="login-accounts"');
     expect(html).not.toContain('<input');
     expect(html).not.toContain('type="password"');
     expect(html.match(/<button\b/g)).toHaveLength(2);
 
     const plain = renderAt('/login');
     expect(plain).not.toContain('Войдите, чтобы управлять сайтом.');
-    expect(plain).toContain('2 аккаунта');
+    expect(plain).not.toContain('<code');
+    expect(plain).toContain('2 вымышленных аккаунта');
+    expect(plain).toContain('Пароля нет, это симуляция.');
+
+    const outside = renderAt('/login?next=https%3A%2F%2Fevil.example');
+    expect(outside).not.toContain('evil.example');
+    expect(outside).not.toContain('Войдите, чтобы управлять сайтом.');
   });
 
   it('B1-AC2 denies account B on account A and hides A data', () => {
     const html = renderAt('/manage/nan', 'b');
     expect(html).toContain('<h1>Нет доступа</h1>');
+    expect(html).toContain('Вы вошли как Ерлан Б.');
+    expect(html).not.toContain('Б..');
+    expect(html).toContain('Этот сайт принадлежит другому аккаунту.');
+    expect(html).toContain('role="alert"');
     expect(html).not.toContain('data-redirect=');
     expect(html).toContain('href="/manage/temir"');
     expect(html).toContain('К своему сайту «Мастерская Темир»');
@@ -129,13 +145,15 @@ describe('B1 account boundaries', () => {
     expect(html).not.toContain('<h1>Управление сайтом</h1>');
 
     const own = renderAt('/manage/nan/versions', 'b');
-    expect(own).toContain('<h1>Нет доступа</h1>');
+    expect(own).toContain('>Нет доступа</h1>');
     expect(own).not.toContain('<h1>Версии</h1>');
   });
 
   it('B1-AC2 sends account A away from account B', () => {
     const html = renderAt('/manage/temir/domain', 'a');
-    expect(html).toContain('<h1>Нет доступа</h1>');
+    expect(html).toContain('>Нет доступа</h1>');
+    expect(html).toContain('Вы вошли как Айгуль С.');
+    expect(html).not.toContain('С..');
     expect(html).toContain('href="/manage/nan"');
     expect(html).toContain('«Пекарня Нан»');
     expect(html).not.toContain('Мастерская Темир');
@@ -156,7 +174,7 @@ describe('B1 account boundaries', () => {
   it('shows not-found for a missing site once an account is signed in', () => {
     const html = renderAt('/manage/missing', 'a');
     expect(html).toContain('<h1>Страница не найдена</h1>');
-    expect(html).not.toContain('<h1>Нет доступа</h1>');
+    expect(html).not.toContain('>Нет доступа</h1>');
     expect(html).not.toContain('Пекарня Нан');
   });
 });

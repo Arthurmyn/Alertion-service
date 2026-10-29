@@ -11,6 +11,7 @@ export function Login() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get('next');
+  const target = manageNext(next);
 
   function enter(accountId: AccountId) {
     dispatch({ type: 'signIn', accountId });
@@ -19,18 +20,31 @@ export function Login() {
 
   return (
     <>
-      <h1>Вход</h1>
-      {manageNext(next) !== null ? (
-        <p>Войдите, чтобы управлять сайтом.</p>
+      <h1
+        aria-describedby={
+          target !== null ? 'login-return login-accounts' : 'login-accounts'
+        }
+      >
+        Вход
+      </h1>
+      {target !== null ? (
+        <p id="login-return">
+          Войдите, чтобы управлять сайтом. После входа откроется{' '}
+          <code className={styles.path}>{target}</code>.
+        </p>
       ) : null}
-      <p>2 аккаунта. Вход без пароля, симуляция.</p>
-      <div className={styles.actions}>
+      <p id="login-accounts">
+        2 вымышленных аккаунта. Пароля нет, это симуляция.
+      </p>
+      <ul className={styles.actions} aria-labelledby="login-accounts">
         {accounts.map((account) => (
-          <Button key={account.id} onClick={() => enter(account.id)}>
-            {account.ownerName}, {account.businessName}
-          </Button>
+          <li key={account.id}>
+            <Button onClick={() => enter(account.id)}>
+              Войти как {account.ownerName}, {account.businessName}
+            </Button>
+          </li>
         ))}
-      </div>
+      </ul>
     </>
   );
 }

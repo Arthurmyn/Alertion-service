@@ -3,4 +3,23 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.actions li {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.actions button {
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
+}
+
+.path {
+  overflow-wrap: anywhere;
 }
