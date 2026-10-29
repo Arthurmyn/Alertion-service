@@ -14,6 +14,7 @@ import {
   checkMessage,
   confirmation,
   currentStep,
+  canonicalDomainName,
   domainCopy,
   domainNameError,
   domainPhase,
@@ -125,6 +126,25 @@ describe('domain name', () => {
     expect(domainNameError('')).toBe(domainCopy.nameRequired);
     expect(domainNameError('   ')).toBe(domainCopy.nameRequired);
     expect(domainNameError(' nan.example ')).toBeUndefined();
+    expect(domainNameError('NAN.EXAMPLE')).toBeUndefined();
+    expect(canonicalDomainName(' NAN.EXAMPLE ')).toBe('nan.example');
+  });
+
+  it('says what to fix when the name is not a host', () => {
+    expect(domainNameError('nan .example')).toContain('пробел');
+    expect(domainNameError('http://nan.example/menu')).toContain('http://');
+    expect(domainNameError('https://nan.example')).toContain('http://');
+    expect(domainNameError('nan.example/menu')).toContain('путь');
+    expect(domainNameError('owner@nan.example')).toContain('@');
+    expect(domainNameError('nan.example:443')).toContain('порт');
+    expect(domainNameError('nan')).toContain('точки');
+    expect(domainNameError('google.com')).toContain('.example');
+    expect(domainNameError('-bad.example')).toContain('не является');
+    expect(domainNameError('x'.repeat(254))).toContain('253');
+    expect(domainNameError('shop.example', 'temir.example')).toBeUndefined();
+    expect(domainNameError('google.com', 'temir.example')).toContain(
+      'temir.example',
+    );
   });
 });
 
@@ -151,7 +171,7 @@ describe('B5-AC1 domain control comes before activation', () => {
     expect(showVerify(nanDomain(pending))).toBe(true);
     expect(activateEnabled(nanDomain(pending))).toBe(false);
     expect(confirmation(nanDomain(pending))).toBeNull();
-    expect(currentStep(nanDomain(pending))).toBe(2);
+    expect(currentStep(nanDomain(pending))).toBe(1);
 
     expect(domainPhase(nanDomain(verified))).toBe('activate');
     expect(showVerify(nanDomain(verified))).toBe(false);
@@ -281,6 +301,12 @@ describe('B5-AC2 pending and failed explanations differ', () => {
     expect(broken).not.toContain('Ожидание');
     expect(buttonTag(broken, domainCopy.check)).not.toContain('disabled');
     expect(buttonTag(broken, domainCopy.activate)).toContain('disabled');
+    expect(currentStep(nanDomain(failed))).toBe(2);
+    expect(activateReason(nanDomain(failed))).toBe(
+      domainCopy.activateAfterFail,
+    );
+    expect(broken).toContain(domainCopy.activateAfterFail);
+    expect(broken).not.toContain(domainCopy.activateBlocked);
   });
 });
 
@@ -295,10 +321,16 @@ describe('B5-AC3 example domain values', () => {
       domainName: 'nan.example',
       txtName: domainExamples.txtName,
       txtValue: domainExamples.txtValue,
-      cname: `${domainExamples.cnameName} → ${domainExamples.cnameTarget}`,
+      cnameName: domainExamples.cnameName,
+      cnameTarget: domainExamples.cnameTarget,
       certificate: domainExamples.certificate,
     });
-    for (const value of [dns.domainName, dns.txtName, dns.cname]) {
+    for (const value of [
+      dns.domainName,
+      dns.txtName,
+      dns.cnameName,
+      dns.cnameTarget,
+    ]) {
       expect(value).toContain('.example');
     }
 
@@ -315,7 +347,8 @@ describe('B5-AC3 example domain values', () => {
       expectMarked(html, shown.domainName);
       expectMarked(html, shown.txtName);
       expectMarked(html, shown.txtValue);
-      expectMarked(html, shown.cname);
+      expectMarked(html, shown.cnameName);
+      expectMarked(html, shown.cnameTarget);
       expectMarked(html, shown.certificate);
       expect(html.match(/пример/g)?.length).toBeGreaterThanOrEqual(5);
     }
@@ -324,7 +357,8 @@ describe('B5-AC3 example domain values', () => {
   it('uses temir.example on the other account', () => {
     const dns = dnsExamplesFor('temir.example');
     expect(dns.txtName).toBe('_alertion-verify.temir.example');
-    expect(dns.cname).toBe('temir.example → sites.alertion.example');
+    expect(dns.cnameName).toBe('temir.example');
+    expect(dns.cnameTarget).toBe(domainExamples.cnameTarget);
     expect(dns.txtValue).toBe(domainExamples.txtValue);
     expect(dns.certificate).toBe(domainExamples.certificate);
 
@@ -334,7 +368,7 @@ describe('B5-AC3 example domain values', () => {
     expect(html).not.toContain('Пекарня Нан');
     expectMarked(html, 'temir.example');
     expectMarked(html, dns.txtName);
-    expectMarked(html, dns.cname);
+    expectMarked(html, dns.cnameTarget);
     expectMarked(html, dns.certificate);
   });
 });

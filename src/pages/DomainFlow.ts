@@ -19,10 +19,10 @@ export const domainCopy = {
     'Нажмите «Активировать домен».',
   ],
   txtTitle: 'Запись TXT',
-  txtHelp: 'TXT-запись для проверки контроля домена.',
+  txtHelp: 'Создайте у регистратора запись TXT и вставьте имя и значение ниже.',
   txtName: 'Имя TXT',
   txtValue: 'Значение TXT',
-  pending: 'Запись TXT ещё не видна. Подождите и проверьте снова.',
+  pending: 'Запись TXT ещё не видна. Подождите и нажмите «Проверить».',
   failed: 'Значение TXT не совпадает. Исправьте запись и проверьте снова.',
   check: 'Проверить',
   confirmed: 'Контроль подтверждён.',
@@ -31,10 +31,13 @@ export const domainCopy = {
   activate: 'Активировать домен',
   verifyBlocked: 'Сначала укажите домен.',
   activateBlocked: 'Сначала подтвердите контроль домена.',
+  activateAfterFail: 'Сначала исправьте TXT и нажмите «Проверить».',
   deferred: 'Недоступно в этой версии прототипа',
   cnameTitle: 'Запись CNAME',
-  cnameLater: 'После активации направьте имя на адрес сайта.',
-  cnameNow: 'Имя направлено на адрес сайта.',
+  cnameHost: 'Имя',
+  cnameAddress: 'Адрес',
+  cnameLater: 'После активации создайте CNAME с этим именем и адресом.',
+  cnameNow: 'Имя уже указывает на адрес ниже.',
   certTitle: 'Сертификат HTTPS',
   httpsActive: 'HTTPS активен.',
   httpsPending: 'HTTPS ещё не активен.',
@@ -49,8 +52,43 @@ export function ownershipCopy(businessName: string): string {
   return `Домен принадлежит аккаунту сайта «${businessName}». Чужой аккаунт не меняет эти записи.`;
 }
 
-export function domainNameError(value: string): string | undefined {
-  if (value.trim() === '') return domainCopy.nameRequired;
+const HOST_LABEL = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)$/i;
+
+function nameHint(example: string): string {
+  return `Напишите имя вроде ${example}.`;
+}
+
+export function canonicalDomainName(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+export function domainNameError(
+  value: string,
+  example = 'nan.example',
+): string | undefined {
+  const name = value.trim();
+  const hint = nameHint(example);
+  if (name === '') return domainCopy.nameRequired;
+  if (/\s/u.test(name)) return `В имени есть пробел. ${hint}`;
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(name)) {
+    return `Уберите http://. Нужно только имя домена. ${hint}`;
+  }
+  if (/[/?#]/.test(name)) {
+    return `Уберите путь. Нужно только имя домена. ${hint}`;
+  }
+  if (name.includes('@')) return `В имени есть @. ${hint}`;
+  if (name.includes(':')) {
+    return `Уберите порт. Нужно только имя домена. ${hint}`;
+  }
+  if (name.length > 253) return `Имя длиннее 253 символов. ${hint}`;
+  if (!name.includes('.')) return `В имени нет точки. ${hint}`;
+  if (!name.toLowerCase().endsWith('.example')) {
+    return `Домен в прототипе заканчивается на .example. ${hint}`;
+  }
+  const labels = name.split('.');
+  if (!labels.every((label) => HOST_LABEL.test(label))) {
+    return `«${name}» не является доменным именем. ${hint}`;
+  }
   return undefined;
 }
 
@@ -58,19 +96,22 @@ export interface DnsExamples {
   domainName: string;
   txtName: string;
   txtValue: string;
-  cname: string;
+  cnameName: string;
+  cnameTarget: string;
   certificate: string;
 }
 
 export function dnsExamplesFor(domainName: string): DnsExamples {
+  const canonical = domainName.toLowerCase();
   return {
     domainName,
     txtName:
-      domainName === domainExamples.cnameName
+      canonical === domainExamples.cnameName
         ? domainExamples.txtName
         : `_alertion-verify.${domainName}`,
     txtValue: domainExamples.txtValue,
-    cname: `${domainName} → ${domainExamples.cnameTarget}`,
+    cnameName: domainName,
+    cnameTarget: domainExamples.cnameTarget,
     certificate: domainExamples.certificate,
   };
 }
@@ -96,7 +137,7 @@ export function currentStep(domain: DomainState): number | null {
     case 'name':
       return 0;
     case 'check':
-      return 2;
+      return domain.status === 'failed' ? 2 : 1;
     case 'activate':
       return 4;
     default:
@@ -134,6 +175,7 @@ export function verifyReason(domain: DomainState): string | null {
 export function activateReason(domain: DomainState): string | null {
   if (!showActivate(domain) || activateEnabled(domain)) return null;
   if (domain.status === 'deferred') return domainCopy.deferred;
+  if (domain.status === 'failed') return domainCopy.activateAfterFail;
   return domainCopy.activateBlocked;
 }
 

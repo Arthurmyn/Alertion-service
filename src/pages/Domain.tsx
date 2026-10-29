@@ -16,6 +16,7 @@ import {
   confirmation,
   currentStep,
   domainCopy,
+  canonicalDomainName,
   domainNameError,
   domainPhase,
   dnsExamplesFor,
@@ -28,32 +29,66 @@ import {
   shownDomainName,
   verifyEnabled,
   verifyReason,
-  type DnsExamples,
 } from './DomainFlow.ts';
 import { NotFound } from './NotFound.tsx';
 
 function Marked({ value }: { value: string }) {
   return (
-    <>
-      <code className={styles.value}>{value}</code>{' '}
+    <span className={styles.marked}>
+      <code className={styles.value}>{value}</code>
       <span className={styles.example}>{domainCopy.example}</span>
-    </>
+    </span>
   );
 }
 
-function NameForm({ onSave }: { onSave: (name: string) => void }) {
+function Records({ rows }: { rows: readonly (readonly [string, string])[] }) {
+  return (
+    <dl className={styles.records}>
+      {rows.map(([label, value]) => (
+        <div key={label}>
+          <dt>{label}</dt>
+          <dd>
+            <Marked value={value} />
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function NameForm({
+  example,
+  onSave,
+}: {
+  example: string;
+  onSave: (name: string) => void;
+}) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | undefined>();
+  const [attempts, setAttempts] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (attempts === 0) return;
+    const input = formRef.current?.querySelector('input');
+    if (input instanceof HTMLInputElement) {
+      input.focus({ focusVisible: true });
+    }
+  }, [attempts]);
 
   return (
     <form
+      ref={formRef}
       noValidate
       onSubmit={(event) => {
         event.preventDefault();
-        const next = domainNameError(name);
+        const next = domainNameError(name, example);
         setError(next);
-        if (next) return;
-        onSave(name);
+        if (next) {
+          setAttempts((count) => count + 1);
+          return;
+        }
+        onSave(canonicalDomainName(name));
       }}
     >
       <Field
@@ -64,7 +99,7 @@ function NameForm({ onSave }: { onSave: (name: string) => void }) {
         error={error}
         onChange={(value) => {
           setName(value);
-          if (error) setError(domainNameError(value));
+          if (error) setError(domainNameError(value, example));
         }}
       />
       <Button type="submit">{domainCopy.nameSubmit}</Button>
@@ -101,22 +136,26 @@ function DomainStatusBlock({ domain }: { domain: DomainState }) {
   );
 }
 
-function TxtRecords({ dns }: { dns: DnsExamples }) {
+function StepButton({
+  label,
+  enabled,
+  reason,
+  onClick,
+}: {
+  label: string;
+  enabled: boolean;
+  reason: string | null;
+  onClick: () => void;
+}) {
   return (
-    <dl className={styles.records}>
-      <div>
-        <dt>{domainCopy.txtName}</dt>
-        <dd>
-          <Marked value={dns.txtName} />
-        </dd>
+    <>
+      <div className={styles.action}>
+        <Button disabled={!enabled} onClick={onClick}>
+          {label}
+        </Button>
       </div>
-      <div>
-        <dt>{domainCopy.txtValue}</dt>
-        <dd>
-          <Marked value={dns.txtValue} />
-        </dd>
-      </div>
-    </dl>
+      {reason ? <p className={styles.reason}>{reason}</p> : null}
+    </>
   );
 }
 
@@ -192,6 +231,7 @@ export function Domain() {
       {showNameForm(domain) ? (
         <NameForm
           key={slug}
+          example={account.domainName}
           onSave={(name) =>
             dispatch({ type: 'setDomain', slug: site.slug, name })
           }
@@ -201,19 +241,21 @@ export function Domain() {
         {domainCopy.txtTitle}
       </h2>
       <p>{domainCopy.txtHelp}</p>
-      <TxtRecords dns={dns} />
+      <Records
+        rows={[
+          [domainCopy.txtName, dns.txtName],
+          [domainCopy.txtValue, dns.txtValue],
+        ]}
+      />
       {message ? <Alert tone={message.tone}>{message.text}</Alert> : null}
       {showVerify(domain) ? (
-        <div className={styles.action}>
-          <Button
-            disabled={!verifyEnabled(domain)}
-            onClick={() => dispatch({ type: 'verifyDomain', slug: site.slug })}
-          >
-            {domainCopy.check}
-          </Button>
-        </div>
+        <StepButton
+          label={domainCopy.check}
+          enabled={verifyEnabled(domain)}
+          reason={verifyWhy}
+          onClick={() => dispatch({ type: 'verifyDomain', slug: site.slug })}
+        />
       ) : null}
-      {verifyWhy ? <p className={styles.reason}>{verifyWhy}</p> : null}
       {verified ? (
         <p
           ref={confirmedRef}
@@ -225,25 +267,21 @@ export function Domain() {
         </p>
       ) : null}
       {showActivate(domain) ? (
-        <div className={styles.action}>
-          <Button
-            disabled={!activateEnabled(domain)}
-            onClick={() =>
-              dispatch({ type: 'activateDomain', slug: site.slug })
-            }
-          >
-            {domainCopy.activate}
-          </Button>
-        </div>
-      ) : null}
-      {activateWhy && activateWhy !== verifyWhy ? (
-        <p className={styles.reason}>{activateWhy}</p>
+        <StepButton
+          label={domainCopy.activate}
+          enabled={activateEnabled(domain)}
+          reason={activateWhy !== verifyWhy ? activateWhy : null}
+          onClick={() => dispatch({ type: 'activateDomain', slug: site.slug })}
+        />
       ) : null}
       <h2>{domainCopy.cnameTitle}</h2>
       {cname ? <p>{cname}</p> : null}
-      <p>
-        <Marked value={dns.cname} />
-      </p>
+      <Records
+        rows={[
+          [domainCopy.cnameHost, dns.cnameName],
+          [domainCopy.cnameAddress, dns.cnameTarget],
+        ]}
+      />
       <h2>{domainCopy.certTitle}</h2>
       {https ? <p>{https}</p> : null}
       <p>
