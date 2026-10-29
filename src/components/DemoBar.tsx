@@ -9,6 +9,7 @@ import {
 } from '../data/demoSteps.ts';
 import { scenarioById } from '../data/scenarios.ts';
 import { useStore } from '../state/store.tsx';
+import { shouldCloseDemo } from './demoClose.ts';
 import styles from './DemoBar.module.css';
 
 export function DemoScenarioList({
@@ -35,10 +36,6 @@ export function DemoScenarioList({
       })}
     </ul>
   );
-}
-
-export function shouldCloseDemo(key: string, dialogOpen: boolean): boolean {
-  return key === 'Escape' && !dialogOpen;
 }
 
 function focusPage(): void {

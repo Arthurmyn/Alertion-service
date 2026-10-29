@@ -4,7 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { demoCaption, demoRoute, demoState } from '../data/demoSteps.ts';
 import { StoreProvider, writeSession } from '../state/store.tsx';
-import { DemoBar, shouldCloseDemo } from './DemoBar.tsx';
+import { shouldCloseDemo } from './demoClose.ts';
+import { DemoBar } from './DemoBar.tsx';
 
 function memoryStorage() {
   const data = new Map<string, string>();
