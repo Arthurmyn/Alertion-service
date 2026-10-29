@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { baseline } from './data/accounts.ts';
 import { App } from './App.tsx';
 import { reducer } from './state/reducer.ts';
+import { NAV_KEY } from './components/navState.ts';
 import { SESSION_KEY, writeSession } from './state/store.tsx';
 
 vi.mock('react-router-dom', async () => {
@@ -167,6 +168,26 @@ describe('routes', () => {
     expect(isCurrent(signedIn, '/defense')).toBe(true);
     expect(signedIn).toContain('href="/manage/temir"');
     expect(signedIn).not.toContain('>Вход</a>');
+    expect(upload).toContain('aria-label="Разделы"');
+    expect(upload).toContain('Свернуть меню');
+    expect(upload).toContain('aria-expanded="true"');
+    expect(upload).toContain('type="button"');
+  });
+
+  it('keeps collapsed nav names when the rail is stored', () => {
+    const local = memoryStorage();
+    local.setItem(NAV_KEY, 'collapsed');
+    vi.stubGlobal('localStorage', local);
+    vi.stubGlobal('sessionStorage', memoryStorage());
+
+    const html = renderAt('/login');
+    expect(html).toContain('Развернуть меню');
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).not.toContain('aria-expanded="true"');
+    expect(html).toContain('aria-label="Вход"');
+    expect(html).toContain('title="Вход"');
+    expect(html).toContain('aria-label="Защита проекта"');
+    expect(html).toContain('title="Защита проекта"');
   });
 
   it('shows a not-found page with a link home', () => {

@@ -1,20 +1,20 @@
 :root {
   color-scheme: light;
 
-  --ink: #231F20;
-  --on-ink: #FFFFFF;
-  --on-ink-2: #B8B1B2;
-  --ink-2: #5C5657;
-  --paper: #F7F5F4;
-  --surface: #FFFFFF;
-  --rule: #E4E0DF;
-  --brand: #ED1B24;
-  --danger-text: #C4141C;
-  --link: #0060CC;
-  --focus: #0077FC;
-  --ok-text: #1E7A3E;
-  --warn-text: #8A5A00;
-  --warn-bg: #FFF4DB;
+  --ink: #231f20;
+  --on-ink: #ffffff;
+  --on-ink-2: #b8b1b2;
+  --ink-2: #5c5657;
+  --paper: #f7f5f4;
+  --surface: #ffffff;
+  --rule: #e4e0df;
+  --brand: #ed1b24;
+  --danger-text: #c4141c;
+  --link: #0060cc;
+  --focus: #0077fc;
+  --ok-text: #1e7a3e;
+  --warn-text: #8a5a00;
+  --warn-bg: #fff4db;
 
   --font-ui: 'Onest', sans-serif;
   --font-prose: 'Literata', serif;
@@ -31,6 +31,28 @@
 
   --shadow-dialog: 0 12px 32px rgb(35 31 32 / 0.18);
   --motion: 150ms;
+
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 64px;
+
+  --control-h: 32px;
+  --control-pad-x: 12px;
+  --sidebar-w: 220px;
+  --sidebar-rail: 56px;
+  --topbar-h: 48px;
+  --measure: 65ch;
+  --kv-key: 10.5rem;
+  --kv-key-wide: 14rem;
+  --kv-gap: 16px;
+
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23231F20' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
+  --select-chevron-muted: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%235C5657' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {
