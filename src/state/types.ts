@@ -62,6 +62,7 @@ export type UploadResult = {
 export type AddSiteResult = {
   kind: 'addSite';
   ok: false;
+  nextStep: string;
 };
 
 export interface SimulateFlags {

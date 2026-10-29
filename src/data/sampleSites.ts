@@ -59,5 +59,6 @@ export const sampleSites: Record<string, string> = {
   'nan-v2.zip': page('Пекарня Нан', [baursak, croissant]),
   'nan-v3.zip': page('Пекарня Нан', []),
   'nan-v4.zip': page('Пекарня Нан', []),
+  'nan-storage.zip': page('Пекарня Нан', []),
   'temir-v1.zip': page('Мастерская Темир', ['Заточка ножа, 2 000 ₸']),
 };

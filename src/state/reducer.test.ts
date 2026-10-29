@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { baseline } from '../data/accounts.ts';
 import { archives, type ArchiveFixture } from '../data/archives.ts';
 import { LIMITS } from '../data/limits.ts';
-import type { AppState, Site, UploadResult } from './types.ts';
+import type { AppState, DomainState, Site, UploadResult } from './types.ts';
 import { reducer, type Action } from './reducer.ts';
 import { exampleUrl, storageUsedMb } from './selectors.ts';
 import { validateArchive } from './validateArchive.ts';
@@ -50,6 +50,28 @@ function uploadResult(state: AppState, name: string): UploadResult {
     archiveName: name,
     ...validateArchive(archive(name), siteOf(state), LIMITS),
   };
+}
+
+function withDomain(
+  state: AppState,
+  domain: DomainState,
+  slug = 'nan',
+): AppState {
+  return {
+    ...state,
+    sites: {
+      ...state.sites,
+      [slug]: { ...siteOf(state, slug), domain },
+    },
+  };
+}
+
+function expectActiveImpliesVerified(state: AppState) {
+  for (const site of Object.values(state.sites)) {
+    if (site.domain.status === 'active') {
+      expect(site.domain.controlVerified).toBe(true);
+    }
+  }
 }
 
 function accept(
@@ -287,7 +309,7 @@ describe('reducer', () => {
     expect(
       site.versions.find((version) => version.id === 'nan-storage'),
     ).toMatchObject({
-      label: 'nan-storage',
+      label: 'E',
       archiveName: 'nan-storage.zip',
       archiveMb: archive('nan-storage.zip').archiveMb,
       unpackedMb: archive('nan-storage.zip').unpackedMb,
@@ -310,6 +332,273 @@ describe('reducer', () => {
     expect(reducer(baseline, { type: 'rollback', slug: 'missing' })).toBe(
       baseline,
     );
+    expect(
+      reducer(baseline, {
+        type: 'setDomain',
+        slug: 'missing',
+        name: 'nan.example',
+      }),
+    ).toBe(baseline);
+    expect(reducer(baseline, { type: 'verifyDomain', slug: 'missing' })).toBe(
+      baseline,
+    );
+    expect(reducer(baseline, { type: 'activateDomain', slug: 'missing' })).toBe(
+      baseline,
+    );
+    expect(
+      reducer(baseline, {
+        type: 'refreshStorage',
+        slug: 'missing',
+        updatedAt: uploadedAt,
+      }),
+    ).toBe(baseline);
+  });
+
+  it('selectPlan marks the pilot plan for that account', () => {
+    const closed: AppState = {
+      ...baseline,
+      planSelected: { a: false, b: true },
+    };
+    const next = reducer(closed, { type: 'selectPlan', accountId: 'a' });
+
+    expect(next.planSelected).toEqual({ a: true, b: true });
+    expect(next.sites).toBe(closed.sites);
+    expect(reducer(next, { type: 'selectPlan', accountId: 'a' })).toBe(next);
+    expect(reducer(baseline, { type: 'selectPlan', accountId: 'b' })).toBe(
+      baseline,
+    );
+  });
+
+  it('B7-AC2 rejects addSite with the pilot site limit and a next step', () => {
+    const next = reducer(baseline, { type: 'addSite' });
+
+    expect(next.sites).toBe(baseline.sites);
+    expect(Object.keys(next.sites)).toEqual(['nan', 'temir']);
+    expect(reducer(next, { type: 'addSite' }).sites).toBe(baseline.sites);
+    expect(next.lastResult).toEqual({
+      kind: 'addSite',
+      ok: false,
+      nextStep: `Сайт уже есть. Лимит пилотного плана: ${LIMITS.sites} сайт. Работайте с текущим сайтом.`,
+    });
+  });
+
+  it('B5-AC1 refuses activateDomain until control is verified', () => {
+    expect(reducer(baseline, { type: 'activateDomain', slug: 'nan' })).toBe(
+      baseline,
+    );
+
+    const pending = reducer(baseline, {
+      type: 'setDomain',
+      slug: 'nan',
+      name: 'nan.example',
+    });
+    expect(siteOf(pending).domain).toEqual({
+      name: 'nan.example',
+      status: 'pending',
+      controlVerified: false,
+    });
+    expect(pending.lastResult).toBeNull();
+    expect(reducer(pending, { type: 'activateDomain', slug: 'nan' })).toBe(
+      pending,
+    );
+
+    const verified = reducer(pending, { type: 'verifyDomain', slug: 'nan' });
+    expect(siteOf(verified).domain).toEqual({
+      name: 'nan.example',
+      status: 'pending',
+      controlVerified: true,
+    });
+    expect(verified.lastResult).toBeNull();
+    expect(siteOf(verified).deployment).toBe(siteOf(pending).deployment);
+
+    const active = reducer(verified, { type: 'activateDomain', slug: 'nan' });
+    expect(siteOf(active).domain).toEqual({
+      name: 'nan.example',
+      status: 'active',
+      controlVerified: true,
+    });
+    expect(active.lastResult).toBeNull();
+    expectActiveImpliesVerified(active);
+    expect(active.sites.temir).toBe(baseline.sites.temir);
+  });
+
+  it('keeps active only when controlVerified', () => {
+    const steps: Action[] = [
+      { type: 'activateDomain', slug: 'nan' },
+      { type: 'setDomain', slug: 'nan', name: 'nan.example' },
+      { type: 'activateDomain', slug: 'nan' },
+      { type: 'verifyDomain', slug: 'nan' },
+      { type: 'activateDomain', slug: 'nan' },
+      { type: 'setDomain', slug: 'nan', name: 'nan.example' },
+      { type: 'verifyDomain', slug: 'nan' },
+      { type: 'activateDomain', slug: 'nan' },
+    ];
+
+    const states = steps.reduce<AppState[]>(
+      (seen, action) => [...seen, reducer(seen.at(-1) ?? baseline, action)],
+      [],
+    );
+
+    for (const state of states) expectActiveImpliesVerified(state);
+    expect(siteOf(states.at(-1) ?? baseline).domain).toEqual({
+      name: 'nan.example',
+      status: 'active',
+      controlVerified: true,
+    });
+
+    const active = states[4];
+    if (!active) throw new Error('missing active step');
+    const failing: AppState = {
+      ...active,
+      simulate: { ...active.simulate, domainCheck: 'fail' },
+    };
+    const failed = reducer(failing, { type: 'verifyDomain', slug: 'nan' });
+    expect(siteOf(failed).domain).toEqual({
+      name: 'nan.example',
+      status: 'failed',
+      controlVerified: false,
+    });
+    expect(failed.lastResult).toBe(active.lastResult);
+    expect(siteOf(failed).deployment).toBe(siteOf(active).deployment);
+    expect(reducer(failed, { type: 'activateDomain', slug: 'nan' })).toBe(
+      failed,
+    );
+    expectActiveImpliesVerified(failed);
+
+    const rechecked = reducer(active, { type: 'verifyDomain', slug: 'nan' });
+    expect(siteOf(rechecked).domain).toEqual(siteOf(active).domain);
+
+    const retry: AppState = {
+      ...failed,
+      simulate: { ...failed.simulate, domainCheck: 'pass' },
+    };
+    const recovered = reducer(
+      reducer(retry, { type: 'verifyDomain', slug: 'nan' }),
+      { type: 'activateDomain', slug: 'nan' },
+    );
+    expect(siteOf(recovered).domain.status).toBe('active');
+    expect(siteOf(recovered).domain.controlVerified).toBe(true);
+  });
+
+  it('writes a failed domain check only on domain.status', () => {
+    const uploaded = reducer(baseline, uploadAction('nan', 'nan-28mb.zip'));
+    const pending = reducer(uploaded, {
+      type: 'setDomain',
+      slug: 'nan',
+      name: '  nan.example  ',
+    });
+    expect(siteOf(pending).domain.name).toBe('nan.example');
+    expect(pending.lastResult).toBe(uploaded.lastResult);
+
+    const failing: AppState = {
+      ...pending,
+      simulate: { ...pending.simulate, domainCheck: 'fail' },
+    };
+    const failed = reducer(failing, { type: 'verifyDomain', slug: 'nan' });
+
+    expect(siteOf(failed).domain).toEqual({
+      name: 'nan.example',
+      status: 'failed',
+      controlVerified: false,
+    });
+    expect(failed.lastResult).toBe(uploaded.lastResult);
+    expect(failed.lastResult).toMatchObject({ kind: 'upload', ok: false });
+    expect(siteOf(failed)).not.toHaveProperty('domainResult');
+    expect(Object.keys(siteOf(failed).domain).sort()).toEqual([
+      'controlVerified',
+      'name',
+      'status',
+    ]);
+    expect(reducer(failed, { type: 'activateDomain', slug: 'nan' })).toBe(
+      failed,
+    );
+  });
+
+  it('leaves a deferred domain unchanged', () => {
+    const deferred = withDomain(baseline, {
+      name: null,
+      status: 'deferred',
+      controlVerified: false,
+    });
+
+    expect(
+      reducer(deferred, {
+        type: 'setDomain',
+        slug: 'nan',
+        name: 'nan.example',
+      }),
+    ).toBe(deferred);
+    expect(reducer(deferred, { type: 'verifyDomain', slug: 'nan' })).toBe(
+      deferred,
+    );
+    expect(reducer(deferred, { type: 'activateDomain', slug: 'nan' })).toBe(
+      deferred,
+    );
+    expectActiveImpliesVerified(deferred);
+  });
+
+  it('ignores domain setup with a blank name', () => {
+    expect(
+      reducer(baseline, { type: 'setDomain', slug: 'nan', name: '   ' }),
+    ).toBe(baseline);
+    expect(reducer(baseline, { type: 'verifyDomain', slug: 'nan' })).toBe(
+      baseline,
+    );
+  });
+
+  it('refreshStorage marks storage current without a snapshot', () => {
+    const nan = siteOf(baseline);
+    const staleSite: Site = { ...nan, storageDataStatus: 'stale' };
+    const stored: AppState = {
+      ...baseline,
+      sites: { ...baseline.sites, nan: staleSite },
+    };
+    const updatedAt = '2026-10-29T15:00:00.000Z';
+    const next = reducer(stored, {
+      type: 'refreshStorage',
+      slug: 'nan',
+      updatedAt,
+    });
+    const site = siteOf(next);
+
+    expect(site.storageDataStatus).toBe('current');
+    expect(site.lastUpdatedAt).toBe(updatedAt);
+    expect(site.versions).toBe(staleSite.versions);
+    expect(storageUsedMb(site)).toBe(storageUsedMb(nan));
+    expect(site).not.toHaveProperty('storageSnapshotMb');
+    expect(site.domain).toEqual(nan.domain);
+    expect(next.lastResult).toBeNull();
+    expect(next.sites.temir).toBe(baseline.sites.temir);
+  });
+
+  it('setDemo stores a step or clears it', () => {
+    const running = reducer(baseline, { type: 'setDemo', demo: { step: 4 } });
+    expect(running.demo).toEqual({ step: 4 });
+    expect(running.sites).toBe(baseline.sites);
+    expect(running.scenarioId).toBeNull();
+
+    const signedIn = reducer(running, { type: 'signIn', accountId: 'a' });
+    expect(signedIn.demo).toEqual({ step: 4 });
+
+    const cleared = reducer(signedIn, { type: 'setDemo', demo: null });
+    expect(cleared.demo).toBeNull();
+    expect(cleared.sessionAccountId).toBe('a');
+  });
+
+  it('load replaces the whole state', () => {
+    const running = reducer(
+      reducer(baseline, { type: 'signIn', accountId: 'a' }),
+      { type: 'setDemo', demo: { step: 2 } },
+    );
+    expect(reducer(running, { type: 'load', state: baseline })).toBe(baseline);
+
+    const scenario: AppState = {
+      ...baseline,
+      sessionAccountId: 'b',
+      scenarioId: 'domain-deferred',
+      demo: { step: 1 },
+    };
+    expect(reducer(running, { type: 'load', state: scenario })).toBe(scenario);
   });
 });
 

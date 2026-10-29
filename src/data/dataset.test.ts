@@ -117,6 +117,7 @@ describe('accounts and archives', () => {
     expect(archives['nan-storage.zip']).toMatchObject({
       archiveMb: 12,
       unpackedMb: 40,
+      label: 'E',
     });
     expect(archives['nan-no-index.zip']?.files).toEqual(['home.html']);
     expect(archives['nan-no-index.zip']?.files).not.toContain('index.html');
