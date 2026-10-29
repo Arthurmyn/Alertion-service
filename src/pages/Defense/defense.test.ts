@@ -69,8 +69,20 @@ describe('defense page', () => {
     expect(html).toContain(
       'Отказ в доступе чужому аккаунту тоже имитация: настоящая изоляция аккаунтов, хостинг и сервер в прототип не входят.',
     );
-    expect(html).not.toContain('Запустить демо');
-    expect(html).not.toContain('href="/manage/');
+    expect(html).toContain('id="demo"');
+    expect(html).toContain('>3. Демо');
+    expect(html).toContain('Запустить демо');
+    expect(html).toContain('scenario=b-opens-a');
+    expect(html).toContain('scenario=publish-fail');
+    expect(html).toContain('scenario=domain-pending');
+    expect(html).toContain('scenario=reject-archive-size');
+    expect(html).toContain('scenario=rollback-fail');
+    expect(html).toContain('>Открыть</a>');
+    const manageHrefs = [...html.matchAll(/href="(\/manage\/[^"]*)"/g)].map(
+      (match) => match[1] ?? '',
+    );
+    expect(manageHrefs.length).toBeGreaterThan(0);
+    expect(manageHrefs.every((href) => href.includes('?scenario='))).toBe(true);
     expect(html).toContain('>Подготовить файлы</a>');
     expect(html).toContain('>Вернуть версию</a>');
     expect(html).toContain('Preview and explicit publish');
@@ -86,7 +98,6 @@ describe('defense page', () => {
     expect(html).toContain('План, часы по людям');
     expect(html).not.toContain('Фактические часы');
     expect(html).toContain('Демо-материал');
-    expect(html).not.toContain('>3. Демо');
     expect(html).not.toContain('>5. Результаты');
     expect(html).not.toContain('>6. Цели');
     expect(html).not.toContain('>7. Невыполненные');

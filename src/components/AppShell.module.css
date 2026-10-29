@@ -2,6 +2,16 @@
   min-height: 100vh;
 }
 
+.withDemo {
+  padding-bottom: 9rem;
+}
+
+@media (max-width: 720px) {
+  .withDemo {
+    padding-bottom: 16rem;
+  }
+}
+
 .header,
 .publicHeader {
   display: flex;
