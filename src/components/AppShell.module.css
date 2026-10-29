@@ -2,6 +2,26 @@
   min-height: 100vh;
 }
 
+.withDemo {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.withDemo .header,
+.withDemo .publicHeader {
+  flex: none;
+}
+
+.withDemo .main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
 .header,
 .publicHeader {
   display: flex;

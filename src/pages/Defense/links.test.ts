@@ -33,6 +33,7 @@ describe('defense links', () => {
     expect(defenseOutline).toEqual([
       'goal',
       'path',
+      'demo',
       'status',
       'plan',
       'burndown',
@@ -45,6 +46,7 @@ describe('defense links', () => {
     expect(defenseOutline.map((id) => sectionTitle[id])).toContain(
       '4. Статус B1–B8',
     );
+    expect(sectionTitle.demo).toBe('3. Демо');
     expect(sectionTitle.plan).toBe('8. План и симуляция');
   });
 
