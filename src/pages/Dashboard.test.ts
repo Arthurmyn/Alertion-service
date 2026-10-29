@@ -25,9 +25,23 @@ function memoryStorage() {
   };
 }
 
-function renderAt(path: string, stored?: AppState): string {
+function withOwner(path: string, state: AppState): AppState {
+  if (state.sessionAccountId !== null) return state;
+  const slug = /^\/manage\/([^/]+)/.exec(path)?.[1];
+  if (!slug) return state;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    decoded = slug;
+  }
+  const ownerId = state.sites[decoded]?.ownerId ?? 'a';
+  return { ...state, sessionAccountId: ownerId };
+}
+
+function renderAt(path: string, stored: AppState = baseline): string {
   const storage = memoryStorage();
-  if (stored) writeSession(storage, stored);
+  writeSession(storage, withOwner(path, stored));
   vi.stubGlobal('sessionStorage', storage);
   return renderToStaticMarkup(
     createElement(
@@ -278,7 +292,9 @@ describe('Dashboard', () => {
   });
 
   it('reaches defense from the shell on the dashboard', () => {
-    vi.stubGlobal('sessionStorage', memoryStorage());
+    const storage = memoryStorage();
+    writeSession(storage, withOwner('/manage/nan', baseline));
+    vi.stubGlobal('sessionStorage', storage);
     const html = renderToStaticMarkup(
       createElement(
         MemoryRouter,
