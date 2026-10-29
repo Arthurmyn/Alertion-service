@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Alert } from '../components/Alert.tsx';
 import { Button } from '../components/Button.tsx';
@@ -26,11 +27,38 @@ export function Plan() {
   const { slug = '' } = useParams();
   const { state, dispatch } = useStore();
   const site = state.sites[slug];
+  const uploadRef = useRef<HTMLAnchorElement>(null);
+  const rejectRef = useRef<HTMLDivElement>(null);
+  const moveFocus = useRef<'upload' | 'reject' | null>(null);
+  const [rejectStamp, setRejectStamp] = useState(0);
+  const selected = Boolean(site && state.planSelected[site.ownerId]);
+  const notice = site
+    ? addSiteNotice(state.lastResult, site.businessName)
+    : null;
+
+  useEffect(() => {
+    const target = moveFocus.current;
+    if (!target) return;
+    const node = target === 'upload' ? uploadRef.current : rejectRef.current;
+    if (!node) return;
+    moveFocus.current = null;
+    node.focus({ focusVisible: true });
+  }, [selected, rejectStamp, notice]);
+
   if (!site) return <NotFound />;
 
-  const selected = state.planSelected[site.ownerId];
-  const notice = addSiteNotice(state.lastResult, site.businessName);
   const owned = ownedSites(state, site.ownerId);
+
+  function choosePlan() {
+    moveFocus.current = 'upload';
+    dispatch({ type: 'selectPlan', accountId: site.ownerId });
+  }
+
+  function tryAddSite() {
+    moveFocus.current = 'reject';
+    setRejectStamp((stamp) => stamp + 1);
+    dispatch({ type: 'addSite' });
+  }
 
   return (
     <>
@@ -41,19 +69,14 @@ export function Plan() {
       <div className={styles.actions}>
         {selected ? (
           <Link
+            ref={uploadRef}
             to={`/manage/${site.slug}/upload`}
             aria-describedby="plan-status"
           >
             Перейти к загрузке
           </Link>
         ) : (
-          <Button
-            onClick={() =>
-              dispatch({ type: 'selectPlan', accountId: site.ownerId })
-            }
-          >
-            Выбрать пилотный план
-          </Button>
+          <Button onClick={choosePlan}>Выбрать пилотный план</Button>
         )}
       </div>
       <h2 id="limits-title">Лимиты</h2>
@@ -69,11 +92,13 @@ export function Plan() {
       <h2>Ещё один сайт</h2>
       <p>{accountLimitLine(owned)}</p>
       <div className={styles.actions}>
-        <Button onClick={() => dispatch({ type: 'addSite' })}>
-          Добавить сайт
-        </Button>
+        <Button onClick={tryAddSite}>Добавить сайт</Button>
       </div>
-      {notice ? <Alert>{notice}</Alert> : null}
+      {notice ? (
+        <div ref={rejectRef} tabIndex={-1} className={styles.rejection}>
+          <Alert key={rejectStamp}>{notice}</Alert>
+        </div>
+      ) : null}
     </>
   );
 }

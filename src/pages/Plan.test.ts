@@ -184,6 +184,7 @@ describe('Plan', () => {
     expect(html).toContain('Добавить сайт');
     expect(html).toContain('Ещё один сайт');
     expect(html).toContain('role="alert"');
+    expect(html).toContain('tabindex="-1"');
     expect(html).toContain(addSiteNotice(next.lastResult, 'Пекарня Нан') ?? '');
     expect(html).toContain(accountLimitLine(owned));
     expect(html).toContain('Новый сайт не создаётся.');

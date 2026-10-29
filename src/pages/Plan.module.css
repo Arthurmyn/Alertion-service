@@ -34,6 +34,15 @@
   margin: 0 0 8px;
 }
 
+.rejection {
+  scroll-margin: 16px;
+}
+
+.rejection:focus {
+  outline: 2px solid var(--focus);
+  outline-offset: 4px;
+}
+
 @media (min-width: 36rem) {
   .row {
     grid-template-columns: 14rem 1fr;
