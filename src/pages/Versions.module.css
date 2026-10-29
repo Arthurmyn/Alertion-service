@@ -27,6 +27,11 @@
   margin: 0;
 }
 
+.status {
+  width: fit-content;
+  max-width: 100%;
+}
+
 .name {
   font-weight: 600;
 }

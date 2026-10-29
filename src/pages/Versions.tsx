@@ -87,10 +87,10 @@ export function Versions() {
       const target = actionsRef.current?.querySelector(
         `[data-action="${focusKind.current}"] button`,
       );
-      if (target instanceof HTMLElement) target.focus();
+      if (target instanceof HTMLElement) target.focus({ focusVisible: true });
       return;
     }
-    (failureRef.current ?? statusRef.current)?.focus();
+    (failureRef.current ?? statusRef.current)?.focus({ focusVisible: true });
   }, [focusNonce]);
 
   if (!site) return <NotFound />;
@@ -115,7 +115,12 @@ export function Versions() {
     <>
       <h1>Версии</h1>
       {active ? (
-        <p ref={statusRef} tabIndex={-1} aria-live="polite">
+        <p
+          ref={statusRef}
+          className={styles.status}
+          tabIndex={-1}
+          aria-live="polite"
+        >
           {activeVersionLine(active.label)}
         </p>
       ) : null}
