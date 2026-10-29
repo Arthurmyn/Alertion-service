@@ -1,6 +1,6 @@
 import { archives, type ArchiveFixture } from '../data/archives.ts';
 import { LIMITS } from '../data/limits.ts';
-import type { AppState, Site, UploadResult } from '../state/types.ts';
+import type { AppState, Site, UploadResult, Version } from '../state/types.ts';
 
 export const planGateText = 'Сначала выберите пилотный план';
 export const checkingText = 'Проверяем архив…';
@@ -16,11 +16,17 @@ export function checkDelay(reducedMotion: boolean): number {
   return reducedMotion ? 0 : CHECK_DELAY_MS;
 }
 
+function versionById(site: Site, id: string | null): Version | undefined {
+  if (id === null) return undefined;
+  return site.versions.find((version) => version.id === id);
+}
+
+function belongsToSite(site: Site, archiveName: string): boolean {
+  return archiveName.startsWith(`${site.slug}-`);
+}
+
 export function activeVersionLabel(site: Site): string {
-  const active = site.versions.find(
-    (version) => version.id === site.activeVersionId,
-  );
-  return active?.label ?? site.activeVersionId;
+  return versionById(site, site.activeVersionId)?.label ?? site.activeVersionId;
 }
 
 export function activeLine(site: Site): string {
@@ -32,10 +38,7 @@ export function limitsSummary(): string {
 }
 
 export function successMessage(site: Site): string | null {
-  if (site.candidateVersionId === null) return null;
-  const candidate = site.versions.find(
-    (version) => version.id === site.candidateVersionId,
-  );
+  const candidate = versionById(site, site.candidateVersionId);
   if (!candidate) return null;
   return `Проверка прошла. Версия ${candidate.label} стала кандидатом. Адрес сайта показывает активную версию ${activeVersionLabel(site)}.`;
 }
@@ -52,13 +55,11 @@ export function archiveSizeNote(archive: ArchiveFixture): string | null {
 
 /** Sample archives for this site, except the one already active. */
 export function uploadChoices(site: Site): ArchiveFixture[] {
-  const active = site.versions.find(
-    (version) => version.id === site.activeVersionId,
+  const activeName = versionById(site, site.activeVersionId)?.archiveName;
+  return Object.values(archives).filter(
+    (archive) =>
+      archive.name !== activeName && belongsToSite(site, archive.name),
   );
-  return Object.values(archives).filter((archive) => {
-    if (archive.name === active?.archiveName) return false;
-    return archive.name.startsWith(`${site.slug}-`);
-  });
 }
 
 export function blockReason(
@@ -74,13 +75,15 @@ export function visibleUploadResult(
   site: Site,
   lastResult: AppState['lastResult'],
 ): UploadResult | null {
-  if (lastResult === null || lastResult.kind !== 'upload') return null;
-  if (!lastResult.archiveName.startsWith(`${site.slug}-`)) return null;
+  if (
+    lastResult?.kind !== 'upload' ||
+    !belongsToSite(site, lastResult.archiveName)
+  ) {
+    return null;
+  }
   if (!lastResult.ok) return lastResult;
 
-  const candidate = site.versions.find(
-    (version) => version.id === site.candidateVersionId,
-  );
+  const candidate = versionById(site, site.candidateVersionId);
   if (candidate?.archiveName !== lastResult.archiveName) return null;
   return lastResult;
 }
