@@ -113,9 +113,23 @@ function pageMain(html: string): string {
   return html.slice(start, end);
 }
 
+function withOwner(path: string, state: AppState): AppState {
+  if (state.sessionAccountId !== null) return state;
+  const slug = /^\/manage\/([^/]+)/.exec(path)?.[1];
+  if (!slug) return state;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    decoded = slug;
+  }
+  const ownerId = state.sites[decoded]?.ownerId ?? 'a';
+  return { ...state, sessionAccountId: ownerId };
+}
+
 function renderAt(path: string, stored: AppState = baseline): string {
   const storage = memoryStorage();
-  writeSession(storage, stored);
+  writeSession(storage, withOwner(path, stored));
   vi.stubGlobal('sessionStorage', storage);
   return pageMain(
     markup(

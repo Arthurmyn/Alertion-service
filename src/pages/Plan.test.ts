@@ -33,9 +33,23 @@ function memoryStorage() {
   };
 }
 
+function withOwner(path: string, state: AppState): AppState {
+  if (state.sessionAccountId !== null) return state;
+  const slug = /^\/manage\/([^/]+)/.exec(path)?.[1];
+  if (!slug) return state;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(slug);
+  } catch {
+    decoded = slug;
+  }
+  const ownerId = state.sites[decoded]?.ownerId ?? 'a';
+  return { ...state, sessionAccountId: ownerId };
+}
+
 function renderPlan(path: string, state: AppState = baseline): string {
   const storage = memoryStorage();
-  writeSession(storage, state);
+  writeSession(storage, withOwner(path, state));
   vi.stubGlobal('sessionStorage', storage);
   return renderToStaticMarkup(
     createElement(
