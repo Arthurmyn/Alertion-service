@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { accountSlug } from '../routing.ts';
 import { useStore } from '../state/store.tsx';
+import { ScenarioPanel } from './ScenarioPanel.tsx';
 import styles from './AppShell.module.css';
 
 const sections = [
@@ -81,6 +82,7 @@ export function AppShell() {
             </ul>
           </nav>
         )}
+        <ScenarioPanel />
       </header>
       <main className={styles.main}>
         <Outlet />
