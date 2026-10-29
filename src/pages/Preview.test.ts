@@ -77,7 +77,7 @@ describe('Preview', () => {
     expect(html).toContain('sandbox=""');
     expect(html).toContain('Круассан, 900 ₸');
     expect(html).not.toContain('Опубликовать');
-    expect(html.slice(html.indexOf('<main'))).not.toContain('<button');
+    expect(html).not.toContain('<button');
   });
 
   it('B3-AC4 explains who can view the preview', () => {

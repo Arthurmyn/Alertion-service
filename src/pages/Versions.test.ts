@@ -95,7 +95,7 @@ describe('Versions', () => {
     expect(html).toContain('>Загрузить архив</a>');
     expect(html).not.toContain('Опубликовать');
     expect(html).not.toContain('Вернуть');
-    expect(html.slice(html.indexOf('<main'))).not.toContain('<button');
+    expect(html).not.toContain('<button');
     expect(html).not.toContain('role="dialog"');
   });
 
