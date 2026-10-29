@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { baseline } from '../data/accounts.ts';
+import { scenarioById, scenarioState } from '../data/scenarios.ts';
 import { reducer, type Action } from './reducer.ts';
 import type { AppState } from './types.ts';
 
@@ -65,16 +66,60 @@ export function writeSession(
   }
 }
 
-export function initialState(storage: Pick<Storage, 'getItem'>): AppState {
-  // ?scenario= will be applied here, ahead of the saved session.
+type SessionRead = Pick<Storage, 'getItem' | 'removeItem'>;
+
+function readScenarioId(search: string): string | null {
+  const query = search.startsWith('?') ? search.slice(1) : search;
+  const params = new URLSearchParams(query);
+  if (!params.has('scenario')) return null;
+  return params.get('scenario') ?? '';
+}
+
+/** Where `?scenario=` should land. Unknown ids keep the current path. */
+export function scenarioQueryRoute(
+  search: string,
+  pathname: string,
+): string | null {
+  const id = readScenarioId(search);
+  if (id === null) return null;
+  return scenarioById(id)?.route ?? (pathname || '/');
+}
+
+export function consumeScenarioQuery(
+  search: string,
+  pathname: string,
+  navigate: (route: string, options: { replace: true }) => void,
+): void {
+  const route = scenarioQueryRoute(search, pathname);
+  if (route === null) return;
+  navigate(route, { replace: true });
+}
+
+export function initialState(storage: SessionRead, search = ''): AppState {
+  const id = readScenarioId(search);
+  if (id !== null) {
+    try {
+      storage.removeItem(SESSION_KEY);
+    } catch {
+      // sessionStorage may be unavailable.
+    }
+    const scenario = scenarioById(id);
+    return scenario ? scenarioState(scenario) : baseline;
+  }
+
   const saved = readSession(storage);
   if (!saved) return baseline;
   return reducer(baseline, { type: 'load', state: saved });
 }
 
+function pageSearch(): string {
+  if (typeof window === 'undefined') return '';
+  return window.location.search;
+}
+
 function mountState(fallback: AppState): AppState {
   if (typeof sessionStorage === 'undefined') return fallback;
-  return initialState(sessionStorage);
+  return initialState(sessionStorage, pageSearch());
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
