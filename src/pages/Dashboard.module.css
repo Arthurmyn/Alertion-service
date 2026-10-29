@@ -12,11 +12,11 @@
 
 .fact {
   display: grid;
-  grid-template-columns: 10.5rem minmax(0, 1fr);
-  gap: 4px 20px;
+  grid-template-columns: var(--kv-key) minmax(0, 1fr);
+  gap: var(--space-2xs) var(--kv-gap);
   align-items: start;
   margin: 0;
-  padding: 14px 0;
+  padding: 10px 0;
   border: 0;
   border-top: 1px solid var(--rule);
   border-radius: 0;

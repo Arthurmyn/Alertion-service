@@ -36,12 +36,14 @@ h6 {
 
 h1 {
   font-size: var(--text-xl);
-  margin: 0 0 12px;
+  max-width: var(--measure);
+  margin: 0 0 var(--space-sm);
 }
 
 h2 {
   font-size: var(--text-lg);
-  margin: 24px 0 8px;
+  max-width: var(--measure);
+  margin: var(--space-xl) 0 var(--space-sm);
 }
 
 h3,
@@ -49,11 +51,13 @@ h4,
 h5,
 h6 {
   font-size: var(--text-md);
-  margin: 20px 0 8px;
+  max-width: var(--measure);
+  margin: var(--space-lg) 0 var(--space-sm);
 }
 
 p {
-  margin: 0 0 12px;
+  max-width: var(--measure);
+  margin: 0 0 var(--space-md);
 }
 
 small {
@@ -77,9 +81,13 @@ code {
 
 hr {
   height: 0;
-  margin: 24px 0;
+  margin: var(--space-xl) 0;
   border: 0;
   border-top: 1px solid var(--rule);
+}
+
+html {
+  scroll-padding-top: var(--topbar-h);
 }
 
 button,
@@ -100,7 +108,8 @@ button {
   background: var(--ink);
   border: 1px solid var(--ink);
   border-radius: var(--radius-button);
-  padding: 8px 14px;
+  min-height: var(--control-h);
+  padding: 4px var(--control-pad-x);
   cursor: pointer;
 }
 
@@ -121,10 +130,43 @@ input,
 select,
 textarea {
   color: var(--ink);
-  background: var(--surface);
+  background-color: var(--surface);
   border: 1px solid var(--ink);
   border-radius: var(--radius-input);
-  padding: 6px 8px;
+  padding: 4px var(--space-sm);
+}
+
+input:not([type='radio']):not([type='checkbox']):not([type='file']),
+select {
+  min-height: var(--control-h);
+}
+
+select {
+  appearance: none;
+  height: var(--control-h);
+  max-width: 100%;
+  padding: 0 28px 0 var(--space-sm);
+  font-size: var(--text-sm);
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+}
+
+select:disabled {
+  color: var(--ink-2);
+  background-color: var(--paper);
+  border-color: var(--ink-2);
+  background-image: var(--select-chevron-muted);
+  cursor: not-allowed;
+}
+
+select:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 ::placeholder {

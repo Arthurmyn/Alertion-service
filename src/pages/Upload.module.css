@@ -18,9 +18,15 @@
 .choice {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin: 0 0 12px;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--rule);
   cursor: pointer;
+}
+
+.choice:last-child {
+  border-bottom: 1px solid var(--rule);
 }
 
 .choices:disabled .choice {
