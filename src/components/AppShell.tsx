@@ -191,9 +191,9 @@ export function AppShell() {
       setDrawerOpen(false);
     };
 
-    document.addEventListener('keydown', onKey);
+    document.addEventListener('keydown', onKey, true);
     return () => {
-      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('keydown', onKey, true);
       document.body.style.overflow = previousOverflow;
     };
   }, [drawerOpen]);
