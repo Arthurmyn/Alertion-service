@@ -1,3 +1,8 @@
+.title {
+  width: fit-content;
+  max-width: 100%;
+}
+
 .actions {
   display: flex;
   flex-direction: column;

@@ -101,7 +101,7 @@ describe('B1 account boundaries', () => {
 
   it('asks for sign-in and offers the two accounts, with no password field', () => {
     const html = renderAt('/login?next=%2Fmanage%2Fnan');
-    expect(html).toContain('<h1');
+    expect(html).toContain('tabindex="-1"');
     expect(html).toContain('>Вход</h1>');
     expect(html).toContain('Войдите, чтобы управлять сайтом.');
     expect(html).toContain('<code');
@@ -128,7 +128,7 @@ describe('B1 account boundaries', () => {
 
   it('B1-AC2 denies account B on account A and hides A data', () => {
     const html = renderAt('/manage/nan', 'b');
-    expect(html).toContain('<h1>Нет доступа</h1>');
+    expect(html).toContain('tabindex="-1">Нет доступа</h1>');
     expect(html).toContain('Вы вошли как Ерлан Б.');
     expect(html).not.toContain('Б..');
     expect(html).toContain('Этот сайт принадлежит другому аккаунту.');
@@ -186,7 +186,7 @@ describe('public site', () => {
 
   it('B1-AC1 serves the active page and hides management data', () => {
     const html = renderAt('/site/nan');
-    expect(html).toContain('<h1>Публичная страница</h1>');
+    expect(html).toContain('tabindex="-1">Публичная страница</h1>');
     expect(html).toContain('Данных управления здесь нет.');
     expect(html).toContain('Пекарня Нан');
     expect(html).toContain('<a href="/site/nan"><code>/site/nan</code></a>');

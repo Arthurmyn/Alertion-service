@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../components/Button.tsx';
 import { accounts } from '../data/accounts.ts';
@@ -12,6 +13,11 @@ export function Login() {
   const [params] = useSearchParams();
   const next = params.get('next');
   const target = manageNext(next);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
 
   function enter(accountId: AccountId) {
     dispatch({ type: 'signIn', accountId });
@@ -21,6 +27,9 @@ export function Login() {
   return (
     <>
       <h1
+        ref={headingRef}
+        className={styles.title}
+        tabIndex={-1}
         aria-describedby={
           target !== null ? 'login-return login-accounts' : 'login-accounts'
         }
