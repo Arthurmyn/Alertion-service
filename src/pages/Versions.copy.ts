@@ -16,12 +16,28 @@ export function publishConfirmTitle(label: string): string {
   return `${publishButtonLabel(label)}?`;
 }
 
-export function publishConfirmText(
+export function confirmChangeText(
   activeLabel: string,
   nextLabel: string,
 ): string {
   return `Сейчас активна версия ${activeLabel}. После подтверждения активной станет версия ${nextLabel}.`;
 }
+
+export const rollbackAction = 'Вернуть версию';
+
+export function rollbackButtonLabel(label: string): string {
+  return `${rollbackAction} ${label}`;
+}
+
+export function rollbackConfirmTitle(label: string): string {
+  return `${rollbackButtonLabel(label)}?`;
+}
+
+export function rollbackFailedLine(label: string): string {
+  return `Откат не прошёл. Активная версия: ${label}.`;
+}
+
+export const rollbackUnavailable = 'Откат недоступен: предыдущей версии нет.';
 
 const megabytes = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 1,

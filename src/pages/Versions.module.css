@@ -22,9 +22,13 @@
 .name,
 .file,
 .size,
-.mark,
-.note {
+.mark {
   margin: 0;
+}
+
+.status {
+  width: fit-content;
+  max-width: 100%;
 }
 
 .name {
@@ -57,7 +61,29 @@
   color: var(--link);
 }
 
-.actions,
-.note {
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 100%;
   margin-top: 16px;
+}
+
+.rollback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.reason {
+  max-width: 100%;
+  margin: 0;
+}
+
+.note {
+  max-width: 100%;
+  margin: 16px 0 0;
 }
