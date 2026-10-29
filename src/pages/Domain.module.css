@@ -41,15 +41,25 @@
   margin: 0;
 }
 
+.marked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
+  row-gap: 2px;
+}
+
 .value {
   font-family: var(--font-mono);
-  overflow-wrap: anywhere;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .example {
   color: var(--ink-2);
   font-family: var(--font-ui);
   font-size: var(--text-sm);
+  white-space: nowrap;
 }
 
 .reason {
