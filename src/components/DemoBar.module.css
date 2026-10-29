@@ -1,8 +1,5 @@
 .bar {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  flex: none;
   z-index: 5;
   display: flex;
   flex-wrap: wrap;

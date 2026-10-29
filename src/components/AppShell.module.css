@@ -3,13 +3,23 @@
 }
 
 .withDemo {
-  padding-bottom: 9rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
 }
 
-@media (max-width: 720px) {
-  .withDemo {
-    padding-bottom: 16rem;
-  }
+.withDemo .header,
+.withDemo .publicHeader {
+  flex: none;
+}
+
+.withDemo .main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
 }
 
 .header,
