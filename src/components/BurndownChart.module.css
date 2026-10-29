@@ -1,0 +1,118 @@
+.block {
+  margin: 0 0 20px;
+}
+
+.caption {
+  margin: 0 0 8px;
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0 0 8px;
+  font-size: var(--text-sm);
+}
+
+.planKey,
+.simKey {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.planKey::before,
+.simKey::before {
+  content: '';
+  width: 28px;
+  height: 0;
+  border-top: 2px solid var(--ink);
+}
+
+.simKey::before {
+  border-top-style: dashed;
+  border-top-color: var(--link);
+}
+
+.plot {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  column-gap: 8px;
+  align-items: stretch;
+  margin: 0 0 8px;
+}
+
+.axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.grid {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.planLine {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.simLine {
+  fill: none;
+  stroke: var(--link);
+  stroke-width: 2;
+  stroke-dasharray: 6 4;
+}
+
+.scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  text-align: left;
+}
+
+.table caption {
+  caption-side: top;
+  padding: 0 0 6px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.table th,
+.table td {
+  padding: 6px 12px 6px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.table th {
+  font-weight: 600;
+}
