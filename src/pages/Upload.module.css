@@ -17,10 +17,9 @@
 
 .choice {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   cursor: pointer;
 }
 
@@ -31,7 +30,7 @@
 .radio {
   width: 16px;
   height: 16px;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
   flex: none;
   accent-color: var(--ink);
@@ -41,8 +40,21 @@
   box-shadow: none;
 }
 
-.file {
+.choiceBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.file,
+.url {
   font-family: var(--font-mono);
+  overflow-wrap: anywhere;
 }
 
 .meta {
@@ -57,12 +69,16 @@
   gap: 8px;
 }
 
-.url {
-  font-family: var(--font-mono);
-}
-
 .reason {
   margin: 0;
   color: var(--ink-2);
   font-size: var(--text-sm);
+}
+
+.status {
+  outline: none;
+}
+
+.checking {
+  font-weight: 600;
 }

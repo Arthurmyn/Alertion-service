@@ -9,12 +9,16 @@ import type { Site, UploadResult } from '../state/types.ts';
 import { NotFound } from './NotFound.tsx';
 import {
   activeLine,
+  archiveLegend,
   archiveSizeNote,
   blockReason,
   checkDelay,
   checkingText,
+  choiceHeading,
   emptyText,
   limitsSummary,
+  openPlanText,
+  openSiteLead,
   planGateText,
   simulationText,
   successMessage,
@@ -42,12 +46,20 @@ export function UploadView({
   onSelect: (name: string) => void;
   onCheck: () => void;
 }) {
+  const statusRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!checking) return;
+    statusRef.current?.focus();
+  }, [checking]);
+
   if (!planReady) {
     return (
       <>
         <h1>Загрузка</h1>
+        <p>{planGateText}.</p>
         <p>
-          <Link to={`/manage/${site.slug}/plan`}>{planGateText}</Link>.
+          <Link to={`/manage/${site.slug}/plan`}>{openPlanText}</Link>
         </p>
       </>
     );
@@ -61,9 +73,7 @@ export function UploadView({
       <h1>Загрузка</h1>
       <p>{activeLine(site)}</p>
       <p>{limitsSummary()}</p>
-      {choices.length > 0 ? (
-        <p className={styles.meta}>{simulationText}</p>
-      ) : null}
+      {choices.length > 0 ? <p>{simulationText}</p> : null}
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -73,13 +83,13 @@ export function UploadView({
         {choices.length > 0 ? (
           <fieldset className={styles.choices} disabled={checking}>
             <legend className={styles.legend}>
-              Архив
+              {archiveLegend}
               <span className={styles.req} title="обязательно">
                 {' *'}
               </span>
             </legend>
             {choices.map((archive) => {
-              const note = archiveSizeNote(archive);
+              const note = archive.label ? archiveSizeNote(archive) : null;
               return (
                 <label className={styles.choice} key={archive.name}>
                   <input
@@ -91,8 +101,13 @@ export function UploadView({
                     required
                     onChange={() => onSelect(archive.name)}
                   />
-                  <span className={styles.file}>{archive.name}</span>
-                  {note ? <span className={styles.meta}>{note}</span> : null}
+                  <span className={styles.choiceBody}>
+                    <span className={styles.name}>
+                      {choiceHeading(archive)}
+                    </span>
+                    <span className={styles.file}>{archive.name}</span>
+                    {note ? <span className={styles.meta}>{note}</span> : null}
+                  </span>
                 </label>
               );
             })}
@@ -105,8 +120,15 @@ export function UploadView({
           {reason ? <p className={styles.reason}>{reason}</p> : null}
         </div>
       </form>
-      <div aria-live="polite" aria-busy={checking ? true : undefined}>
-        {checking ? <p>{checkingText}</p> : null}
+      <div
+        ref={statusRef}
+        className={styles.status}
+        tabIndex={-1}
+        aria-live="polite"
+        aria-atomic="true"
+        aria-busy={checking ? true : undefined}
+      >
+        {checking ? <p className={styles.checking}>{checkingText}</p> : null}
         {!checking && result === null && choices.length > 0 ? (
           <p>{emptyText}</p>
         ) : null}
@@ -114,16 +136,17 @@ export function UploadView({
           <>
             <p>{successMessage(site) ?? 'Проверка прошла.'}</p>
             <p>
+              {openSiteLead}{' '}
               <Link className={styles.url} to={href}>
                 {href}
               </Link>
             </p>
           </>
         ) : null}
+        {!checking && result && !result.ok ? (
+          <Alert>{result.nextStep}</Alert>
+        ) : null}
       </div>
-      {!checking && result && !result.ok ? (
-        <Alert>{result.nextStep}</Alert>
-      ) : null}
     </>
   );
 }

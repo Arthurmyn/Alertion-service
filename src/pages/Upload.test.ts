@@ -15,14 +15,18 @@ import styles from './Upload.module.css';
 import {
   CHECK_DELAY_MS,
   activeLine,
+  archiveLegend,
   archiveSizeNote,
   blockReason,
   checkDelay,
   checkingText,
+  choiceHeading,
   chooseArchiveText,
   emptyText,
   limitsSummary,
   noArchivesText,
+  openPlanText,
+  openSiteLead,
   planGateText,
   simulationText,
   successMessage,
@@ -123,6 +127,14 @@ function alertText(html: string): string {
   return tag[1];
 }
 
+function liveRegion(html: string): string {
+  const at = html.indexOf('aria-live="polite"');
+  if (at < 0) throw new Error('no live region');
+  const open = html.lastIndexOf('<div', at);
+  const close = html.indexOf('</div>', at);
+  return html.slice(open, close + '</div>'.length);
+}
+
 describe('upload model', () => {
   it('offers this site’s fixtures except the active archive', () => {
     expect(
@@ -145,10 +157,20 @@ describe('upload model', () => {
       `Лимиты пилотного плана: ${LIMITS.sites} сайт, архив ${LIMITS.archiveMb} МБ, распакованная версия ${LIMITS.unpackedMb} МБ, хранилище ${LIMITS.storageMb} МБ.`,
     );
     expect(archiveSizeNote(fixture('nan-v2.zip'))).toBe(
-      'сжатый 5.1 МБ, распакованный 18 МБ',
+      'архив 5.1 МБ, распакованная версия 18 МБ',
     );
-    expect(archiveSizeNote(fixture('nan-28mb.zip'))).toBe('сжатый 28 МБ');
+    expect(archiveSizeNote(fixture('nan-28mb.zip'))).toBe('архив 28 МБ');
     expect(archiveSizeNote(fixture('nan-no-index.zip'))).toBeNull();
+    expect(choiceHeading(fixture('nan-v2.zip'))).toBe('Версия B');
+    expect(choiceHeading(fixture('nan-no-index.zip'))).toBe(
+      'Нет index.html в корне',
+    );
+    expect(choiceHeading(fixture('nan-unsafe.zip'))).toBe('Небезопасный путь');
+    expect(choiceHeading(fixture('nan-28mb.zip'))).toBe('Архив 28 МБ');
+    expect(choiceHeading(fixture('nan-unpack-60.zip'))).toBe(
+      'Архив 8 МБ, распакованная версия 60 МБ',
+    );
+    expect(choiceHeading(fixture('nan-storage.zip'))).toBe('Версия E');
     expect(activeLine(siteOf(baseline))).toBe('Активная версия: A.');
 
     const accepted = uploaded(baseline, 'nan-v2.zip');
@@ -209,8 +231,13 @@ describe('upload screen', () => {
     expect(html).toContain(activeLine(siteOf(baseline)));
     expect(html).toContain(limitsSummary());
     expect(html).toContain(simulationText);
-    expect(html).toContain(emptyText);
+    expect(html).toContain(archiveLegend);
+    expect(html).toContain('Версия B');
+    expect(html).toContain('Нет index.html в корне');
+    expect(html).toContain('Небезопасный путь');
+    expect(liveRegion(html)).toContain(emptyText);
     expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-atomic="true"');
     expect(radios).toHaveLength(8);
     expect(radios.every((tag) => tag.includes('name="archive"'))).toBe(true);
     expect(html).toContain('nan-v2.zip');
@@ -245,7 +272,7 @@ describe('upload screen', () => {
       site: siteOf(rejected),
     });
 
-    expect(html).toContain(checkingText);
+    expect(liveRegion(html)).toContain(checkingText);
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-busy="true"');
     expect(button(html)).toContain('disabled');
@@ -260,7 +287,8 @@ describe('upload screen', () => {
     const href = exampleUrl(site);
     const html = renderAt('/manage/nan/upload', accepted);
 
-    expect(html).toContain(successMessage(site));
+    expect(liveRegion(html)).toContain(successMessage(site) ?? '');
+    expect(liveRegion(html)).toContain(openSiteLead);
     expect(html).toContain(styles.url);
     expect(html).toMatch(new RegExp(`<a[^>]*href="${href}"[^>]*>${href}</a>`));
     expect(html).toContain(activeLine(site));
@@ -274,6 +302,8 @@ describe('upload screen', () => {
     const html = renderAt('/manage/nan/upload', state);
 
     expect(alertText(html)).toBe(result.nextStep);
+    expect(liveRegion(html)).toContain('role="alert"');
+    expect(liveRegion(html)).toContain(result.nextStep);
     expect(result.nextStep).toContain('В архиве нет index.html в корне.');
     expect(result.nextStep).toContain(
       'Переименуйте стартовую страницу в index.html и загрузите архив снова.',
@@ -349,7 +379,9 @@ describe('upload screen', () => {
     const html = renderAt('/manage/nan/upload', state);
 
     expect(html).toContain('<h1>Загрузка</h1>');
-    expect(html).toContain(`>${planGateText}</a>`);
+    expect(html).toContain(`${planGateText}.`);
+    expect(html).not.toContain(`>${planGateText}</a>`);
+    expect(html).toContain(`>${openPlanText}</a>`);
     expect(html).toContain('href="/manage/nan/plan"');
     expect(html).not.toContain('Проверить архив');
     expect(html).not.toContain('nan-v2.zip');

@@ -3,11 +3,15 @@ import { LIMITS } from '../data/limits.ts';
 import type { AppState, Site, UploadResult, Version } from '../state/types.ts';
 
 export const planGateText = 'Сначала выберите пилотный план';
+export const openPlanText = 'Открыть пилотный план';
 export const checkingText = 'Проверяем архив…';
 export const emptyText = 'Архив ещё не проверен.';
-export const chooseArchiveText = 'Выберите архив, чтобы проверить его.';
+export const chooseArchiveText = 'Выберите пробный архив, чтобы проверить его.';
 export const noArchivesText = 'Для этого сайта нет пробных архивов.';
-export const simulationText = 'Пробные архивы: симуляция.';
+export const simulationText =
+  'Это симуляция выбора архива. Выберите пробный архив и нажмите «Проверить архив». Файл с компьютера не открывается.';
+export const archiveLegend = 'Пробный архив';
+export const openSiteLead = 'Откройте сайт';
 
 /** The checking line is motion, so reduced motion skips the wait. */
 export const CHECK_DELAY_MS = 700;
@@ -45,12 +49,22 @@ export function successMessage(site: Site): string | null {
 
 export function archiveSizeNote(archive: ArchiveFixture): string | null {
   const parts: string[] = [];
-  if (archive.archiveMb !== null) parts.push(`сжатый ${archive.archiveMb} МБ`);
+  if (archive.archiveMb !== null) parts.push(`архив ${archive.archiveMb} МБ`);
   if (archive.unpackedMb !== null) {
-    parts.push(`распакованный ${archive.unpackedMb} МБ`);
+    parts.push(`распакованная версия ${archive.unpackedMb} МБ`);
   }
-  if (parts.length === 0) return null;
-  return parts.join(', ');
+  return parts.length === 0 ? null : parts.join(', ');
+}
+
+export function choiceHeading(archive: ArchiveFixture): string {
+  if (archive.label) return `Версия ${archive.label}`;
+  if (!archive.files.includes('index.html')) return 'Нет index.html в корне';
+  if (archive.files.some((file) => file.includes('..'))) {
+    return 'Небезопасный путь';
+  }
+  const size = archiveSizeNote(archive);
+  if (size === null) return 'Пробный архив';
+  return size.charAt(0).toUpperCase() + size.slice(1);
 }
 
 /** Sample archives for this site, except the one already active. */
