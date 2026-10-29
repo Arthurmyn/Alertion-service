@@ -23,31 +23,26 @@ function sitesPhrase(n: number): string {
   return ruCount(n, 'сайт', 'сайта', 'сайтов');
 }
 
+export function planStatus(selected: boolean): string {
+  return selected
+    ? 'Пилотный план выбран. Дальше загрузите архив.'
+    : 'Пилотный план не выбран. Выберите его, чтобы открыть загрузку.';
+}
+
 export function siteLimitLine(): string {
-  return `${sitesPhrase(LIMITS.sites)} на аккаунт.`;
+  return `Пилотный план рассчитан на ${sitesPhrase(LIMITS.sites)}. Сверх этого сайт не создаётся.`;
 }
 
 export function archiveLimitLine(): string {
-  return `До ${LIMITS.archiveMb} МБ.`;
+  return `Файл архива в сжатом виде не больше ${LIMITS.archiveMb} МБ. Более крупный файл не принимается. Сожмите изображения или уберите видео и загрузите архив снова.`;
 }
 
 export function unpackedLimitLine(): string {
-  return `До ${LIMITS.unpackedMb} МБ.`;
+  return `Файлы одной версии после раскрытия архива не больше ${LIMITS.unpackedMb} МБ. Маленький архив всё равно может не пройти: внутри картинки бывают крупнее лимита. Уберите лишние файлы и загрузите архив снова.`;
 }
 
 export function storageLimitLine(): string {
-  const cap = `До ${LIMITS.storageMb} МБ.`;
-  if (LIMITS.unpackedMb <= 0 || LIMITS.storageMb % LIMITS.unpackedMb !== 0) {
-    return cap;
-  }
-  const full = LIMITS.storageMb / LIMITS.unpackedMb;
-  const versions = ruCount(
-    full,
-    'полную версию',
-    'полных версии',
-    'полных версий',
-  );
-  return `${cap} Это ${versions} по ${LIMITS.unpackedMb} МБ.`;
+  return `Все сохранённые версии вместе не больше ${LIMITS.storageMb} МБ. Если новая версия не влезает в остаток, она не загружается. Загрузите архив меньшего размера.`;
 }
 
 export function ownedSites(state: AppState, ownerId: AccountId): Site[] {
@@ -59,10 +54,14 @@ export function accountLimitLine(sites: Site[]): string {
   const names = sites.map((site) => `«${site.businessName}»`).join(', ');
   const limit = sitesPhrase(LIMITS.sites);
   const listed = names === '' ? count : `${count}: ${names}`;
-  return `На аккаунте ${listed}. Лимит пилотного плана: ${limit}.`;
+  return `На аккаунте ${listed}. Лимит пилотного плана: ${limit}. Новый сайт не создаётся.`;
 }
 
-export function addSiteNotice(result: AppState['lastResult']): string | null {
+export function addSiteNotice(
+  result: AppState['lastResult'],
+  businessName?: string,
+): string | null {
   if (result?.kind !== 'addSite') return null;
-  return result.nextStep;
+  if (!businessName) return result.nextStep;
+  return `${result.nextStep} Это «${businessName}».`;
 }

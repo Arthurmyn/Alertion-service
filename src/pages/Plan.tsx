@@ -8,6 +8,7 @@ import {
   addSiteNotice,
   archiveLimitLine,
   ownedSites,
+  planStatus,
   siteLimitLine,
   storageLimitLine,
   unpackedLimitLine,
@@ -15,8 +16,8 @@ import {
 import styles from './Plan.module.css';
 
 const limitRows = [
-  { term: 'Сайты', text: siteLimitLine },
-  { term: 'Сжатый архив', text: archiveLimitLine },
+  { term: 'Сайт', text: siteLimitLine },
+  { term: 'Архив', text: archiveLimitLine },
   { term: 'Распакованная версия', text: unpackedLimitLine },
   { term: 'Хранилище', text: storageLimitLine },
 ] as const;
@@ -28,17 +29,35 @@ export function Plan() {
   if (!site) return <NotFound />;
 
   const selected = state.planSelected[site.ownerId];
-  const notice = addSiteNotice(state.lastResult);
+  const notice = addSiteNotice(state.lastResult, site.businessName);
   const owned = ownedSites(state, site.ownerId);
 
   return (
     <>
       <h1>Пилотный план</h1>
-      <p role="status">
-        {selected ? 'Пилотный план выбран.' : 'Пилотный план не выбран.'}
+      <p id="plan-status" role="status" aria-live="polite" aria-atomic="true">
+        {planStatus(selected)}
       </p>
-      <p>Сжатый архив и распакованная версия проверяются отдельно.</p>
-      <dl className={styles.list} aria-label="Лимиты пилотного плана">
+      <div className={styles.actions}>
+        {selected ? (
+          <Link
+            to={`/manage/${site.slug}/upload`}
+            aria-describedby="plan-status"
+          >
+            Перейти к загрузке
+          </Link>
+        ) : (
+          <Button
+            onClick={() =>
+              dispatch({ type: 'selectPlan', accountId: site.ownerId })
+            }
+          >
+            Выбрать пилотный план
+          </Button>
+        )}
+      </div>
+      <h2 id="limits-title">Лимиты</h2>
+      <dl className={styles.list} aria-labelledby="limits-title">
         {limitRows.map((row) => (
           <div className={styles.row} key={row.term}>
             <dt className={styles.term}>{row.term}</dt>
@@ -47,22 +66,7 @@ export function Plan() {
         ))}
       </dl>
       <p>Загрузка сверх лимита не проходит. Активная версия не меняется.</p>
-      {selected ? (
-        <p>
-          <Link to={`/manage/${site.slug}/upload`}>Перейти к загрузке</Link>
-        </p>
-      ) : (
-        <div className={styles.actions}>
-          <Button
-            onClick={() =>
-              dispatch({ type: 'selectPlan', accountId: site.ownerId })
-            }
-          >
-            Выбрать пилотный план
-          </Button>
-        </div>
-      )}
-      <h2>Второй сайт</h2>
+      <h2>Ещё один сайт</h2>
       <p>{accountLimitLine(owned)}</p>
       <div className={styles.actions}>
         <Button onClick={() => dispatch({ type: 'addSite' })}>

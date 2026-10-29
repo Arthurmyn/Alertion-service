@@ -14,6 +14,7 @@ import {
   addSiteNotice,
   archiveLimitLine,
   ownedSites,
+  planStatus,
   ruCount,
   siteLimitLine,
   storageLimitLine,
@@ -69,11 +70,30 @@ describe('plan copy', () => {
   });
 
   it('B7-AC1 builds every limit from LIMITS', () => {
-    expect(siteLimitLine()).toBe(`${LIMITS.sites} сайт на аккаунт.`);
-    expect(archiveLimitLine()).toBe(`До ${LIMITS.archiveMb} МБ.`);
-    expect(unpackedLimitLine()).toBe(`До ${LIMITS.unpackedMb} МБ.`);
+    expect(siteLimitLine()).toBe(
+      `Пилотный план рассчитан на ${LIMITS.sites} сайт. Сверх этого сайт не создаётся.`,
+    );
+    expect(archiveLimitLine()).toBe(
+      `Файл архива в сжатом виде не больше ${LIMITS.archiveMb} МБ. Более крупный файл не принимается. Сожмите изображения или уберите видео и загрузите архив снова.`,
+    );
+    expect(unpackedLimitLine()).toBe(
+      `Файлы одной версии после раскрытия архива не больше ${LIMITS.unpackedMb} МБ. Маленький архив всё равно может не пройти: внутри картинки бывают крупнее лимита. Уберите лишние файлы и загрузите архив снова.`,
+    );
     expect(storageLimitLine()).toBe(
-      `До ${LIMITS.storageMb} МБ. Это ${LIMITS.storageMb / LIMITS.unpackedMb} полных версии по ${LIMITS.unpackedMb} МБ.`,
+      `Все сохранённые версии вместе не больше ${LIMITS.storageMb} МБ. Если новая версия не влезает в остаток, она не загружается. Загрузите архив меньшего размера.`,
+    );
+    expect(siteLimitLine()).not.toMatch(/\b(?:20|50|150)\b/);
+    expect(archiveLimitLine()).toContain(String(LIMITS.archiveMb));
+    expect(unpackedLimitLine()).toContain(String(LIMITS.unpackedMb));
+    expect(storageLimitLine()).toContain(String(LIMITS.storageMb));
+  });
+
+  it('states the plan choice and the next step', () => {
+    expect(planStatus(false)).toBe(
+      'Пилотный план не выбран. Выберите его, чтобы открыть загрузку.',
+    );
+    expect(planStatus(true)).toBe(
+      'Пилотный план выбран. Дальше загрузите архив.',
     );
   });
 });
@@ -89,9 +109,16 @@ describe('Plan', () => {
 
     for (const html of [nan, temir]) {
       expect(html).toContain('<h1>Пилотный план</h1>');
-      expect(html).toContain('Пилотный план выбран.');
-      expect(html).toContain(
-        'Сжатый архив и распакованная версия проверяются отдельно.',
+      expect(html).toContain(planStatus(true));
+      expect(html).toContain('aria-live="polite"');
+      expect(html).toContain('aria-atomic="true"');
+      expect(html).toContain('id="plan-status"');
+      expect(html).toContain('aria-describedby="plan-status"');
+      expect(html.indexOf(planStatus(true))).toBeLessThan(
+        html.indexOf('id="limits-title"'),
+      );
+      expect(html.indexOf('Перейти к загрузке')).toBeLessThan(
+        html.indexOf('id="limits-title"'),
       );
       expect(html).toContain(siteLimitLine());
       expect(html).toContain(archiveLimitLine());
@@ -99,6 +126,7 @@ describe('Plan', () => {
       expect(html).toContain(storageLimitLine());
       expect(html).toContain('Загрузка сверх лимита не проходит.');
       expect(html).toContain('Активная версия не меняется.');
+      expect(html).not.toContain('полных версии');
     }
 
     expect(nan).toContain(accountLimitLine(ownedSites(baseline, 'a')));
@@ -118,11 +146,14 @@ describe('Plan', () => {
       planSelected: { a: false, b: true },
     };
     const before = renderPlan('/manage/nan/plan', closed);
-    expect(before).toContain('Пилотный план не выбран.');
+    expect(before).toContain(planStatus(false));
     expect(before).toContain('Выбрать пилотный план');
     expect(before).toContain('<button');
     expect(before).not.toContain('disabled');
     expect(before).not.toContain('Перейти к загрузке');
+    expect(before.indexOf('Выбрать пилотный план')).toBeLessThan(
+      before.indexOf('id="limits-title"'),
+    );
     expect(before).toContain(siteLimitLine());
 
     const chosen = reducer(closed, { type: 'selectPlan', accountId: 'a' });
@@ -130,10 +161,11 @@ describe('Plan', () => {
     expect(chosen.sites).toBe(closed.sites);
 
     const after = renderPlan('/manage/nan/plan', chosen);
-    expect(after).toContain('Пилотный план выбран.');
+    expect(after).toContain(planStatus(true));
     expect(after).not.toContain('Выбрать пилотный план');
     expect(after).toContain('Перейти к загрузке');
     expect(after).toContain('href="/manage/nan/upload"');
+    expect(after).toContain('aria-describedby="plan-status"');
   });
 
   it('B7-AC2 explains the one-site limit and leaves the count unchanged', () => {
@@ -144,12 +176,17 @@ describe('Plan', () => {
     expect(addSiteNotice(next.lastResult)).toBe(
       `Сайт уже есть. Лимит пилотного плана: ${LIMITS.sites} сайт. Работайте с текущим сайтом.`,
     );
+    expect(addSiteNotice(next.lastResult, 'Пекарня Нан')).toBe(
+      `Сайт уже есть. Лимит пилотного плана: ${LIMITS.sites} сайт. Работайте с текущим сайтом. Это «Пекарня Нан».`,
+    );
 
     const html = renderPlan('/manage/nan/plan', next);
     expect(html).toContain('Добавить сайт');
+    expect(html).toContain('Ещё один сайт');
     expect(html).toContain('role="alert"');
-    expect(html).toContain(addSiteNotice(next.lastResult) ?? '');
+    expect(html).toContain(addSiteNotice(next.lastResult, 'Пекарня Нан') ?? '');
     expect(html).toContain(accountLimitLine(owned));
+    expect(html).toContain('Новый сайт не создаётся.');
     expect(html).toContain(`${LIMITS.sites} сайт`);
   });
 
@@ -168,7 +205,7 @@ describe('Plan', () => {
     const owned = ownedSites(doubled, 'a');
     expect(owned).toHaveLength(2);
     expect(accountLimitLine(owned)).toBe(
-      `На аккаунте 2 сайта: «Пекарня Нан», «Вторая пекарня». Лимит пилотного плана: ${LIMITS.sites} сайт.`,
+      `На аккаунте 2 сайта: «Пекарня Нан», «Вторая пекарня». Лимит пилотного плана: ${LIMITS.sites} сайт. Новый сайт не создаётся.`,
     );
     expect(renderPlan('/manage/nan/plan', doubled)).toContain(
       accountLimitLine(owned),
