@@ -1,0 +1,19 @@
+.error,
+.warn {
+  margin: 0 0 12px;
+  padding: 12px 12px 12px 16px;
+  border: 0;
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius-block);
+  box-shadow: none;
+  background: var(--surface);
+  color: var(--danger-text);
+  font-size: var(--text-md);
+  line-height: 1.5;
+}
+
+.warn {
+  border-left-color: var(--warn-text);
+  background: var(--warn-bg);
+  color: var(--ink);
+}
