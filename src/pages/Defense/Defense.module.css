@@ -14,8 +14,8 @@
 
 .section {
   margin: 0;
-  padding: 20px 0 8px;
-  scroll-margin-top: 16px;
+  padding: var(--space-lg) 0 var(--space-sm);
+  scroll-margin-top: calc(var(--topbar-h) + var(--space-sm));
 }
 
 .section + .section {
@@ -23,6 +23,7 @@
 }
 
 .prose {
+  max-width: var(--measure);
   font-family: var(--font-prose);
   font-size: var(--text-md);
   line-height: 1.55;
@@ -38,7 +39,7 @@
   display: grid;
   grid-template-columns: max-content auto;
   align-items: baseline;
-  gap: 4px 16px;
+  gap: var(--space-xs) var(--kv-gap);
   margin: 0 0 12px;
   font-family: var(--font-ui);
 }

@@ -14,31 +14,38 @@
 
 .records,
 .states {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-lg);
 }
 
 .records > div,
 .states > div {
-  margin: 0 0 10px;
+  display: grid;
+  grid-template-columns: var(--kv-key) minmax(0, 1fr);
+  gap: var(--space-2xs) var(--kv-gap);
+  align-items: baseline;
+  margin: 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--rule);
 }
 
-.states > div {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+.records > div:last-child,
+.states > div:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.records dt,
+.states dt,
+.records dd,
+.states dd {
+  margin: 0;
+  min-width: 0;
 }
 
 .records dt,
 .states dt {
-  font-weight: 600;
-}
-
-.records dd {
-  margin: 2px 0 0;
-}
-
-.states dd {
-  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
 }
 
 .marked {
@@ -63,9 +70,17 @@
 }
 
 .reason {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-md);
   color: var(--ink-2);
   font-size: var(--text-sm);
+}
+
+@media (max-width: 480px) {
+  .records > div,
+  .states > div {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xs);
+  }
 }
 
 .confirmed {

@@ -5,9 +5,9 @@
 
 .row {
   display: grid;
-  gap: 4px;
+  gap: var(--space-2xs);
   margin: 0;
-  padding: 12px 0;
+  padding: 10px 0;
   border-top: 1px solid var(--rule);
 }
 
@@ -27,7 +27,9 @@
 }
 
 .term {
-  font-weight: 600;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+  font-weight: 400;
 }
 
 .actions {
@@ -43,10 +45,10 @@
   outline-offset: 4px;
 }
 
-@media (min-width: 36rem) {
+@media (min-width: 480px) {
   .row {
-    grid-template-columns: 14rem 1fr;
-    column-gap: 24px;
+    grid-template-columns: var(--kv-key-wide) minmax(0, 1fr);
+    column-gap: var(--kv-gap);
     align-items: start;
   }
 }
