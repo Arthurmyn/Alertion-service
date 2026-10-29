@@ -7,6 +7,7 @@ import {
 import { scenarioById } from '../../data/scenarios.ts';
 import styles from './Defense.module.css';
 import { sectionTitle } from './links.ts';
+import { WideTable } from './WideTable.tsx';
 
 function RichText({ text }: { text: string }) {
   const parts = text.split(/`([^`]+)`/g);
@@ -49,7 +50,7 @@ export function ResultsSection() {
         Строка ведёт в сценарий или в раздел целей. Колонка скриншота без
         файлов.
       </p>
-      <div className={styles.scroll}>
+      <WideTable noteId="results-scroll">
         <table className={`${styles.table} ${styles.criteria}`}>
           <caption>Критерии B1–B7</caption>
           <thead>
@@ -79,7 +80,7 @@ export function ResultsSection() {
             ))}
           </tbody>
         </table>
-      </div>
+      </WideTable>
     </section>
   );
 }

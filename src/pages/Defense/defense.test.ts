@@ -174,6 +174,12 @@ describe('defense page', () => {
     expect(goalsHtml).toContain(scopeVolumeNote);
     expect(goalsHtml).toContain('Лист наблюдений');
     expect(goalsHtml).toContain('проверено в прототипе');
+    expect(goalsHtml).toContain('e2e/b3-g2.spec.ts');
+    expect(goalsHtml).toContain('e2e/b1-g3-access.spec.ts');
+    expect(goalsHtml).toContain('e2e/b2-g3.spec.ts');
+    expect(goalsHtml).toContain('e2e/b5-g4.spec.ts');
+    expect(goalsHtml).not.toContain('b4-g2');
+    expect(html).toContain('сдвиньте её вбок');
     for (const goal of goals) {
       expect(goalsHtml).toContain(goal.id);
       expect(goalsHtml).toContain(goal.quote);

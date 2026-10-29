@@ -6,6 +6,7 @@ import { useStore } from '../state/store.tsx';
 import { NotFound } from './NotFound.tsx';
 import {
   accountLimitLine,
+  addSiteButton,
   addSiteNotice,
   archiveLimitLine,
   ownedSites,
@@ -92,7 +93,7 @@ export function Plan() {
       <h2>Ещё один сайт</h2>
       <p>{accountLimitLine(owned)}</p>
       <div className={styles.actions}>
-        <Button onClick={tryAddSite}>Добавить сайт</Button>
+        <Button onClick={tryAddSite}>{addSiteButton}</Button>
       </div>
       {notice ? (
         <div ref={rejectRef} tabIndex={-1} className={styles.rejection}>

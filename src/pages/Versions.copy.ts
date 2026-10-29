@@ -39,6 +39,17 @@ export function rollbackFailedLine(label: string): string {
 
 export const rollbackUnavailable = 'Откат недоступен: предыдущей версии нет.';
 
+export const previewAudience =
+  'Предпросмотр видите только вы, пока выполнен вход в аккаунт этого сайта. Посетители и другие аккаунты видят активную версию.';
+
+export const noCandidateLine = 'Кандидата нет.';
+
+export const uploadArchiveLink = 'Загрузить архив';
+
+export function candidateVersionLine(label: string): string {
+  return `Кандидат: версия ${label}`;
+}
+
 const megabytes = new Intl.NumberFormat('ru-RU', {
   maximumFractionDigits: 1,
 });

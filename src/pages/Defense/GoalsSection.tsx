@@ -11,16 +11,22 @@ import { EMPTY_SLOT_LABEL } from '../../data/sprintEvidence.ts';
 import { memberShort } from '../../data/team.ts';
 import styles from './Defense.module.css';
 import { sectionTitle } from './links.ts';
+import { WideTable } from './WideTable.tsx';
 
 function GoalReason({ goal }: { goal: GoalRow }) {
-  if (!goal.scenarioId) return goal.reason;
-  const scenario = scenarioById(goal.scenarioId);
+  const scenario = goal.scenarioId ? scenarioById(goal.scenarioId) : undefined;
   return (
     <>
-      {goal.reason}{' '}
-      <a href={scenarioHref(goal.scenarioId)}>
-        {scenario ? scenario.title : goal.scenarioId}
-      </a>
+      {goal.reason}
+      {goal.spec ? `, ${goal.spec}.` : ''}
+      {goal.scenarioId ? (
+        <>
+          {' '}
+          <a href={scenarioHref(goal.scenarioId)}>
+            {scenario ? scenario.title : goal.scenarioId}
+          </a>
+        </>
+      ) : null}
     </>
   );
 }
@@ -37,7 +43,7 @@ export function GoalsSection() {
         {scopeNote}. {scopeVolumeNote}
       </p>
       <p>Проход 5 участников не проводили. В листе нет записей о попытке.</p>
-      <div className={styles.scroll}>
+      <WideTable noteId="goals-scroll">
         <table className={`${styles.table} ${styles.criteria}`}>
           <caption>Цели и лист наблюдений</caption>
           <thead>
@@ -79,7 +85,7 @@ export function GoalsSection() {
             ))}
           </tbody>
         </table>
-      </div>
+      </WideTable>
     </section>
   );
 }

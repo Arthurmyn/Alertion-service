@@ -1,6 +1,54 @@
+import { ownerOnlyNote } from '../components/ownerCopy.ts';
+import {
+  statusActive,
+  statusFailed,
+  statusPending,
+} from '../components/statusWords.ts';
+import { storageCaption } from '../components/storageText.ts';
+import {
+  deniedBody,
+  deniedLead,
+  deniedTitle,
+  ownSiteLink,
+} from '../pages/AccessDenied.copy.ts';
+import {
+  activeVersionTerm,
+  deferredDomainLine,
+  deploymentLabel,
+} from '../pages/Dashboard.copy.ts';
+import { domainCopy } from '../pages/DomainFlow.ts';
+import {
+  addSiteButton,
+  addSiteNotice,
+  siteLimitLine,
+} from '../pages/PlanText.ts';
+import { publicBoundary, publicHeading } from '../pages/PublicSite.copy.ts';
+import {
+  limitsSummary,
+  openSiteLead,
+  successMessage,
+} from '../pages/UploadModel.ts';
+import {
+  activeVersionLine,
+  candidateVersionLine,
+  confirmChangeText,
+  noCandidateLine,
+  previewAudience,
+  publishConfirmTitle,
+  publishFailedLine,
+  rollbackAction,
+  rollbackButtonLabel,
+  rollbackFailedLine,
+  rollbackUnavailable,
+  uploadArchiveLink,
+} from '../pages/Versions.copy.ts';
+import { exampleUrl, storageUsedMb } from '../state/selectors.ts';
+import type { Site } from '../state/types.ts';
+import { accounts, domainExamples } from './accounts.ts';
 import { archives } from './archives.ts';
+import { dishBaursak } from './sampleSites.ts';
 import { LIMITS } from './limits.ts';
-import { scenarioById, scenarios } from './scenarios.ts';
+import { scenarioById, scenarioState, scenarios } from './scenarios.ts';
 
 export const SCREENSHOT_EMPTY = 'скриншота нет';
 
@@ -23,9 +71,6 @@ const domainQuote =
 const dashboardQuote =
   'The active version, example URL, deployment state, domain state and storage match the scenario.';
 
-const previewAudience =
-  'Предпросмотр видите только вы, пока выполнен вход в аккаунт этого сайта. Посетители и другие аккаунты видят активную версию.';
-
 export interface ResultRow {
   id: string;
   quote: string;
@@ -44,6 +89,8 @@ export interface GoalRow {
   reason: string;
   decision: string;
   scenarioId: string | null;
+  /** Spec file, shown as text. */
+  spec: string | null;
 }
 
 export interface UnmetRow {
@@ -59,24 +106,70 @@ export function scenarioHref(id: string): string {
   return `${scenario.route}?scenario=${id}`;
 }
 
-function unpacked(name: string): number {
-  const value = archives[name]?.unpackedMb;
-  if (value === null || value === undefined) throw new Error(name);
-  return value;
+function accountOf(id: 'a' | 'b') {
+  const found = accounts.find((item) => item.id === id);
+  if (!found) throw new Error(id);
+  return found;
 }
 
-function archiveMb(name: string): number {
-  const value = archives[name]?.archiveMb;
-  if (value === null || value === undefined) throw new Error(name);
-  return value;
+function versionLabel(name: string): string {
+  const label = archives[name]?.label;
+  if (label === null || label === undefined) throw new Error(name);
+  return label;
 }
 
-function meter(usedMb: number): string {
-  return `${usedMb} МБ из ${LIMITS.storageMb} МБ`;
+function scenarioSite(id: string): Site {
+  const scenario = scenarioById(id);
+  if (!scenario?.setup.account) throw new Error(id);
+  const owner = accounts.find((item) => item.id === scenario.setup.account);
+  const site = owner ? scenarioState(scenario).sites[owner.slug] : undefined;
+  if (!site) throw new Error(id);
+  return site;
 }
 
-function overLimit(actualMb: number, limitMb: number): string {
-  return `${actualMb} МБ больше лимита ${limitMb} МБ`;
+function refusal(id: string): string {
+  const scenario = scenarioById(id);
+  if (!scenario) throw new Error(id);
+  const result = scenarioState(scenario).lastResult;
+  if (result?.kind !== 'upload' || result.ok) throw new Error(id);
+  return result.nextStep;
+}
+
+function closingSentence(message: string): string {
+  const parts = message.split('. ').filter((part) => part.length > 0);
+  const last = parts[parts.length - 1];
+  if (!last) throw new Error(message);
+  return last.endsWith('.') ? last : `${last}.`;
+}
+
+function secondSiteNotice(): string {
+  const scenario = scenarioById('second-site');
+  if (!scenario) throw new Error('second-site');
+  const notice = addSiteNotice(
+    scenarioState(scenario).lastResult,
+    accountOf('a').businessName,
+  );
+  if (!notice) throw new Error('second-site');
+  return notice;
+}
+
+function meterLine(id: string): string {
+  const site = scenarioSite(id);
+  return storageCaption(storageUsedMb(site), LIMITS.storageMb);
+}
+
+function scenarioTitle(id: string): string {
+  const title = scenarioById(id)?.title;
+  if (!title) throw new Error(id);
+  return title;
+}
+
+function q(text: string): string {
+  return `«${text}»`;
+}
+
+function code(text: string): string {
+  return `\`${text}\``;
 }
 
 const scenarioIds = scenarios.map((item) => item.id);
@@ -85,17 +178,22 @@ function starting(prefix: string): readonly string[] {
   return scenarioIds.filter((id) => id.startsWith(prefix));
 }
 
-const retainedMb = [
-  'nan-v1.zip',
-  'nan-v2.zip',
-  'nan-v3.zip',
-  'nan-v4.zip',
-].reduce((sum, name) => sum + unpacked(name), 0);
+const labelA = versionLabel('nan-v1.zip');
+const labelB = versionLabel('nan-v2.zip');
+const previewSite = scenarioSite('preview-b');
+const previewPassed = successMessage(previewSite);
+if (!previewPassed) throw new Error('preview-b');
 
-const storageA = unpacked('nan-v1.zip');
-const storageB = unpacked('temir-v1.zip');
-const storagePublished = storageA + unpacked('nan-v2.zip');
-const storageActualMb = retainedMb + unpacked('nan-storage.zip');
+const rejectIds = scenarioIds.filter((id) => id.startsWith('reject-'));
+const unchangedLines: string[] = [];
+for (const id of rejectIds) {
+  const line = closingSentence(refusal(id));
+  if (!line.startsWith('Активная версия не изменилась:')) throw new Error(id);
+  if (!unchangedLines.includes(line)) unchangedLines.push(line);
+}
+
+const temir = accountOf('b');
+const nan = accountOf('a');
 
 function row(
   id: string,
@@ -118,149 +216,149 @@ export const results: readonly ResultRow[] = [
   row(
     'B1-AC1',
     'Public website content and private management data are clearly distinguished.',
-    'Публичная страница `/site/nan` без хранилища, версий и домена. Управление `/manage/nan`: «Управление сайтом, видно только владельцу».',
+    `${q(publicHeading)} ${code(exampleUrl(scenarioSite('a-home')))}: ${q(publicBoundary)} Управление ${code(`/manage/${nan.slug}`)}: ${q(ownerOnlyNote)}.`,
     ['a-home'],
   ),
   row(
     'B1-AC2',
     "Account B is denied access to account A's management screens.",
-    'Темир на `/manage/nan` видит отказ. Данных аккаунта A нет. Ссылка ведёт на `/manage/temir`.',
+    `${q(deniedTitle)}. ${q(`${deniedLead(temir.ownerName)} ${deniedBody}`)} Ссылка: ${ownSiteLink(temir.businessName)}.`,
     ['b-opens-a'],
   ),
   row(
     'B2-AC1',
     'A valid upload reaches the example URL.',
-    'Результат загрузки даёт ссылку `/site/nan`. После подтверждения публичная страница показывает версию B.',
+    `${q(previewPassed)} ${q(openSiteLead)} ${code(exampleUrl(previewSite))}.`,
     ['publish-ok'],
   ),
-  row('B2-AC2', rejectionQuote, '«В архиве нет index.html в корне.»', [
+  row('B2-AC2', rejectionQuote, refusal('reject-no-index'), [
     'reject-no-index',
   ]),
-  row('B2-AC3', rejectionQuote, 'В сообщении есть путь `../secret.txt`.', [
+  row('B2-AC3', rejectionQuote, refusal('reject-unsafe-path'), [
     'reject-unsafe-path',
   ]),
   row(
     'B2-AC4',
     rejectionQuote,
-    `Архив ${overLimit(archiveMb('nan-28mb.zip'), LIMITS.archiveMb)}. Распаковка ${overLimit(unpacked('nan-unpack-60.zip'), LIMITS.unpackedMb)}. Хранилище ${overLimit(storageActualMb, LIMITS.storageMb)}.`,
+    [
+      refusal('reject-archive-size'),
+      refusal('reject-unpacked-size'),
+      refusal('reject-storage'),
+    ].join(' '),
     ['reject-archive-size', 'reject-unpacked-size', 'reject-storage'],
   ),
   row(
     'B2-AC5',
     'A failed upload keeps the active version unchanged.',
-    'Каждый отказ заканчивается фразой «Активная версия не изменилась: A». На панели та же версия.',
+    `Отказы заканчиваются так: ${unchangedLines.map((line) => q(line)).join(' ')}`,
     starting('reject-'),
   ),
   row(
     'B3-AC1',
     'Previewing B leaves A active.',
-    'Предпросмотр рисует B. Строка «Активна версия A». Без кандидата экран ведёт на загрузку.',
+    `${q(candidateVersionLine(labelB))} ${q(activeVersionLine(labelA))} Если кандидата нет: ${q(noCandidateLine)} ${q(uploadArchiveLink)}.`,
     ['preview-b'],
   ),
   row(
     'B3-AC2',
     publishQuote,
-    'Диалог подтверждения. После него версия B активна на панели и на `/site/nan`.',
+    `${q(publishConfirmTitle(labelB))} ${confirmChangeText(labelA, labelB)}`,
     ['publish-ok'],
   ),
-  row('B3-AC3', publishQuote, '«Публикация не прошла. Активная версия: A.»', [
-    'publish-fail',
-  ]),
+  row('B3-AC3', publishQuote, q(publishFailedLine(labelA)), ['publish-fail']),
   row(
     'B3-AC4',
     'The preview screen explains who can view it.',
-    `«${previewAudience}»`,
+    q(previewAudience),
     ['preview-b'],
   ),
   row(
     'B4-AC1',
     'Rolling back after publishing B restores A.',
-    '«Вернуть версию A», подтверждение, снова активна A. На публичной странице остаётся баурсак.',
+    `${q(rollbackButtonLabel(labelA))}, подтверждение, снова ${q(activeVersionLine(labelA))}. На публичной странице ${q(dishBaursak)}.`,
     ['rollback-ok'],
   ),
   row(
     'B4-AC2',
     'With no history available, rollback is disabled and the screen explains why.',
-    'Кнопка отката выключена. «Откат недоступен: предыдущей версии нет.»',
+    `Кнопка ${q(rollbackAction)} выключена. ${q(rollbackUnavailable)}`,
     ['rollback-none', 'b-home'],
   ),
   row(
     'B4-AC3',
     'A failed rollback preserves the current version label.',
-    '«Откат не прошёл. Активная версия: B.»',
+    q(rollbackFailedLine(labelB)),
     ['rollback-fail'],
   ),
   row(
     'B5-AC1',
     'Domain-control verification comes before activation.',
-    'Имя, TXT, «Проверить», «Контроль подтверждён», затем «Активировать домен».',
+    `${domainCopy.steps.join(' ')} ${q(domainCopy.confirmed)} Кнопка ${q(domainCopy.activate)} до этого выключена: ${q(domainCopy.activateBlocked)}`,
     ['domain-pending', 'domain-active'],
   ),
-  row(
-    'B5-AC2',
-    domainQuote,
-    'Ожидание: запись ещё не видна, подождать и проверить снова. Ошибка: значение TXT не совпадает, его нужно исправить.',
-    ['domain-pending', 'domain-failed'],
-  ),
+  row('B5-AC2', domainQuote, `${domainCopy.pending} ${domainCopy.failed}`, [
+    'domain-pending',
+    'domain-failed',
+  ]),
   row(
     'B5-AC3',
     domainQuote,
-    'Домен, TXT, CNAME и сертификат подписаны «пример» и лежат в зоне .example.',
+    `Рядом со значениями написано ${q(domainCopy.example)}: ${code(domainExamples.cnameName)}, ${code(domainExamples.txtName)}, ${code(domainExamples.txtValue)}, ${code(domainExamples.cnameTarget)}, ${code(domainExamples.certificate)}.`,
     starting('domain-'),
   ),
   row(
     'B5-AC4',
     'Section 3.2 describes the smaller version if scope needs to change.',
-    'Запись стоит в разделе целей.',
+    q(scopeNote),
     [],
     '/defense#goals',
   ),
   row(
     'B6-AC1',
     dashboardQuote,
-    'Строка активной версии на панели берётся из состояния сценария.',
+    `Строка ${q(activeVersionTerm)} берётся из состояния сценария.`,
     scenarioIds,
   ),
   row(
     'B6-AC2',
     dashboardQuote,
-    'Адрес сайта: `/site/nan` или `/site/temir`.',
+    `Адрес сайта: ${code(exampleUrl(scenarioSite('a-home')))} и ${code(exampleUrl(scenarioSite('b-home')))}.`,
     scenarioIds,
   ),
   row(
     'B6-AC3',
     dashboardQuote,
-    '«Опубликовано», «Ошибка публикации», «Откат выполнен», «Ошибка отката».',
+    `${q(deploymentLabel.published)}, ${q(deploymentLabel.publishFailed)}, ${q(deploymentLabel.rolledBack)}, ${q(deploymentLabel.rollbackFailed)}.`,
     [...starting('publish-'), ...starting('rollback-')],
   ),
   row(
     'B6-AC4',
     dashboardQuote,
-    'Панель и экран домена читают одно и то же состояние.',
+    'Панель и экран домена читают одно состояние домена.',
     starting('domain-'),
   ),
   row(
     'B6-AC5',
     dashboardQuote,
-    `На a-home «${meter(storageA)}». На b-home «${meter(storageB)}». После publish-ok «${meter(storagePublished)}».`,
+    `${scenarioTitle('a-home')}: ${q(meterLine('a-home'))}. ${scenarioTitle('b-home')}: ${q(meterLine('b-home'))}. ${scenarioTitle('publish-ok')}: ${q(meterLine('publish-ok'))}.`,
     scenarioIds,
   ),
   row(
     'B6-AC6',
     'If domain work is deferred, the dashboard labels it unavailable.',
-    '«Домен: недоступно в этой версии прототипа»',
+    q(deferredDomainLine),
     ['domain-deferred'],
   ),
   row(
     'B7-AC1',
     'Plan, upload and dashboard values agree.',
-    'План, загрузка и панель берут одни и те же лимиты.',
+    `На загрузке: ${q(limitsSummary())} На плане: ${q(siteLimitLine())} На панели: ${q(meterLine('a-home'))}.`,
     ['a-home'],
   ),
   row(
     'B7-AC2',
     'The rejection message explains which limit was exceeded and what the owner can do next.',
-    'Отказ по размеру называет лимит, фактический размер и следующий шаг. «Добавить сайт» называет лимит одного сайта.',
+    `${refusal('reject-archive-size')} ${refusal('reject-unpacked-size')} ${refusal('reject-storage')} Кнопка ${q(addSiteButton)}: ${secondSiteNotice()}`,
     [
       'reject-archive-size',
       'reject-unpacked-size',
@@ -281,6 +379,7 @@ export const goals: readonly GoalRow[] = [
     reason: 'Проход 5 участников ещё не проводили.',
     decision: 'Отметку запишем после прохода с брифом и листом наблюдений.',
     scenarioId: null,
+    spec: null,
   },
   {
     id: 'G2',
@@ -288,9 +387,9 @@ export const goals: readonly GoalRow[] = [
       'Demonstrate preview with A still active, confirmed publication of B and rollback to A. Failed actions must preserve the current version label.',
     mark: 'выполнено',
     reason: checked,
-    decision:
-      'Предпросмотр оставляет A. Подтверждение публикует B. Откат возвращает A. Сбой сохраняет метку версии.',
+    decision: `${q(activeVersionLine(labelA))} при предпросмотре версии ${labelB}. ${confirmChangeText(labelA, labelB)} ${q(rollbackButtonLabel(labelA))} возвращает версию ${labelA}. ${q(publishFailedLine(labelA))} ${q(rollbackFailedLine(labelB))}`,
     scenarioId: 'rollback-ok',
+    spec: 'e2e/b3-g2.spec.ts',
   },
   {
     id: 'G3',
@@ -301,6 +400,7 @@ export const goals: readonly GoalRow[] = [
     decision:
       'Проверяются выход, чужой аккаунт, небезопасный путь и архив сверх лимита.',
     scenarioId: 'reject-unsafe-path',
+    spec: 'e2e/b1-g3-access.spec.ts и e2e/b2-g3.spec.ts',
   },
   {
     id: 'G4',
@@ -308,9 +408,9 @@ export const goals: readonly GoalRow[] = [
       'Distinguish pending, active and failed domain/HTTPS states and explain domain-control verification before activation. If we reduce the scope, we will record which checks remain and which are deferred.',
     mark: 'выполнено',
     reason: checked,
-    decision:
-      'Ожидание, активное состояние и ошибка различаются. Активация идёт после проверки контроля.',
+    decision: `${q(statusPending)}, ${q(statusActive)}, ${q(statusFailed)}. ${domainCopy.pending} ${domainCopy.failed} ${q(domainCopy.confirmed)} затем ${q(domainCopy.activate)}.`,
     scenarioId: 'domain-active',
+    spec: 'e2e/b5-g4.spec.ts',
   },
   {
     id: 'G5',
@@ -321,6 +421,7 @@ export const goals: readonly GoalRow[] = [
     decision:
       'Отметку запишем, когда 5 участников объяснят лимит и превышение.',
     scenarioId: null,
+    spec: null,
   },
 ];
 
@@ -357,4 +458,7 @@ for (const item of results) {
 
 for (const goal of goals) {
   if (goal.scenarioId) scenarioHref(goal.scenarioId);
+  if (goal.mark === 'выполнено' && !goal.spec) {
+    throw new Error(goal.id);
+  }
 }

@@ -5,6 +5,7 @@ import {
   screenLabel,
   sectionTitle,
   stepHref,
+  tableScrollNote,
   userPath,
 } from './links.ts';
 
@@ -59,5 +60,6 @@ describe('defense links', () => {
   it('names the login screen without the nav label', () => {
     expect(screenLabel('/login')).toBe('Экран входа');
     expect(screenLabel('/manage/nan')).toBe('Управление сайтом');
+    expect(tableScrollNote).toContain('вбок');
   });
 });

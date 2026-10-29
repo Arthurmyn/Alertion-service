@@ -110,10 +110,34 @@ describe('result registry', () => {
       ...ids('publish-'),
       ...ids('rollback-'),
     ]);
-    expect(byId('B6-AC5')?.shown).toContain('a-home');
-    expect(byId('B6-AC5')?.shown).toContain('b-home');
-    expect(byId('B6-AC5')?.shown).toContain('publish-ok');
+    expect(byId('B6-AC5')?.shown).toContain('Пекарня Нан');
+    expect(byId('B6-AC5')?.shown).toContain('Мастерская Темир');
+    expect(byId('B6-AC5')?.shown).toContain('Публикация прошла');
     expect(byId('B2-AC4')?.shown).toContain('МБ');
+    expect(byId('B2-AC4')?.shown).toContain('Распакованная версия');
+    expect(byId('B2-AC4')?.shown).not.toContain('больше лимита');
+    expect(byId('B2-AC5')?.shown).toContain(
+      'Активная версия не изменилась: A.',
+    );
+    expect(byId('B2-AC5')?.shown).toContain(
+      'Активная версия не изменилась: D.',
+    );
+    expect(byId('B4-AC2')?.shown).toContain(
+      'Откат недоступен: предыдущей версии нет.',
+    );
+    expect(byId('B4-AC3')?.shown).toContain(
+      'Откат не прошёл. Активная версия: B.',
+    );
+    expect(byId('B3-AC3')?.shown).toContain(
+      'Публикация не прошла. Активная версия: A.',
+    );
+    expect(byId('B5-AC2')?.shown).toContain('Запись TXT ещё не видна.');
+    expect(byId('B5-AC2')?.shown).toContain('Значение TXT не совпадает.');
+    expect(byId('B5-AC3')?.shown).toContain('пример');
+    expect(byId('B5-AC3')?.shown).not.toContain('зоне');
+    expect(byId('B6-AC6')?.shown).toContain(
+      'Домен: недоступно в этой версии прототипа',
+    );
   });
 
   it('marks G2–G4 in the prototype and leaves G1 and G5 deferred', () => {
@@ -131,10 +155,23 @@ describe('result registry', () => {
       if (goal.mark === 'выполнено') {
         expect(goal.reason).toBe('проверено в прототипе');
         expect(goal.scenarioId).toBeTruthy();
+        expect(goal.spec).toBeTruthy();
+        expect(goal.spec).not.toMatch(/b4/i);
+      } else {
+        expect(goal.spec).toBeNull();
       }
       expect(goal.quote.length).toBeGreaterThan(0);
       expect(goal.decision.length).toBeGreaterThan(0);
     }
+    expect(goals.find((goal) => goal.id === 'G2')?.spec).toBe(
+      'e2e/b3-g2.spec.ts',
+    );
+    expect(goals.find((goal) => goal.id === 'G3')?.spec).toBe(
+      'e2e/b1-g3-access.spec.ts и e2e/b2-g3.spec.ts',
+    );
+    expect(goals.find((goal) => goal.id === 'G4')?.spec).toBe(
+      'e2e/b5-g4.spec.ts',
+    );
     expect(goals[0]?.quote.startsWith('at least four of five')).toBe(true);
     expect(goals[3]?.quote).toContain('If we reduce the scope');
   });

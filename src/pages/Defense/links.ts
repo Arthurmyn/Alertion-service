@@ -49,6 +49,9 @@ const screenLabels: Record<string, string> = {
   '/manage/nan/plan': 'Пилотный план',
 };
 
+export const tableScrollNote =
+  'Если таблица шире колонки, сдвиньте её вбок. Первая колонка остаётся на месте.';
+
 export function screenLabel(link: string): string {
   return screenLabels[link] ?? link;
 }

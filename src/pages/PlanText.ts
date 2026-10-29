@@ -1,6 +1,8 @@
 import { LIMITS } from '../data/limits.ts';
 import type { AccountId, AppState, Site } from '../state/types.ts';
 
+export const addSiteButton = 'Добавить сайт';
+
 function countWord(n: number, one: string, few: string, many: string): string {
   const abs = Math.abs(Math.trunc(n));
   const mod10 = abs % 10;

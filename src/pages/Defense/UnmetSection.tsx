@@ -1,6 +1,7 @@
 import { unmetRows } from '../../data/results.ts';
 import styles from './Defense.module.css';
 import { sectionTitle } from './links.ts';
+import { WideTable } from './WideTable.tsx';
 
 export function UnmetSection() {
   return (
@@ -11,7 +12,7 @@ export function UnmetSection() {
     >
       <h2 id="unmet-title">{sectionTitle.unmet}</h2>
       <p>Пункты процесса, ролей и отчёта. На экранах их нет.</p>
-      <div className={styles.scroll}>
+      <WideTable noteId="unmet-scroll">
         <table className={`${styles.table} ${styles.criteria}`}>
           <caption>Невыполненные и непроверяемые</caption>
           <thead>
@@ -34,7 +35,7 @@ export function UnmetSection() {
             ))}
           </tbody>
         </table>
-      </div>
+      </WideTable>
     </section>
   );
 }

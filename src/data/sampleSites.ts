@@ -51,14 +51,15 @@ ${menu}
 </html>`;
 }
 
-const baursak = 'Баурсак, 500 ₸';
-const croissant = 'Круассан, 900 ₸';
+export const dishBaursak = 'Баурсак, 500 ₸';
+export const dishCroissant = 'Круассан, 900 ₸';
+export const dishKnife = 'Заточка ножа, 2 000 ₸';
 
 export const sampleSites: Record<string, string> = {
-  'nan-v1.zip': page('Пекарня Нан', [baursak]),
-  'nan-v2.zip': page('Пекарня Нан', [baursak, croissant]),
+  'nan-v1.zip': page('Пекарня Нан', [dishBaursak]),
+  'nan-v2.zip': page('Пекарня Нан', [dishBaursak, dishCroissant]),
   'nan-v3.zip': page('Пекарня Нан', []),
   'nan-v4.zip': page('Пекарня Нан', []),
   'nan-storage.zip': page('Пекарня Нан', []),
-  'temir-v1.zip': page('Мастерская Темир', ['Заточка ножа, 2 000 ₸']),
+  'temir-v1.zip': page('Мастерская Темир', [dishKnife]),
 };
