@@ -12,15 +12,21 @@ const sections = [
   { suffix: '/plan', label: 'Пилотный план' },
 ] as const;
 
-function pathSlug(pathname: string): string | null {
-  const match = /^\/(?:manage|site)\/([^/]+)/.exec(pathname);
-  const slug = match?.[1];
-  if (!slug) return null;
+function readSlug(value: string | undefined): string | null {
+  if (!value) return null;
   try {
-    return decodeURIComponent(slug);
+    return decodeURIComponent(value);
   } catch {
-    return slug;
+    return value;
   }
+}
+
+function manageSlug(pathname: string): string | null {
+  return readSlug(/^\/manage\/([^/]+)/.exec(pathname)?.[1]);
+}
+
+function publicSlug(pathname: string): string | null {
+  return readSlug(/^\/site\/([^/]+)$/.exec(pathname)?.[1]);
 }
 
 function linkClass({ isActive }: { isActive: boolean }): string {
@@ -30,10 +36,9 @@ function linkClass({ isActive }: { isActive: boolean }): string {
 export function AppShell() {
   const { pathname } = useLocation();
   const { state } = useStore();
-  const slug = pathSlug(pathname);
-  const publicSite = /^\/site\/[^/]+$/.test(pathname);
-  const navSlug = slug ?? accountSlug(state.sessionAccountId);
-  const site = slug ? state.sites[slug] : undefined;
+  const navSlug = manageSlug(pathname) ?? accountSlug(state.sessionAccountId);
+  const siteSlug = publicSlug(pathname);
+  const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
 
   return (
     <div className={styles.shell}>
@@ -42,8 +47,8 @@ export function AppShell() {
           <img src="/logo.png" alt="" width={260} height={308} />
           Alertion
         </Link>
-        {publicSite && site ? (
-          <span className={styles.publicName}>{site.businessName}</span>
+        {publicSite ? (
+          <span className={styles.publicName}>{publicSite.businessName}</span>
         ) : null}
         {publicSite ? null : (
           <nav aria-label="Разделы">

@@ -86,6 +86,17 @@ describe('routes', () => {
     expect(html).not.toContain('href="/manage/');
     expect(html).not.toContain('Защита проекта');
     expect(renderAt('/site/temir')).toContain('Мастерская Темир');
+
+    const storage = memoryStorage();
+    writeSession(
+      storage,
+      reducer(baseline, { type: 'signIn', accountId: 'a' }),
+    );
+    vi.stubGlobal('sessionStorage', storage);
+    const signedIn = renderAt('/site/nan');
+    expect(signedIn).toContain('Пекарня Нан');
+    expect(signedIn).not.toContain('href="/manage/');
+    expect(signedIn).not.toContain('Защита проекта');
   });
 
   it('redirects / to login when signed out', () => {
@@ -144,14 +155,30 @@ describe('routes', () => {
   });
 
   it('shows a not-found page with a link home', () => {
-    for (const path of ['/missing', '/manage/nan/missing']) {
+    for (const path of ['/missing', '/manage/nan/missing', '/site/missing']) {
       const html = renderAt(path);
       expect(html, path).toContain('<h1>Страница не найдена</h1>');
+      expect(html, path).not.toContain('Публичная страница');
       expect(
         anchors(html).some(
           (tag) => tag.includes('href="/"') && tag.includes('>На главную</a>'),
         ),
       ).toBe(true);
     }
+  });
+
+  it('does not build nav from an unknown public address', () => {
+    const storage = memoryStorage();
+    writeSession(
+      storage,
+      reducer(baseline, { type: 'signIn', accountId: 'b' }),
+    );
+    vi.stubGlobal('sessionStorage', storage);
+
+    const html = renderAt('/site/missing');
+    expect(html).toContain('<h1>Страница не найдена</h1>');
+    expect(html).toContain('href="/manage/temir"');
+    expect(html).not.toContain('href="/manage/missing');
+    expect(html).not.toContain('Публичная страница');
   });
 });
