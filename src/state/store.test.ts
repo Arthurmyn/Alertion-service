@@ -7,7 +7,6 @@ import {
   SESSION_KEY,
   StoreProvider,
   initialState,
-  storeReducer,
   useStore,
   writeSession,
 } from './store.tsx';
@@ -40,25 +39,18 @@ describe('store', () => {
 
   it('keeps state across a reload', () => {
     const storage = memoryStorage();
-    const signedIn = storeReducer(baseline, {
-      type: 'signIn',
-      accountId: 'a',
-    });
-    expect(signedIn).toEqual(
-      reducer(baseline, { type: 'signIn', accountId: 'a' }),
-    );
-
+    const signedIn = reducer(baseline, { type: 'signIn', accountId: 'a' });
     writeSession(storage, signedIn);
+
     expect(storage.getItem(SESSION_KEY)).toContain('"sessionAccountId":"a"');
-    expect(initialState(storage)).toEqual(signedIn);
+    expect(initialState(storage)).toEqual(
+      reducer(baseline, { type: 'load', state: signedIn }),
+    );
   });
 
   it('restores the baseline when load is dispatched', () => {
     const storage = memoryStorage();
-    const signedIn = storeReducer(baseline, {
-      type: 'signIn',
-      accountId: 'b',
-    });
+    const signedIn = reducer(baseline, { type: 'signIn', accountId: 'b' });
     const drifted = {
       ...signedIn,
       simulate: {
@@ -68,7 +60,7 @@ describe('store', () => {
       },
       scenarioId: 'publish-fail',
     };
-    const reset = storeReducer(drifted, { type: 'load', state: baseline });
+    const reset = reducer(drifted, { type: 'load', state: baseline });
     writeSession(storage, reset);
 
     expect(reset).toEqual(baseline);
@@ -101,7 +93,7 @@ describe('store', () => {
     const storage = memoryStorage();
     writeSession(
       storage,
-      storeReducer(baseline, { type: 'signIn', accountId: 'b' }),
+      reducer(baseline, { type: 'signIn', accountId: 'b' }),
     );
     vi.stubGlobal('sessionStorage', storage);
 

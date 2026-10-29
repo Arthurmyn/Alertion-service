@@ -24,13 +24,9 @@ const stateKeys = [
   'demo',
 ] as const;
 
-type LoadAction = { type: 'load'; state: AppState };
-
-export type StoreAction = Action | LoadAction;
-
 type StoreValue = {
   state: AppState;
-  dispatch: Dispatch<StoreAction>;
+  dispatch: Dispatch<Action>;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -71,12 +67,9 @@ export function writeSession(
 
 export function initialState(storage: Pick<Storage, 'getItem'>): AppState {
   // ?scenario= will be applied here, ahead of the saved session.
-  return readSession(storage) ?? baseline;
-}
-
-export function storeReducer(state: AppState, action: StoreAction): AppState {
-  if (action.type === 'load') return action.state;
-  return reducer(state, action);
+  const saved = readSession(storage);
+  if (!saved) return baseline;
+  return reducer(baseline, { type: 'load', state: saved });
 }
 
 function mountState(fallback: AppState): AppState {
@@ -85,7 +78,7 @@ function mountState(fallback: AppState): AppState {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(storeReducer, baseline, mountState);
+  const [state, dispatch] = useReducer(reducer, baseline, mountState);
 
   useEffect(() => {
     if (typeof sessionStorage === 'undefined') return;
