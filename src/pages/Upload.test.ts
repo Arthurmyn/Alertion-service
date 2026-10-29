@@ -106,12 +106,25 @@ function memoryStorage() {
   };
 }
 
+function pageMain(html: string): string {
+  const start = html.indexOf('<main');
+  const end = html.indexOf('</main>');
+  if (start < 0 || end < start) throw new Error('no main');
+  return html.slice(start, end);
+}
+
 function renderAt(path: string, stored: AppState = baseline): string {
   const storage = memoryStorage();
   writeSession(storage, stored);
   vi.stubGlobal('sessionStorage', storage);
-  return markup(
-    createElement(MemoryRouter, { initialEntries: [path] }, createElement(App)),
+  return pageMain(
+    markup(
+      createElement(
+        MemoryRouter,
+        { initialEntries: [path] },
+        createElement(App),
+      ),
+    ),
   );
 }
 

@@ -49,21 +49,24 @@ export function ScenarioPanel() {
         aria-describedby={locked ? reasonId : undefined}
         onChange={(event) => choose(event.target.value)}
       >
-        <option value="">Не выбран</option>
+        <option value="" disabled>
+          Не выбран
+        </option>
         {scenarios.map((item) => (
           <option key={item.id} value={item.id}>
             {item.title}
           </option>
         ))}
       </select>
-      <input
+      <button
         className={styles.reset}
         type="button"
-        value="Сбросить"
         disabled={locked}
         aria-describedby={locked ? reasonId : undefined}
         onClick={reset}
-      />
+      >
+        Сбросить
+      </button>
       {locked ? (
         <p className={styles.reason} id={reasonId}>
           {lockedReason}

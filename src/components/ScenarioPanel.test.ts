@@ -46,7 +46,7 @@ describe('ScenarioPanel', () => {
     vi.stubGlobal('sessionStorage', memoryStorage());
     const html = renderPanel();
     const select = tag(html, 'select');
-    const button = /<input\b[^>]*>/.exec(html)?.[0] ?? '';
+    const button = /<button\b[^>]*>/.exec(html)?.[0] ?? '';
     const selectId = /id="([^"]+)"/.exec(select)?.[1];
 
     expect(selectId).toBeTruthy();
@@ -54,7 +54,7 @@ describe('ScenarioPanel', () => {
     expect(html).toContain('>Сценарий<');
     expect(html).toContain('Не выбран');
     expect(button).toContain('type="button"');
-    expect(button).toContain('value="Сбросить"');
+    expect(html).toContain('>Сбросить</button>');
     expect(button).not.toContain('disabled');
     expect(select).not.toContain('disabled');
     expect(html).not.toContain('Смена сценария недоступна');
@@ -86,7 +86,7 @@ describe('ScenarioPanel', () => {
 
     const html = renderPanel();
     const select = tag(html, 'select');
-    const button = /<input\b[^>]*>/.exec(html)?.[0] ?? '';
+    const button = /<button\b[^>]*>/.exec(html)?.[0] ?? '';
     const describedBy = /aria-describedby="([^"]+)"/.exec(select)?.[1];
 
     expect(select).toContain('disabled');

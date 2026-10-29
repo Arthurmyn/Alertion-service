@@ -104,6 +104,22 @@ describe('scenarios', () => {
     expect(baseline).toEqual(snapshot);
   });
 
+  it('opens a management route with a signed-in session', () => {
+    for (const item of scenarios) {
+      if (!item.route.startsWith('/manage/')) continue;
+      const state = scenarioState(item);
+      expect(state.sessionAccountId, item.id).not.toBeNull();
+      if (item.id === 'b-opens-a') {
+        expect(state.sessionAccountId).toBe('b');
+        continue;
+      }
+      const slug = item.route.split('/')[2];
+      expect(state.sessionAccountId, item.id).toBe(
+        slug === 'temir' ? 'b' : 'a',
+      );
+    }
+  });
+
   it('signs out, opens each home, and denies the other account', () => {
     expect(byId('signed-out')).toEqual({
       ...baseline,
