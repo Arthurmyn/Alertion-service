@@ -125,7 +125,6 @@ describe('Dashboard', () => {
     }
 
     expect(html).toContain('<h1>Управление сайтом</h1>');
-    expect(html).toContain('Пекарня Нан');
     expect(html).toContain('>A</dd>');
     expect(html).toContain('href="/site/nan"');
     expect(html).toContain('>/site/nan</a>');
@@ -149,7 +148,6 @@ describe('Dashboard', () => {
 
   it('reads account B from the same selectors', () => {
     const html = renderAt('/manage/temir');
-    expect(html).toContain('Мастерская Темир');
     expect(html).toContain('href="/site/temir"');
     expect(html).toContain('>A</dd>');
     expect(html).toContain(

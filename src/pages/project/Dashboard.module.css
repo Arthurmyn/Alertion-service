@@ -1,13 +1,18 @@
 .business {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-xl);
   font-size: var(--text-lg);
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.25;
+  color: var(--ink-2);
 }
 
 .facts {
-  margin: 8px 0 0;
-  padding: 0;
+  margin: 0;
+  padding: 0 var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  box-shadow: var(--shadow-panel);
 }
 
 .fact {
@@ -16,7 +21,7 @@
   gap: var(--space-2xs) var(--kv-gap);
   align-items: start;
   margin: 0;
-  padding: 10px 0;
+  padding: 14px 0;
   border: 0;
   border-top: 1px solid var(--rule);
   border-radius: 0;
@@ -24,8 +29,8 @@
   background: transparent;
 }
 
-.fact:last-child {
-  border-bottom: 1px solid var(--rule);
+.fact:first-child {
+  border-top: 0;
 }
 
 .fact dt,
@@ -51,25 +56,48 @@
   overflow-wrap: anywhere;
 }
 
+.ok,
+.bad,
+.pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px 1px 8px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: var(--radius-pill);
+}
+
+.ok::before,
+.bad::before,
+.pending::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+}
+
 .ok {
   color: var(--ok-text);
-  font-weight: 600;
+  background: var(--ok-bg);
 }
 
 .bad {
   color: var(--danger-text);
-  font-weight: 600;
+  background: var(--danger-bg);
 }
 
 .pending {
   color: var(--warn-text);
-  font-weight: 600;
+  background: var(--warn-bg);
 }
 
 .state {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 2px 12px;
 }
 
@@ -93,14 +121,17 @@
 .refresh {
   color: var(--ink);
   background: var(--surface);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-button);
   box-shadow: none;
 }
 
-.refresh:hover {
-  color: var(--on-ink);
-  background: var(--ink);
+@media (hover: hover) and (pointer: fine) {
+  .refresh:hover {
+    color: var(--ink);
+    background: var(--tint);
+    border-color: var(--ink);
+  }
 }
 
 .live {
@@ -116,7 +147,7 @@
 }
 
 .actions {
-  margin: 24px 0 0;
+  margin: var(--space-xl) 0 0;
 }
 
 .primary {
@@ -127,13 +158,18 @@
   line-height: 1.25;
   text-decoration: none;
   color: var(--on-ink);
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  background: var(--brand);
+  border: 1px solid var(--brand);
   border-radius: var(--radius-button);
   box-shadow: none;
-  padding: 8px 14px;
-  transition-property: color, background-color, border-color;
+  padding: 8px 16px;
+  transition-property: color, background-color, border-color, transform;
   transition-duration: var(--motion);
+  transition-timing-function: var(--ease-out);
+}
+
+.primary:active {
+  transform: scale(0.97);
 }
 
 .primary:link,
@@ -143,18 +179,78 @@
 }
 
 .primary:link,
-.primary:visited {
+.primary:visited,
+.primary:hover {
   color: var(--on-ink);
 }
 
 .primary:hover {
-  color: var(--ink);
-  background: var(--surface);
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
 }
 
 @media (max-width: 480px) {
+  .facts {
+    padding: 0 var(--space-md);
+  }
+
   .fact {
     grid-template-columns: 1fr;
     gap: 2px;
+  }
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-xl);
+}
+
+.main {
+  min-width: 0;
+}
+
+.activity {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-block);
+}
+
+.activity h2 {
+  margin: 0;
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-md);
+  letter-spacing: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activity li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.activity li + li {
+  border-top: 1px solid var(--border);
+}
+
+.activity small {
+  display: block;
+  color: var(--text-2);
+}
+
+@media (min-width: 1100px) {
+  .columns {
+    grid-template-columns: minmax(0, 3fr) minmax(18rem, 2fr);
   }
 }

@@ -17,6 +17,13 @@ import {
   deferredDomainLine,
   deploymentLabel,
 } from './Dashboard.copy.ts';
+import {
+  StatusBadge,
+  VerificationBadge,
+  VersionBadge,
+} from '../../components/ui/StatusBadge.tsx';
+import { verificationFor } from '../../data/verification.ts';
+import { formatDate, versionRole } from '../../data/workspace.ts';
 import { NotFound } from '../NotFound.tsx';
 import styles from './Dashboard.module.css';
 
@@ -93,6 +100,9 @@ export function Dashboard() {
     (version) => version.id === site.activeVersionId,
   );
   const url = exampleUrl(site);
+  const latest = [...site.versions].sort((a, b) =>
+    b.uploadedAt.localeCompare(a.uploadedAt),
+  )[0];
   const tone = deploymentTone(site.deployment);
   const storageFeedback =
     refreshedSlug === site.slug && site.storageDataStatus === 'current'
@@ -109,78 +119,143 @@ export function Dashboard() {
   return (
     <>
       <h1>Управление сайтом</h1>
-      <p className={styles.business}>{site.businessName}</p>
-      <dl className={styles.facts}>
-        <div className={styles.fact}>
-          <dt>{activeVersionTerm}</dt>
-          <dd>{active?.label ?? site.activeVersionId}</dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>Адрес сайта</dt>
-          <dd>
-            <Link className={styles.url} to={url}>
-              {url}
-            </Link>
-          </dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>Публикация</dt>
-          <dd>
-            <span className={styles.state}>
-              <span className={tone === 'ok' ? styles.ok : styles.bad}>
-                {deploymentLabel[site.deployment]}
-              </span>
-              {tone === 'bad' ? (
-                <Link to={`/manage/${site.slug}/versions`}>Открыть версии</Link>
-              ) : null}
-            </span>
-          </dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>Домен</dt>
-          <dd>
-            <DomainValue slug={site.slug} domain={site.domain} />
-          </dd>
-        </div>
-        <div className={styles.fact}>
-          <dt>Хранилище</dt>
-          <dd>
-            <StorageMeter
-              usedMb={storageUsedMb(site)}
-              limitMb={LIMITS.storageMb}
-            />
-            {site.storageDataStatus === 'stale' ? (
-              <div className={styles.stale}>
-                <Alert tone="warn">
-                  <span id={staleId}>
-                    {staleStorageText(site.lastUpdatedAt)}
-                  </span>
-                </Alert>
-                <button
-                  type="button"
-                  className={styles.refresh}
-                  aria-describedby={staleId}
-                  onClick={refreshStorage}
-                >
-                  Обновить
-                </button>
-              </div>
-            ) : null}
-            <div className={styles.live} aria-live="polite" aria-atomic="true">
-              {storageFeedback ? (
-                <p ref={feedbackRef} tabIndex={-1} className={styles.feedback}>
-                  {storageFeedback}
-                </p>
-              ) : null}
+      <div className={styles.columns}>
+        <div className={styles.main}>
+          <dl className={styles.facts}>
+            <div className={styles.fact}>
+              <dt>{activeVersionTerm}</dt>
+              <dd>{active?.label ?? site.activeVersionId}</dd>
             </div>
-          </dd>
+            <div className={styles.fact}>
+              <dt>Адрес сайта</dt>
+              <dd>
+                <Link className={styles.url} to={url}>
+                  {url}
+                </Link>
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Публикация</dt>
+              <dd>
+                <span className={styles.state}>
+                  <span className={tone === 'ok' ? styles.ok : styles.bad}>
+                    {deploymentLabel[site.deployment]}
+                  </span>
+                  {tone === 'bad' ? (
+                    <Link to={`/manage/${site.slug}/versions`}>
+                      Открыть версии
+                    </Link>
+                  ) : null}
+                </span>
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Проверка</dt>
+              <dd>
+                {active ? (
+                  <VerificationBadge status={verificationFor(site, active)} />
+                ) : (
+                  '—'
+                )}
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Репозиторий</dt>
+              <dd>
+                <StatusBadge tone="neutral">Не подключён</StatusBadge>
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Последняя сборка</dt>
+              <dd>
+                {latest ? (
+                  <>
+                    <code className={styles.url}>{latest.archiveName}</code>
+                    <br />
+                    <small>Загружена {formatDate(latest.uploadedAt)}</small>
+                  </>
+                ) : (
+                  '—'
+                )}
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Домен</dt>
+              <dd>
+                <DomainValue slug={site.slug} domain={site.domain} />
+              </dd>
+            </div>
+            <div className={styles.fact}>
+              <dt>Хранилище</dt>
+              <dd>
+                <StorageMeter
+                  usedMb={storageUsedMb(site)}
+                  limitMb={LIMITS.storageMb}
+                />
+                {site.storageDataStatus === 'stale' ? (
+                  <div className={styles.stale}>
+                    <Alert tone="warn">
+                      <span id={staleId}>
+                        {staleStorageText(site.lastUpdatedAt)}
+                      </span>
+                    </Alert>
+                    <button
+                      type="button"
+                      className={styles.refresh}
+                      aria-describedby={staleId}
+                      onClick={refreshStorage}
+                    >
+                      Обновить
+                    </button>
+                  </div>
+                ) : null}
+                <div
+                  className={styles.live}
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  {storageFeedback ? (
+                    <p
+                      ref={feedbackRef}
+                      tabIndex={-1}
+                      className={styles.feedback}
+                    >
+                      {storageFeedback}
+                    </p>
+                  ) : null}
+                </div>
+              </dd>
+            </div>
+          </dl>
+          <p className={styles.actions}>
+            <Link className={styles.primary} to={`/manage/${site.slug}/upload`}>
+              {uploadArchiveLink}
+            </Link>
+          </p>
         </div>
-      </dl>
-      <p className={styles.actions}>
-        <Link className={styles.primary} to={`/manage/${site.slug}/upload`}>
-          {uploadArchiveLink}
-        </Link>
-      </p>
+        <section className={styles.activity} aria-labelledby="activity-title">
+          <h2 id="activity-title">Недавняя активность</h2>
+          <ul>
+            {[...site.versions]
+              .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt))
+              .map((version) => (
+                <li key={version.id}>
+                  <span>
+                    Версия {version.label}
+                    <small>
+                      {version.archiveName} · загружена{' '}
+                      {formatDate(version.uploadedAt)}
+                    </small>
+                  </span>
+                  <VersionBadge
+                    role={versionRole(site, version)}
+                    deployment={site.deployment}
+                  />
+                </li>
+              ))}
+          </ul>
+        </section>
+      </div>
     </>
   );
 }
