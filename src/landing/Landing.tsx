@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { AlertField } from './AlertField.tsx';
 import { DotHands } from './DotHands.tsx';
 import {
@@ -63,7 +64,11 @@ function Hero() {
     <section className={styles.hero} id="top" aria-labelledby="hero-title">
       <DotHands />
       <AlertField variant="hero" />
-      <nav className={styles.nav} aria-label={t.navLabel}>
+      <nav
+        className={styles.nav}
+        style={{ '--d': '0ms' } as CSSProperties}
+        aria-label={t.navLabel}
+      >
         <Brand />
         <div className={styles.navLinks}>
           {anchors.map((href, index) => (
@@ -80,16 +85,31 @@ function Hero() {
 
       <div className={styles.copy}>
         <h1 id="hero-title" className={styles.heroTitle}>
-          <span className={styles.line1}>{t.hero.line1}</span>
-          <span className={styles.line2}>{t.hero.line2}</span>
+          <span
+            className={styles.line1}
+            style={{ '--d': '140ms' } as CSSProperties}
+          >
+            {t.hero.line1}
+          </span>
+          <span
+            className={styles.line2}
+            style={{ '--d': '250ms' } as CSSProperties}
+          >
+            {t.hero.line2}
+          </span>
         </h1>
-        <p className={styles.subline}>{t.hero.subline}</p>
-        <div className={styles.cta}>
+        <p
+          className={styles.subline}
+          style={{ '--d': '380ms' } as CSSProperties}
+        >
+          {t.hero.subline}
+        </p>
+        <div className={styles.cta} style={{ '--d': '480ms' } as CSSProperties}>
           <a href={appLogin}>{t.open}</a>
         </div>
       </div>
 
-      <div className={styles.facts}>
+      <div className={styles.facts} style={{ '--d': '600ms' } as CSSProperties}>
         <span className={styles.factsLabel}>{t.planLabel}</span>
         {t.planFacts.map((fact) => (
           <span key={fact}>{fact}</span>
@@ -193,8 +213,8 @@ function Features() {
           ))}
         </div>
         <dl className={styles.more} data-reveal>
-          {t.features.more.map((item) => (
-            <div key={item.term}>
+          {t.features.more.map((item, index) => (
+            <div key={item.term} style={{ '--i': index } as CSSProperties}>
               <dt>{item.term}</dt>
               <dd>{item.text}</dd>
             </div>
@@ -219,8 +239,8 @@ function Verify() {
           {t.verify.lead}
         </p>
         <ol className={styles.path} data-reveal>
-          {t.verify.path.map((item) => (
-            <li key={item.step}>
+          {t.verify.path.map((item, index) => (
+            <li key={item.step} style={{ '--i': index } as CSSProperties}>
               <span
                 className={`${styles.dot} ${styles[`dot_${item.level}`]}`}
                 aria-hidden="true"
@@ -255,8 +275,8 @@ function Team() {
             </p>
           </div>
           <dl className={styles.team} data-reveal>
-            {t.team.rows.map((item) => (
-              <div key={item.term}>
+            {t.team.rows.map((item, index) => (
+              <div key={item.term} style={{ '--i': index } as CSSProperties}>
                 <dt>{item.term}</dt>
                 <dd>
                   {item.names.map((name) => (

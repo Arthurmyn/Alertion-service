@@ -63,8 +63,10 @@
   transition: color 0.2s ease;
 }
 
-.navLink:hover {
-  color: #000000;
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover {
+    color: #000000;
+  }
 }
 
 .lang {
@@ -95,7 +97,12 @@
   border-radius: 999px;
   transition:
     color 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    transform 0.15s ease-out;
+}
+
+.langButton:active {
+  transform: scale(0.94);
 }
 
 .langButton[aria-pressed='true'] {
@@ -124,9 +131,15 @@
     background-color 0.2s ease;
 }
 
-.signin:hover {
-  background: #000000;
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .signin:hover {
+    background: #000000;
+    transform: translateY(-1px);
+  }
+}
+
+.signin:active {
+  transform: scale(0.97);
 }
 
 .copy {
@@ -190,9 +203,15 @@
     background-color 0.2s ease;
 }
 
-.cta:hover a {
-  background: #000000;
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover a {
+    background: #000000;
+    transform: translateY(-1px);
+  }
+}
+
+.cta a:active {
+  transform: scale(0.97);
 }
 
 /* The hero's own glow under the call to action. */
@@ -223,10 +242,12 @@
     bottom 0.3s ease;
 }
 
-.cta:hover::before {
-  bottom: -9px;
-  opacity: 1;
-  filter: blur(12px);
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover::before {
+    bottom: -9px;
+    opacity: 1;
+    filter: blur(12px);
+  }
 }
 
 .facts {
@@ -678,4 +699,76 @@
   .team div {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+
+/* Hero entrance: one orchestrated rise, top to bottom, finished inside a second. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes focus {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+.hero .nav,
+.hero .subline,
+.hero .cta,
+.hero .facts {
+  animation: rise 0.8s var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+.hero .line1,
+.hero .line2 {
+  animation: focus 0.9s var(--ease-out) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Headings arrive line by line; list rows settle one after another. */
+.h2 span {
+  transition:
+    opacity 0.6s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+
+.h2 span + span {
+  transition-delay: 90ms;
+}
+
+.h2[data-state='hidden'] span {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.path li,
+.more > div,
+.team > div {
+  transition:
+    opacity 0.55s var(--ease-out) calc(var(--i, 0) * 70ms + 120ms),
+    transform 0.55s var(--ease-out) calc(var(--i, 0) * 70ms + 120ms);
+}
+
+.path[data-state='hidden'] li,
+.more[data-state='hidden'] > div,
+.team[data-state='hidden'] > div {
+  opacity: 0;
+  transform: translateY(8px);
 }
