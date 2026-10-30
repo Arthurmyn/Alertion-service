@@ -11,7 +11,7 @@ npm ci
 npm run dev -- --host 127.0.0.1
 ```
 
-Open `http://127.0.0.1:5173`. No environment variables, service credentials or backend setup are required by the current application.
+Open `http://127.0.0.1:5173` for the landing page and `http://127.0.0.1:5173/app` for the service. No environment variables, service credentials or backend setup are required by the current application.
 
 ```sh
 npm run build
@@ -20,24 +20,42 @@ npm run preview -- --host 127.0.0.1
 
 The production bundle is written to `dist`; the preview server normally uses port 4173.
 
+## Landing page and the service
+
+One build serves two products. The landing page is at `/`; the service lives under `/app`, and every route below is relative to it (`/manage` is `/app/manage`). Each is its own chunk with its own stylesheet, chosen in [`src/main.tsx`](src/main.tsx), so a visitor to one downloads nothing of the other. Addresses from before the move (`/manage/...`, `/login`, `/defense`, `/site/...`) forward to `/app/...`.
+
+The landing hero comes from the [Alertion-langing-page](https://github.com/Arthurmyn/Alertion-langing-page) repository: its dot-matrix hands animation is ported to [`src/landing/DotHands.tsx`](src/landing/DotHands.tsx), with the source image saved in `public/landing/` instead of hot-linked. The sections below the hero, the copy and the pilot-plan figures (read from [`src/data/limits.ts`](src/data/limits.ts)) are written for this project. The service uses the same typeface, Inter.
+
+The screenshots in the landing's feature rows come from the running service. With the dev server running, regenerate them with `node scripts/capture-landing.mjs`.
+
 ## Routes and demonstration state
 
-| Route                    | Screen                                             |
-| ------------------------ | -------------------------------------------------- |
-| `/`                      | Redirects to login or the selected account's site  |
-| `/login`                 | Select one of the two fictional accounts           |
-| `/manage/:slug`          | Status and storage dashboard                       |
-| `/manage/:slug/upload`   | Choose and validate an archive fixture             |
-| `/manage/:slug/preview`  | Candidate version preview                          |
-| `/manage/:slug/versions` | Publish or roll back through a confirmation dialog |
-| `/manage/:slug/domain`   | Simulated DNS ownership and HTTPS states           |
-| `/manage/:slug/plan`     | Pilot-plan selection and limits                    |
-| `/site/:slug`            | Public sample page without management navigation   |
-| `/defense`               | Project goals, results, evidence and ten-step demo |
+| Route                                            | Screen                                                                      |
+| ------------------------------------------------ | --------------------------------------------------------------------------- |
+| `/`                                              | Redirects to login or the workspace overview                                |
+| `/login`                                         | Select one of the two fictional accounts                                    |
+| `/manage`                                        | Overview: usage, alerts, recent previews and the project list               |
+| `/manage/deployments`, `/manage/builds`          | Every deployment with filters; build artifacts and source                   |
+| `/manage/observability` (`/logs`, `/query`)      | Metrics cards; logs and queries (not implemented)                           |
+| `/manage/security`, `/attestations`, `/reports`  | Security checklist; attestations and verification reports (not implemented) |
+| `/manage/networking`                             | Domains of all projects                                                     |
+| `/manage/storage`, `/compute`, `/secrets`        | Storage per project; compute and secrets (not implemented)                  |
+| `/manage/connections`                            | Git and registry connections (not implemented)                              |
+| `/manage/billing`, `/settings`, `/team`          | Plan and usage; workspace settings; members                                 |
+| `/manage/:slug`                                  | Project overview: status, verification, repository, storage, activity       |
+| `/manage/:slug/upload`                           | Choose and validate an archive fixture                                      |
+| `/manage/:slug/preview`                          | Candidate version preview                                                   |
+| `/manage/:slug/versions`                         | Publish or roll back through a confirmation dialog                          |
+| `/manage/:slug/builds`, `/attestations`, `/logs` | Project artifacts, attestations and metrics                                 |
+| `/manage/:slug/settings`, `/domain`, `/plan`     | Project settings; simulated DNS and HTTPS; pilot-plan selection             |
+| `/site/:slug`                                    | Public sample page without management navigation                            |
+| `/defense`                                       | Project goals, results, evidence and ten-step demo                          |
 
-The fixture slugs are `nan` and `temir`. The [scenario catalog](src/data/scenarios.ts) contains 22 ready-made states, available through the **Сценарий** selector. For example, `/manage/nan?scenario=a-home` opens the first owner's dashboard and `/manage/nan/preview?scenario=preview-b` opens a candidate preview. A recognized `?scenario=` loads its fixture and is removed from the address.
+Anything that needs a git repository, an enclave or an attestation source is shown as unavailable: the prototype has none of them, and no screen presents a verification as passed.
 
-Application state is saved under `alertion.session` in `sessionStorage`, so a reload in the same browser tab retains the demonstration state. **Сбросить** restores the baseline, including the signed-out session. The running demo disables scenario changes and reset; exit the demo first. Sidebar collapse is a separate preference stored under `alertion.nav` in `localStorage` and survives reloads and scenario reset.
+The fixture slugs are `nan` and `temir`. The [scenario catalog](src/data/scenarios.ts) contains 22 ready-made states, available through the workspace switcher at the top of the sidebar (the two workspaces first, then the other scenarios). For example, `/manage/nan?scenario=a-home` opens the first owner's dashboard and `/manage/nan/preview?scenario=preview-b` opens a candidate preview. A recognized `?scenario=` loads its fixture and is removed from the address.
+
+Application state is saved under `alertion.session` in `sessionStorage`, so a reload in the same browser tab retains the demonstration state. **Сбросить** in that switcher restores the baseline, including the signed-out session. The running demo disables scenario changes and reset; exit the demo first. The sidebar's two levels (a section such as «Развёртывания» opens its own pages) and its collapse are separate from that state; collapse is a preference stored under `alertion.nav` in `localStorage` and survives reloads and scenario reset.
 
 Unknown or empty `?scenario=` values are removed while preserving the saved account and state.
 

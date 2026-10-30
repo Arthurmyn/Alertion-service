@@ -8,15 +8,15 @@ No material UI blocker remained in the checked scope after that correction. A fo
 
 ## Recorded checks
 
-| Check                                                       | Recorded result                                            |
-| ----------------------------------------------------------- | ---------------------------------------------------------- |
+| Check                                                          | Recorded result                                            |
+| -------------------------------------------------------------- | ---------------------------------------------------------- |
 | Independent [`e2e/sidebar.spec.ts`](../../e2e/sidebar.spec.ts) | 9 passed                                                   |
-| TypeScript check of browser specs                           | Passed with `npx tsc -p tsconfig.e2e.json`                 |
-| Responsive scan                                             | 30 combinations: 10 routes at each of 1280, 375 and 360 px |
-| Page-width overflow in that scan                            | None found                                                 |
-| Visible controls lacking a label in that scan               | None found                                                 |
-| Uncaught browser page errors in that scan                   | None found                                                 |
-| Results table at 375 px                                     | Keyboard scrolling worked; first column remained fixed     |
+| TypeScript check of browser specs                              | Passed with `npx tsc -p tsconfig.e2e.json`                 |
+| Responsive scan                                                | 30 combinations: 10 routes at each of 1280, 375 and 360 px |
+| Page-width overflow in that scan                               | None found                                                 |
+| Visible controls lacking a label in that scan                  | None found                                                 |
+| Uncaught browser page errors in that scan                      | None found                                                 |
+| Results table at 375 px                                        | Keyboard scrolling worked; first column remained fixed     |
 
 The ten scanned routes/states were login, owner dashboard, upload with no plan selected, rejected archive, candidate preview, versions after rollback, domain pending, pilot-plan limits, defense and public site. The screenshots were inspected for text clipping, readable rows and menu layout.
 
