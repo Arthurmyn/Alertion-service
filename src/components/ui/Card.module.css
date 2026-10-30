@@ -1,0 +1,33 @@
+.card {
+  min-width: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-block);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-md);
+  letter-spacing: 0;
+}
+
+.action {
+  font-size: var(--text-sm);
+}
+
+.body {
+  padding: var(--space-lg);
+}
+
+.flush {
+  min-width: 0;
+}
