@@ -1,36 +1,73 @@
 :root {
   color-scheme: light;
 
-  --ink: #231f20;
-  --on-ink: #ffffff;
-  --on-ink-2: #b8b1b2;
-  --ink-2: #5c5657;
-  --paper: #f7f5f4;
+  /* Light infrastructure + Crimson Red */
+  --brand: #dc2626;
+  --brand-hover: #b91c1c;
+  --bg: #fafafa;
+  --sidebar: #fafafa;
   --surface: #ffffff;
-  --rule: #e4e0df;
-  --brand: #ed1b24;
-  --danger-text: #c4141c;
-  --link: #0060cc;
-  --focus: #0077fc;
-  --ok-text: #1e7a3e;
-  --warn-text: #8a5a00;
-  --warn-bg: #fff4db;
+  --elevated: #f4f4f5;
+  --border: #e4e4e7;
+  --border-strong: #8f8f98;
+  --text: #171717;
+  --text-2: #62626b;
 
-  --font-ui: 'Onest', sans-serif;
+  /* Statuses: a mark colour and a darker text colour that clears 4.5:1. */
+  --success: #16a34a;
+  --success-text: #15803d;
+  --warning: #ca8a04;
+  --warning-text: #854d0e;
+  --error: #dc2626;
+  --error-text: #b91c1c;
+  --info: #2563eb;
+  --info-text: #1d4ed8;
+  --success-bg: rgb(22 163 74 / 0.1);
+  --warning-bg: rgb(202 138 4 / 0.12);
+  --error-bg: rgb(220 38 38 / 0.08);
+  --info-bg: rgb(37 99 235 / 0.09);
+  --link: #0060cc;
+  --focus: #2563eb;
+  --overlay: rgb(0 0 0 / 0.4);
+  --hover: rgb(0 0 0 / 0.045);
+
+  /* Names the existing modules already use */
+  --ink: var(--text);
+  --ink-2: var(--text-2);
+  --on-ink: #ffffff;
+  --on-ink-2: var(--text-2);
+  --paper: var(--bg);
+  --rule: var(--border);
+  --line-strong: var(--border-strong);
+  --ink-hover: var(--brand-hover);
+  --tint: var(--elevated);
+  --tint-ink: #e4e4e7;
+  --danger-text: var(--error-text);
+  --danger-bg: var(--error-bg);
+  --ok-text: var(--success-text);
+  --ok-bg: var(--success-bg);
+  --warn-text: var(--warning-text);
+  --warn-bg: var(--warning-bg);
+
+  --font-ui: 'Inter', system-ui, sans-serif;
   --font-prose: 'Literata', serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
   --text-sm: 14px;
   --text-md: 16px;
   --text-lg: 20px;
-  --text-xl: 28px;
+  --text-xl: 30px;
 
-  --radius-block: 0;
-  --radius-button: 4px;
-  --radius-input: 2px;
+  --radius-block: 10px;
+  --radius-button: 8px;
+  --radius-input: 8px;
+  --radius-pill: 999px;
 
-  --shadow-dialog: 0 12px 32px rgb(35 31 32 / 0.18);
+  --shadow-panel: none;
+  --shadow-dialog: 0 0 0 1px var(--border), 0 16px 40px rgb(0 0 0 / 0.16);
   --motion: 150ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   --space-2xs: 2px;
   --space-xs: 4px;
@@ -41,18 +78,18 @@
   --space-2xl: 32px;
   --space-3xl: 64px;
 
-  --control-h: 32px;
-  --control-pad-x: 12px;
-  --sidebar-w: 220px;
+  --control-h: 36px;
+  --control-pad-x: 14px;
+  --sidebar-w: 248px;
   --sidebar-rail: 56px;
-  --topbar-h: 48px;
+  --topbar-h: 53px;
   --measure: 65ch;
-  --kv-key: 10.5rem;
+  --kv-key: 11rem;
   --kv-key-wide: 14rem;
   --kv-gap: 16px;
 
-  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23231F20' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
-  --select-chevron-muted: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%235C5657' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23171717' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
+  --select-chevron-muted: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2362626B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6.5 8 10.5 12 6.5'/%3E%3C/svg%3E");
 }
 
 @media (prefers-reduced-motion: reduce) {
