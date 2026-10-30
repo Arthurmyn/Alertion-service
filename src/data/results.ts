@@ -1,4 +1,4 @@
-import { ownerOnlyNote } from '../components/ownerCopy.ts';
+import { ownerOnlyNote } from '../components/layout/ownerCopy.ts';
 import {
   criterionEvidence,
   type EvidenceScreenshot,
@@ -7,8 +7,8 @@ import {
   statusActive,
   statusFailed,
   statusPending,
-} from '../components/statusWords.ts';
-import { storageCaption } from '../components/storageText.ts';
+} from '../components/ui/statusWords.ts';
+import { storageCaption } from '../components/ui/storageText.ts';
 import {
   deniedBody,
   deniedLead,

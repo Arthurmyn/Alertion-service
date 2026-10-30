@@ -1,13 +1,13 @@
 import { useId } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { baseline } from '../data/accounts.ts';
+import { baseline } from '../../data/accounts.ts';
 import {
   demoRunning,
   scenarioById,
   scenarios,
   scenarioState,
-} from '../data/scenarios.ts';
-import { useStore } from '../state/store.tsx';
+} from '../../data/scenarios.ts';
+import { useStore } from '../../state/store.tsx';
 import styles from './ScenarioPanel.module.css';
 
 const lockedReason = 'Смена сценария недоступна, пока идёт демо.';

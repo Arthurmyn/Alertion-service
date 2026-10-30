@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { archives, type ArchiveFixture } from '../data/archives.ts';
-import { Alert } from '../components/Alert.tsx';
-import { Button } from '../components/Button.tsx';
+import { Alert } from '../components/ui/Alert.tsx';
+import { Button } from '../components/ui/Button.tsx';
 import { exampleUrl } from '../state/selectors.ts';
 import { useStore } from '../state/store.tsx';
 import type { Site, UploadResult } from '../state/types.ts';

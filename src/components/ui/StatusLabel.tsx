@@ -1,4 +1,4 @@
-import type { DomainStatus } from '../state/types.ts';
+import type { DomainStatus } from '../../state/types.ts';
 import styles from './StatusLabel.module.css';
 import {
   statusActive,

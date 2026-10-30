@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppShell } from '../components/AppShell.tsx';
-import { RequireOwner } from '../components/RequireOwner.tsx';
+import { AppShell } from '../components/layout/AppShell.tsx';
+import { RequireOwner } from '../components/layout/RequireOwner.tsx';
 import { Dashboard } from '../pages/Dashboard.tsx';
 import { Defense } from '../pages/Defense/Defense.tsx';
 import { Domain } from '../pages/Domain.tsx';

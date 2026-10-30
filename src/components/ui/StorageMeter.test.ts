@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { LIMITS } from '../data/limits.ts';
+import { LIMITS } from '../../data/limits.ts';
 import { StorageMeter } from './StorageMeter.tsx';
 
 function markup(usedMb: number, limitMb: number): string {

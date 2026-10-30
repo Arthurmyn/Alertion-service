@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Alert } from '../components/Alert.tsx';
+import { Alert } from '../components/ui/Alert.tsx';
 import { accounts } from '../data/accounts.ts';
 import { accountSlug } from '../app/routing.ts';
 import { useStore } from '../state/store.tsx';

@@ -6,7 +6,7 @@ import { Button } from './Button.tsx';
 import { ConfirmDialog } from './ConfirmDialog.tsx';
 import { handleDialogKey } from './dialogFocus.ts';
 import { Field } from './Field.tsx';
-import { SampleSite } from './SampleSite.tsx';
+import { SampleSite } from '../project/SampleSite.tsx';
 import { StatusLabel } from './StatusLabel.tsx';
 
 function markup(element: ReactElement): string {

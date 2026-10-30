@@ -6,9 +6,9 @@ import {
   demoState,
   demoStepCount,
   scenarioHref,
-} from '../data/demoSteps.ts';
-import { scenarioById } from '../data/scenarios.ts';
-import { useStore } from '../state/store.tsx';
+} from '../../data/demoSteps.ts';
+import { scenarioById } from '../../data/scenarios.ts';
+import { useStore } from '../../state/store.tsx';
 import { shouldCloseDemo } from './demoClose.ts';
 import styles from './DemoBar.module.css';
 

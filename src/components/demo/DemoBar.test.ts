@@ -2,8 +2,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { demoCaption, demoRoute, demoState } from '../data/demoSteps.ts';
-import { StoreProvider, writeSession } from '../state/store.tsx';
+import { demoCaption, demoRoute, demoState } from '../../data/demoSteps.ts';
+import { StoreProvider, writeSession } from '../../state/store.tsx';
 import { shouldCloseDemo } from './demoClose.ts';
 import { DemoBar } from './DemoBar.tsx';
 

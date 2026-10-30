@@ -2,10 +2,14 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { baseline } from '../data/accounts.ts';
-import { scenarioById, scenarios, scenarioState } from '../data/scenarios.ts';
-import { reducer } from '../state/reducer.ts';
-import { StoreProvider, writeSession } from '../state/store.tsx';
+import { baseline } from '../../data/accounts.ts';
+import {
+  scenarioById,
+  scenarios,
+  scenarioState,
+} from '../../data/scenarios.ts';
+import { reducer } from '../../state/reducer.ts';
+import { StoreProvider, writeSession } from '../../state/store.tsx';
 import { ScenarioPanel } from './ScenarioPanel.tsx';
 
 function memoryStorage() {

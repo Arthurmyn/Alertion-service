@@ -6,9 +6,9 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { demoRunning } from '../data/scenarios.ts';
-import { accountSlug, homePath } from '../app/routing.ts';
-import { consumeScenarioQuery, useStore } from '../state/store.tsx';
+import { demoRunning } from '../../data/scenarios.ts';
+import { accountSlug, homePath } from '../../app/routing.ts';
+import { consumeScenarioQuery, useStore } from '../../state/store.tsx';
 import {
   IconCollapse,
   IconDashboard,
@@ -21,14 +21,14 @@ import {
   IconSignIn,
   IconUpload,
   IconVersions,
-} from './icons.tsx';
+} from '../ui/icons.tsx';
 import {
   browserStorage,
   readNavCollapsed,
   writeNavCollapsed,
 } from './navState.ts';
 import styles from './AppShell.module.css';
-import { DemoBar } from './DemoBar.tsx';
+import { DemoBar } from '../demo/DemoBar.tsx';
 import { ScenarioPanel } from './ScenarioPanel.tsx';
 
 const sections = [

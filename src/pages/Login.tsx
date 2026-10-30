@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Button } from '../components/Button.tsx';
+import { Button } from '../components/ui/Button.tsx';
 import { accounts } from '../data/accounts.ts';
 import { useStore } from '../state/store.tsx';
 import type { AccountId } from '../state/types.ts';

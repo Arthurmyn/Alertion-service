@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Alert } from '../components/Alert.tsx';
-import { Button } from '../components/Button.tsx';
-import { ConfirmDialog } from '../components/ConfirmDialog.tsx';
+import { Alert } from '../components/ui/Alert.tsx';
+import { Button } from '../components/ui/Button.tsx';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog.tsx';
 import { useStore } from '../state/store.tsx';
 import { NotFound } from './NotFound.tsx';
 import styles from './Versions.module.css';

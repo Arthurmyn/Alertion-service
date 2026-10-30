@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { DemoScenarioList } from '../../components/DemoBar.tsx';
+import { DemoScenarioList } from '../../components/demo/DemoBar.tsx';
 import { archives } from '../../data/archives.ts';
 import {
   demoCatalog,

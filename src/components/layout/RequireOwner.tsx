@@ -6,9 +6,9 @@ import {
   useMatch,
   useParams,
 } from 'react-router-dom';
-import { AccessDenied } from '../pages/AccessDenied.tsx';
-import { NotFound } from '../pages/NotFound.tsx';
-import { useStore } from '../state/store.tsx';
+import { AccessDenied } from '../../pages/AccessDenied.tsx';
+import { NotFound } from '../../pages/NotFound.tsx';
+import { useStore } from '../../state/store.tsx';
 import { ownerOnlyNote } from './ownerCopy.ts';
 import styles from './RequireOwner.module.css';
 
