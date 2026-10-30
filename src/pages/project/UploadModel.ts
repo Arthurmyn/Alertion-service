@@ -1,6 +1,11 @@
-import { archives, type ArchiveFixture } from '../data/archives.ts';
-import { LIMITS } from '../data/limits.ts';
-import type { AppState, Site, UploadResult, Version } from '../state/types.ts';
+import { archives, type ArchiveFixture } from '../../data/archives.ts';
+import { LIMITS } from '../../data/limits.ts';
+import type {
+  AppState,
+  Site,
+  UploadResult,
+  Version,
+} from '../../state/types.ts';
 
 export const planGateText = 'Сначала выберите пилотный план';
 export const openPlanText = 'Открыть пилотный план';

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { accounts } from '../data/accounts.ts';
-import { Alert } from '../components/ui/Alert.tsx';
-import { Button } from '../components/ui/Button.tsx';
-import { Field } from '../components/ui/Field.tsx';
-import { StatusLabel } from '../components/ui/StatusLabel.tsx';
-import { useStore } from '../state/store.tsx';
-import type { DomainState } from '../state/types.ts';
+import { accounts } from '../../data/accounts.ts';
+import { Alert } from '../../components/ui/Alert.tsx';
+import { Button } from '../../components/ui/Button.tsx';
+import { Field } from '../../components/ui/Field.tsx';
+import { StatusLabel } from '../../components/ui/StatusLabel.tsx';
+import { useStore } from '../../state/store.tsx';
+import type { DomainState } from '../../state/types.ts';
 import styles from './Domain.module.css';
 import {
   activateEnabled,
@@ -30,7 +30,7 @@ import {
   verifyEnabled,
   verifyReason,
 } from './DomainFlow.ts';
-import { NotFound } from './NotFound.tsx';
+import { NotFound } from '../NotFound.tsx';
 
 function Marked({ value }: { value: string }) {
   return (

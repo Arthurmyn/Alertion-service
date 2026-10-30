@@ -1,5 +1,5 @@
-import { LIMITS } from '../data/limits.ts';
-import type { AccountId, AppState, Site } from '../state/types.ts';
+import { LIMITS } from '../../data/limits.ts';
+import type { AccountId, AppState, Site } from '../../state/types.ts';
 
 export const addSiteButton = 'Добавить сайт';
 

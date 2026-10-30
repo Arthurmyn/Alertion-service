@@ -1,6 +1,6 @@
-import type { SprintNumber } from '../data/backlogItems.ts';
-import { pointsAttr, seriesPoints } from '../data/metrics.ts';
-import page from '../pages/Defense/Defense.module.css';
+import type { SprintNumber } from '../../data/backlogItems.ts';
+import { pointsAttr, seriesPoints } from '../../data/metrics.ts';
+import page from './Defense.module.css';
 import styles from './BurndownChart.module.css';
 
 const width = 640;

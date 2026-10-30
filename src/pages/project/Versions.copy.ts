@@ -1,5 +1,5 @@
-import type { Action } from '../state/reducer.ts';
-import type { Site, Version } from '../state/types.ts';
+import type { Action } from '../../state/reducer.ts';
+import type { Site, Version } from '../../state/types.ts';
 
 export function activeVersionLine(label: string): string {
   return `Активна версия ${label}`;

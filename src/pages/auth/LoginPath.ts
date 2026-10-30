@@ -1,5 +1,5 @@
-import { homePath } from '../app/routing.ts';
-import type { AccountId } from '../state/types.ts';
+import { homePath } from '../../app/routing.ts';
+import type { AccountId } from '../../state/types.ts';
 
 export function safeNext(value: string | null): string | null {
   if (value === null || value === '') return null;

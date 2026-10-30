@@ -1,8 +1,8 @@
 import { Link, useParams } from 'react-router-dom';
-import { SampleSite } from '../components/project/SampleSite.tsx';
-import { sampleSites } from '../data/sampleSites.ts';
-import { useStore } from '../state/store.tsx';
-import { NotFound } from './NotFound.tsx';
+import { SampleSite } from '../../components/project/SampleSite.tsx';
+import { sampleSites } from '../../data/sampleSites.ts';
+import { useStore } from '../../state/store.tsx';
+import { NotFound } from '../NotFound.tsx';
 import styles from './Preview.module.css';
 import {
   activeVersionLine,

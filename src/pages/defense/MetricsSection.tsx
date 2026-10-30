@@ -1,4 +1,4 @@
-import { BurndownChart } from '../../components/BurndownChart.tsx';
+import { BurndownChart } from './BurndownChart.tsx';
 import {
   backlogItems,
   sprintWorkHours,

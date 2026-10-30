@@ -2,12 +2,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from '../app/App.tsx';
-import { baseline } from '../data/accounts.ts';
-import { archives } from '../data/archives.ts';
-import { reducer } from '../state/reducer.ts';
-import { writeSession } from '../state/store.tsx';
-import type { AppState } from '../state/types.ts';
+import { App } from '../../app/App.tsx';
+import { baseline } from '../../data/accounts.ts';
+import { archives } from '../../data/archives.ts';
+import { reducer } from '../../state/reducer.ts';
+import { writeSession } from '../../state/store.tsx';
+import type { AppState } from '../../state/types.ts';
 import { previewAudience } from './Versions.copy.ts';
 
 function memoryStorage() {

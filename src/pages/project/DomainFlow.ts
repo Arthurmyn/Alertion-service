@@ -1,5 +1,5 @@
-import { domainExamples } from '../data/accounts.ts';
-import type { DomainState } from '../state/types.ts';
+import { domainExamples } from '../../data/accounts.ts';
+import type { DomainState } from '../../state/types.ts';
 
 export const domainCopy = {
   example: 'пример',

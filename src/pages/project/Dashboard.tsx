@@ -1,23 +1,23 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Alert } from '../components/ui/Alert.tsx';
-import { StorageMeter } from '../components/ui/StorageMeter.tsx';
-import { LIMITS } from '../data/limits.ts';
-import { exampleUrl, storageUsedMb } from '../state/selectors.ts';
-import { useStore } from '../state/store.tsx';
-import type { DeploymentState, DomainState } from '../state/types.ts';
+import { Alert } from '../../components/ui/Alert.tsx';
+import { StorageMeter } from '../../components/ui/StorageMeter.tsx';
+import { LIMITS } from '../../data/limits.ts';
+import { exampleUrl, storageUsedMb } from '../../state/selectors.ts';
+import { useStore } from '../../state/store.tsx';
+import type { DeploymentState, DomainState } from '../../state/types.ts';
 import {
   statusActive,
   statusFailed,
   statusPending,
-} from '../components/ui/statusWords.ts';
+} from '../../components/ui/statusWords.ts';
 import { uploadArchiveLink } from './Versions.copy.ts';
 import {
   activeVersionTerm,
   deferredDomainLine,
   deploymentLabel,
 } from './Dashboard.copy.ts';
-import { NotFound } from './NotFound.tsx';
+import { NotFound } from '../NotFound.tsx';
 import styles from './Dashboard.module.css';
 
 function deploymentTone(deployment: DeploymentState): 'ok' | 'bad' {

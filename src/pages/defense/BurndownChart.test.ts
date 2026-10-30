@@ -1,13 +1,13 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { sprintWorkHours } from '../data/backlogItems.ts';
+import { sprintWorkHours } from '../../data/backlogItems.ts';
 import {
   planRemaining,
   simulatedRemaining,
   sprintStart,
   workingDays,
-} from '../data/metrics.ts';
+} from '../../data/metrics.ts';
 import { BurndownChart } from './BurndownChart.tsx';
 
 describe('BurndownChart', () => {

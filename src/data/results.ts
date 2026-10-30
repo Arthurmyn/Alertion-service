@@ -14,24 +14,27 @@ import {
   deniedLead,
   deniedTitle,
   ownSiteLink,
-} from '../pages/AccessDenied.copy.ts';
+} from '../pages/auth/AccessDenied.copy.ts';
 import {
   activeVersionTerm,
   deferredDomainLine,
   deploymentLabel,
-} from '../pages/Dashboard.copy.ts';
-import { domainCopy } from '../pages/DomainFlow.ts';
+} from '../pages/project/Dashboard.copy.ts';
+import { domainCopy } from '../pages/project/DomainFlow.ts';
 import {
   addSiteButton,
   addSiteNotice,
   siteLimitLine,
-} from '../pages/PlanText.ts';
-import { publicBoundary, publicHeading } from '../pages/PublicSite.copy.ts';
+} from '../pages/project/PlanText.ts';
+import {
+  publicBoundary,
+  publicHeading,
+} from '../pages/public/PublicSite.copy.ts';
 import {
   limitsSummary,
   openSiteLead,
   successMessage,
-} from '../pages/UploadModel.ts';
+} from '../pages/project/UploadModel.ts';
 import {
   activeVersionLine,
   candidateVersionLine,
@@ -45,7 +48,7 @@ import {
   rollbackFailedLine,
   rollbackUnavailable,
   uploadArchiveLink,
-} from '../pages/Versions.copy.ts';
+} from '../pages/project/Versions.copy.ts';
 import { exampleUrl, storageUsedMb } from '../state/selectors.ts';
 import type { Site } from '../state/types.ts';
 import { accounts, domainExamples } from './accounts.ts';

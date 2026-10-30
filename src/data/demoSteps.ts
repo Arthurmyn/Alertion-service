@@ -1,4 +1,4 @@
-import { formatMb, rollbackVersion } from '../pages/Versions.copy.ts';
+import { formatMb, rollbackVersion } from '../pages/project/Versions.copy.ts';
 import { reducer, type Action } from '../state/reducer.ts';
 import { storageUsedMb } from '../state/selectors.ts';
 import type { AppState, Site } from '../state/types.ts';

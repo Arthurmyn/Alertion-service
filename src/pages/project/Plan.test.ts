@@ -2,12 +2,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { archives } from '../data/archives.ts';
-import { baseline } from '../data/accounts.ts';
-import { LIMITS } from '../data/limits.ts';
-import { reducer } from '../state/reducer.ts';
-import { StoreProvider, writeSession } from '../state/store.tsx';
-import type { AppState } from '../state/types.ts';
+import { archives } from '../../data/archives.ts';
+import { baseline } from '../../data/accounts.ts';
+import { LIMITS } from '../../data/limits.ts';
+import { reducer } from '../../state/reducer.ts';
+import { StoreProvider, writeSession } from '../../state/store.tsx';
+import type { AppState } from '../../state/types.ts';
 import { Plan } from './Plan.tsx';
 import {
   accountLimitLine,

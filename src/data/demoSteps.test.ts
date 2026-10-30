@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMb, rollbackVersion } from '../pages/Versions.copy.ts';
+import { formatMb, rollbackVersion } from '../pages/project/Versions.copy.ts';
 import { reducer } from '../state/reducer.ts';
 import { storageUsedMb } from '../state/selectors.ts';
 import { archives } from './archives.ts';

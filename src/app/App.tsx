@@ -1,16 +1,16 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from '../components/layout/AppShell.tsx';
 import { RequireOwner } from '../components/layout/RequireOwner.tsx';
-import { Dashboard } from '../pages/Dashboard.tsx';
-import { Defense } from '../pages/Defense/Defense.tsx';
-import { Domain } from '../pages/Domain.tsx';
-import { Login } from '../pages/Login.tsx';
+import { Dashboard } from '../pages/project/Dashboard.tsx';
+import { Defense } from '../pages/defense/Defense.tsx';
+import { Domain } from '../pages/project/Domain.tsx';
+import { Login } from '../pages/auth/Login.tsx';
 import { NotFound } from '../pages/NotFound.tsx';
-import { Plan } from '../pages/Plan.tsx';
-import { Preview } from '../pages/Preview.tsx';
-import { PublicSite } from '../pages/PublicSite.tsx';
-import { Upload } from '../pages/Upload.tsx';
-import { Versions } from '../pages/Versions.tsx';
+import { Plan } from '../pages/project/Plan.tsx';
+import { Preview } from '../pages/project/Preview.tsx';
+import { PublicSite } from '../pages/public/PublicSite.tsx';
+import { Upload } from '../pages/project/Upload.tsx';
+import { Versions } from '../pages/project/Versions.tsx';
 import { homePath } from './routing.ts';
 import { StoreProvider, useStore } from '../state/store.tsx';
 

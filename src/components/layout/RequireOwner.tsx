@@ -6,7 +6,7 @@ import {
   useMatch,
   useParams,
 } from 'react-router-dom';
-import { AccessDenied } from '../../pages/AccessDenied.tsx';
+import { AccessDenied } from '../../pages/auth/AccessDenied.tsx';
 import { NotFound } from '../../pages/NotFound.tsx';
 import { useStore } from '../../state/store.tsx';
 import { ownerOnlyNote } from './ownerCopy.ts';

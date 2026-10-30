@@ -2,10 +2,10 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { baseline, domainExamples } from '../data/accounts.ts';
-import { reducer } from '../state/reducer.ts';
-import { StoreProvider, writeSession } from '../state/store.tsx';
-import type { AppState, DomainState } from '../state/types.ts';
+import { baseline, domainExamples } from '../../data/accounts.ts';
+import { reducer } from '../../state/reducer.ts';
+import { StoreProvider, writeSession } from '../../state/store.tsx';
+import type { AppState, DomainState } from '../../state/types.ts';
 import { Domain } from './Domain.tsx';
 import styles from './Domain.module.css';
 import {

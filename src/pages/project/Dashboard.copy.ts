@@ -1,4 +1,4 @@
-import type { DeploymentState } from '../state/types.ts';
+import type { DeploymentState } from '../../state/types.ts';
 
 export const deploymentLabel: Record<DeploymentState, string> = {
   published: 'Опубликовано',

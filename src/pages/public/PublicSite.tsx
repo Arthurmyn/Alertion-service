@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { SampleSite } from '../components/project/SampleSite.tsx';
-import { sampleSites } from '../data/sampleSites.ts';
-import { exampleUrl } from '../state/selectors.ts';
-import { useStore } from '../state/store.tsx';
-import { NotFound } from './NotFound.tsx';
+import { SampleSite } from '../../components/project/SampleSite.tsx';
+import { sampleSites } from '../../data/sampleSites.ts';
+import { exampleUrl } from '../../state/selectors.ts';
+import { useStore } from '../../state/store.tsx';
+import { NotFound } from '../NotFound.tsx';
 import { publicBoundary, publicHeading } from './PublicSite.copy.ts';
 import styles from './PublicSite.module.css';
 
