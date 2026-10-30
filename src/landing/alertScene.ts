@@ -266,11 +266,19 @@ export function mountAlertScene(
     placements.forEach((p, index) => {
       const wrapper = wrappers[index]!;
       const t = seconds * p.pace + p.phase;
+      const arrive = Math.min(
+        1,
+        Math.max(0, (seconds - 0.15 - index * 0.12) / 1.5),
+      );
+      const enter = 1 - Math.pow(1 - arrive, 3);
       const depth = 1 + (p.z + 3) * 0.12;
-      wrapper.scale.setScalar(p.size * unit * 1.05);
+      wrapper.scale.setScalar(p.size * unit * 1.05 * (0.55 + 0.45 * enter));
       wrapper.position.set(
         p.x * halfWidth + Math.cos(t * 0.4) * 0.1 - pointer.x * 0.12 * depth,
-        p.y * halfHeight + Math.sin(t * 0.6) * 0.2 + pointer.y * 0.08 * depth,
+        p.y * halfHeight +
+          Math.sin(t * 0.6) * 0.2 +
+          pointer.y * 0.08 * depth -
+          (1 - enter) * 0.7,
         p.z,
       );
       wrapper.rotation.set(
@@ -285,7 +293,7 @@ export function mountAlertScene(
   resize();
   const observer = new ResizeObserver(() => {
     resize();
-    if (still) draw(2);
+    if (still) draw(5);
   });
   observer.observe(canvas);
 
@@ -304,7 +312,7 @@ export function mountAlertScene(
   watcher.observe(canvas);
 
   if (still) {
-    draw(2);
+    draw(5);
   } else {
     frame = requestAnimationFrame(loop);
     window.addEventListener('pointermove', onPointer, { passive: true });
