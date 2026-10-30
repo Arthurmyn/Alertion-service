@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { flushSync } from 'react-dom';
 import { copy, type Locale } from './content.ts';
 import { LocaleContext } from './locale.ts';
 
@@ -36,7 +37,15 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   const setLocale = useCallback((next: Locale) => {
-    setState(next);
+    const apply = () => setState(next);
+    const start = (
+      document as Document & {
+        startViewTransition?: (update: () => void) => unknown;
+      }
+    ).startViewTransition;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (start && !still) start.call(document, () => flushSync(apply));
+    else apply();
     try {
       window.localStorage.setItem(KEY, next);
     } catch {

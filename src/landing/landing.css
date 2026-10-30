@@ -5,6 +5,7 @@
 
 /* The pointer: a pixel-art raised middle finger. Landing only. */
 :root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --pointer: url('/landing/cursor.png') 11 1, auto;
 }
 
@@ -70,7 +71,20 @@ a {
   outline-offset: 3px;
 }
 
+/* Switching language cross-fades the page where the browser supports it. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: var(--ease-out);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
   html {
     scroll-behavior: auto;
   }
