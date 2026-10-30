@@ -6,6 +6,8 @@ import {
 } from '../../data/backlogItems.ts';
 import { LIMITS } from '../../data/limits.ts';
 import { sprintNumbers } from '../../data/metrics.ts';
+import { demoStepCount } from '../../data/demoSteps.ts';
+import { scenarios } from '../../data/scenarios.ts';
 import { developers, productOwner, scrumMaster } from '../../data/team.ts';
 import { accountSlug } from '../../app/routing.ts';
 import { useStore } from '../../state/store.tsx';
@@ -43,7 +45,27 @@ export function Defense() {
 
   return (
     <article>
-      <h1>Защита проекта</h1>
+      <header className={styles.hero}>
+        <h1>Защита проекта</h1>
+        <p className={styles.lead}>
+          Учебный прототип платформы для публикации сайтов: цели, путь
+          пользователя, результаты проверок и журнал доказательств в одном
+          месте.
+        </p>
+        <dl className={styles.stats}>
+          {[
+            [backlogItems.length, 'задач в плане'],
+            [sprintNumbers.length, 'спринта'],
+            [demoStepCount, 'шагов демо'],
+            [scenarios.length, 'готовых сценариев'],
+          ].map(([value, label]) => (
+            <div key={label}>
+              <dd>{value}</dd>
+              <dt>{label}</dt>
+            </div>
+          ))}
+        </dl>
+      </header>
       <nav className={styles.contents} aria-label="Содержание">
         <p className={styles.note}>Содержание</p>
         <ul>
@@ -80,14 +102,22 @@ export function Defense() {
         </p>
         <p>Лимиты пилотного плана.</p>
         <dl className={styles.limits}>
-          <dt>Сайтов на аккаунт</dt>
-          <dd>{LIMITS.sites}</dd>
-          <dt>Архив, МБ</dt>
-          <dd>{LIMITS.archiveMb}</dd>
-          <dt>Распаковка, МБ</dt>
-          <dd>{LIMITS.unpackedMb}</dd>
-          <dt>Хранилище, МБ</dt>
-          <dd>{LIMITS.storageMb}</dd>
+          <div>
+            <dt>Сайтов на аккаунт</dt>
+            <dd>{LIMITS.sites}</dd>
+          </div>
+          <div>
+            <dt>Архив, МБ</dt>
+            <dd>{LIMITS.archiveMb}</dd>
+          </div>
+          <div>
+            <dt>Распаковка, МБ</dt>
+            <dd>{LIMITS.unpackedMb}</dd>
+          </div>
+          <div>
+            <dt>Хранилище, МБ</dt>
+            <dd>{LIMITS.storageMb}</dd>
+          </div>
         </dl>
       </section>
 
