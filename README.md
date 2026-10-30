@@ -28,6 +28,34 @@ The landing hero comes from the [Alertion-langing-page](https://github.com/Arthu
 
 The screenshots in the landing's feature rows come from the running service. With the dev server running, regenerate them with `node scripts/capture-landing.mjs`.
 
+## Project layout
+
+```text
+src/
+  main.tsx          Chooses the landing page or the service by address
+  app/              The service: routes, shell entry and path helpers
+  landing/          The landing page: hero canvas, sections and copy
+  components/
+    ui/             Buttons, badges, tables, popovers, icons and other building blocks
+    layout/         Sidebar, top bar, switchers and route guards
+    project/        Project cards and the sample-site frame
+    demo/           The demo runner bar
+  pages/
+    auth/           Sign-in and the access-denied screen
+    overview/       The workspace overview
+    project/        One project: dashboard, upload, preview, versions, domain, plan
+    workspace/      Deployments, observability, security, storage and the other sections
+    public/         The public sample page
+    defense/        The project-defense page and its chart
+  data/             Fixtures, limits, scenarios and selectors over them
+  state/            The reducer, the store and archive validation
+  styles/           Design tokens and global styles
+e2e/                Playwright specs; helpers live in e2e/support
+scripts/            Evidence and landing screenshots, copy checks
+docs/reviews/       Dated review notes
+public/             Logo, the landing hero image and screenshots
+```
+
 ## Routes and demonstration state
 
 | Route                                            | Screen                                                                      |
