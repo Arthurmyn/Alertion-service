@@ -1,0 +1,137 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  gap: var(--space-lg);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+  padding: var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.cardHead h2 {
+  margin: 0;
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.cardHead a {
+  display: flex;
+  color: var(--text-2);
+}
+
+.cardHead a:hover {
+  color: var(--text);
+}
+
+.cardHead svg {
+  width: 18px;
+  height: 18px;
+}
+
+.label,
+.empty {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+
+.value {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.of {
+  font-size: var(--text-md);
+  font-weight: 400;
+  color: var(--text-2);
+}
+
+.empty {
+  padding: var(--space-xl) 0 var(--space-md);
+  text-align: center;
+}
+
+.meters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.chart {
+  margin: var(--space-md) 0 0;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: 140px;
+}
+
+.axis {
+  stroke: var(--border);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.barLight {
+  fill: var(--tint-ink);
+}
+
+.barDark {
+  fill: var(--text);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  font-size: 12.5px;
+  color: var(--text-2);
+}
+
+.keyLight,
+.keyDark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.keyLight::before,
+.keyDark::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.keyLight::before {
+  background: var(--tint-ink);
+}
+
+.keyDark::before {
+  background: var(--text);
+}
+
+.badge {
+  align-self: flex-start;
+}
