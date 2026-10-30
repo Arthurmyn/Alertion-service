@@ -73,7 +73,7 @@ export function activeVersion(site: Site): Version | undefined {
 
 export function formatDate(iso: string): string {
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '—';
+  if (Number.isNaN(date.getTime())) return 'н/д';
   return new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
     month: 'short',

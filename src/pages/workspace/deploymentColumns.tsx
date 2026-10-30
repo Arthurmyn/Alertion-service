@@ -63,7 +63,8 @@ export const deploymentColumns: Column<DeploymentRow>[] = [
     header: 'Коммит',
     render: () => (
       <span className={styles.iconText} title={noRepository}>
-        <IconBuild />—
+        <IconBuild />
+        н/д
       </span>
     ),
   },
@@ -72,7 +73,8 @@ export const deploymentColumns: Column<DeploymentRow>[] = [
     header: 'Ветка',
     render: () => (
       <span className={styles.iconText} title={noRepository}>
-        <IconAttestation />—
+        <IconAttestation />
+        н/д
       </span>
     ),
   },

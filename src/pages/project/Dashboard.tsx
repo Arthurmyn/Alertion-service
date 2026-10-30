@@ -155,7 +155,7 @@ export function Dashboard() {
                 {active ? (
                   <VerificationBadge status={verificationFor(site, active)} />
                 ) : (
-                  '—'
+                  'н/д'
                 )}
               </dd>
             </div>
@@ -175,7 +175,7 @@ export function Dashboard() {
                     <small>Загружена {formatDate(latest.uploadedAt)}</small>
                   </>
                 ) : (
-                  '—'
+                  'н/д'
                 )}
               </dd>
             </div>

@@ -110,6 +110,7 @@ function hitsIn(rel, line, number) {
     hits.push(`${at}: banned word «${word}»`);
   }
   if (contrastRe.test(line)) hits.push(`${at}: «не только…, но и…»`);
+  if (line.includes('\u2014')) hits.push(`${at}: em dash`);
   if (hrefRe.test(line)) hits.push(`${at}: href="#"`);
   if (boldRe.test(line)) hits.push(`${at}: bold-term bullet`);
   if (!allowsLimitNumbers(rel)) {

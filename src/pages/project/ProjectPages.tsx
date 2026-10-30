@@ -45,7 +45,7 @@ export function ProjectBuilds() {
     {
       key: 'commit',
       header: 'Коммит',
-      render: () => <span className={styles.muted}>—</span>,
+      render: () => <span className={styles.muted}>н/д</span>,
     },
     {
       key: 'repro',
@@ -84,7 +84,7 @@ export function ProjectAttestations() {
   const site = useProjectSite();
   if (!site) return <NotFound />;
   const version = activeVersion(site);
-  const missing = <span className={styles.muted}>—</span>;
+  const missing = <span className={styles.muted}>н/д</span>;
   return (
     <FeaturePage
       title="Аттестации"

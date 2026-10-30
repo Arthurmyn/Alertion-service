@@ -127,7 +127,7 @@ export function Observability() {
         </MetricCard>
         <MetricCard title="Запросы к сайту">
           <p className={styles.label}>Запросы</p>
-          <p className={styles.value}>—</p>
+          <p className={styles.value}>н/д</p>
           <p className={styles.empty}>
             Нет данных за выбранный период: запросы к сайту не собираются.
           </p>
@@ -137,7 +137,7 @@ export function Observability() {
         </MetricCard>
         <MetricCard title="Журналы выполнения" to="/manage/observability/logs">
           <p className={styles.label}>Записей</p>
-          <p className={styles.value}>—</p>
+          <p className={styles.value}>н/д</p>
           <p className={styles.empty}>
             Приложения не запускаются на платформе, поэтому журналов нет.
           </p>
