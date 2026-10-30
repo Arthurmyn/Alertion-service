@@ -285,4 +285,4 @@ These are ideas, not promises and not a confirmed plan:
 
 ## License
 
-The repository does not have a license yet. Until one is added, all rights are reserved by the authors by default, so ask the team before reusing the code.
+The code is released under the [Apache License 2.0](LICENSE): you may use, modify and distribute it, including in your own projects, provided you keep the license text and the [NOTICE](NOTICE) file with the authors. The license does not grant rights to the Alertion name or logo. Third-party packages and fonts keep their own licenses (React, three.js and others under MIT; Inter, IBM Plex Mono and Literata under the SIL OFL).
