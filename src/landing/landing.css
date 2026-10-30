@@ -5,14 +5,13 @@
 
 /* The pointer: a pixel-art raised middle finger. Landing only. */
 :root {
-  --pointer: url('/landing/cursor.png') 17 1, auto;
+  --pointer: url('/landing/cursor.png') 11 1, auto;
 }
 
 @media (hover: hover) and (pointer: fine) {
   body,
-  a,
-  button {
-    cursor: var(--pointer);
+  body * {
+    cursor: var(--pointer) !important;
   }
 }
 
