@@ -40,7 +40,9 @@ describe('landing content', () => {
 
   it('keeps em dashes out of the copy in both languages', () => {
     for (const locale of locales) {
-      expect(JSON.stringify(copy[locale])).not.toContain(String.fromCharCode(0x2014));
+      expect(JSON.stringify(copy[locale])).not.toContain(
+        String.fromCharCode(0x2014),
+      );
     }
   });
 
