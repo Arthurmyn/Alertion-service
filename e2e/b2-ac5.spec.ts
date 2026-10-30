@@ -6,7 +6,7 @@ import {
   openUpload,
   signInAsOwner,
   storageScenarioSite,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 const baselineRejections = [
   ['missing entry page', 'nan-no-index.zip'],

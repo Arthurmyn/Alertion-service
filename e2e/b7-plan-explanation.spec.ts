@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { expectPlanLimits, main, openSection, signIn } from './b7-support.ts';
+import {
+  expectPlanLimits,
+  main,
+  openSection,
+  signIn,
+} from './support/b7-support.ts';
 
 test.use({ actionTimeout: 5_000 });
 

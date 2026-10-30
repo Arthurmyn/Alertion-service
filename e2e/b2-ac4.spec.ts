@@ -6,7 +6,7 @@ import {
   openUpload,
   signInAsOwner,
   storageScenarioSite,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 test('B2-AC4 oversized archive is rejected', async ({ page }) => {
   await signInAsOwner(page);

@@ -10,7 +10,7 @@ import {
   expectFailedPublication,
   expectPublicMenu,
   openScenario,
-} from './b3-helpers.ts';
+} from './support/b3-helpers.ts';
 
 test('G2 preview with A still active, confirmed publication of B, failed publication keeps the label', async ({
   page,

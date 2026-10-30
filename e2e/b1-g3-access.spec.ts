@@ -6,7 +6,7 @@ import {
   readPath,
   signIn,
   signInPrompt,
-} from './b1-helpers.ts';
+} from './support/b1-helpers.ts';
 
 const accountAData = [
   'Пекарня Нан',

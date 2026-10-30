@@ -4,7 +4,7 @@ import {
   expectActivationLocked,
   expectSetupOrder,
   openDomainScenario,
-} from './b5-support.ts';
+} from './support/b5-support.ts';
 
 test('B5-AC1 domain-control verification comes before activation', async ({
   page,

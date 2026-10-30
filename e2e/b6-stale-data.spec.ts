@@ -7,7 +7,7 @@ import {
   expectStorage,
   openDashboard,
   scenarioById,
-} from './b6-dashboard.ts';
+} from './support/b6-dashboard.ts';
 
 test('B6 stale storage data can be refreshed', async ({ page }) => {
   const scenario = scenarioById('storage-stale');

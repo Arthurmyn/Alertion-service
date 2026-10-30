@@ -5,7 +5,7 @@ import {
   rejectStorage,
   rejectUnpackedSize,
   signIn,
-} from './b7-support.ts';
+} from './support/b7-support.ts';
 
 test.use({ actionTimeout: 5_000 });
 

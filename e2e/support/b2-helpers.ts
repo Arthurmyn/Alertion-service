@@ -1,11 +1,15 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { accounts, baseline, baselineUpdatedAt } from '../src/data/accounts.ts';
-import { archives, type ArchiveFixture } from '../src/data/archives.ts';
-import { sampleSites } from '../src/data/sampleSites.ts';
-import { LIMITS } from '../src/data/limits.ts';
-import { reducer } from '../src/state/reducer.ts';
-import type { Site } from '../src/state/types.ts';
-import { validateArchive } from '../src/state/validateArchive.ts';
+import {
+  accounts,
+  baseline,
+  baselineUpdatedAt,
+} from '../../src/data/accounts.ts';
+import { archives, type ArchiveFixture } from '../../src/data/archives.ts';
+import { sampleSites } from '../../src/data/sampleSites.ts';
+import { LIMITS } from '../../src/data/limits.ts';
+import { reducer } from '../../src/state/reducer.ts';
+import type { Site } from '../../src/state/types.ts';
+import { validateArchive } from '../../src/state/validateArchive.ts';
 
 const owner = accounts[0];
 if (!owner) throw new Error('missing account A');

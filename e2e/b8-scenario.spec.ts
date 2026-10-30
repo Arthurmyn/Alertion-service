@@ -5,7 +5,7 @@ import {
   plantSession,
   readSession,
   scenarioSelect,
-} from './b8-support.ts';
+} from './support/b8-support.ts';
 
 test('?scenario= replaces the saved session and drops the query', async ({
   page,

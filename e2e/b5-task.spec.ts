@@ -4,7 +4,7 @@ import {
   expectDomainExamples,
   expectSetupOrder,
   openDomainScenario,
-} from './b5-support.ts';
+} from './support/b5-support.ts';
 
 test('B5 task ownership and DNS instructions use fictional domain values', async ({
   page,

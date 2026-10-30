@@ -4,7 +4,7 @@ import {
   expectDeployment,
   openDashboard,
   scenarioTourTimeout,
-} from './b6-dashboard.ts';
+} from './support/b6-dashboard.ts';
 
 test('B6-AC3 deployment state matches the scenario', async ({ page }) => {
   test.setTimeout(scenarioTourTimeout);

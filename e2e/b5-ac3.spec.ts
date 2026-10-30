@@ -4,7 +4,7 @@ import {
   expectActivationLocked,
   expectDomainExamples,
   openDomainScenario,
-} from './b5-support.ts';
+} from './support/b5-support.ts';
 
 test('B5-AC3 domain and certificate values are marked as examples', async ({
   page,

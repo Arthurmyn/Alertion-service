@@ -7,7 +7,7 @@ import {
   openUpload,
   ownerA,
   signInAsOwner,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 const taskFixtures = [
   'nan-v2.zip',

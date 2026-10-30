@@ -10,7 +10,7 @@ import {
   signIn,
   versionLabel,
   withApp,
-} from './b4-helpers.ts';
+} from './support/b4-helpers.ts';
 
 test('B4-AC2 rollback is disabled when no history is available', async ({
   browser,

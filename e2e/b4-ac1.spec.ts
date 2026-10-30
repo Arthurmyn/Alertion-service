@@ -13,7 +13,7 @@ import {
   signIn,
   versionLabel,
   withApp,
-} from './b4-helpers.ts';
+} from './support/b4-helpers.ts';
 
 const labelA = versionLabel(archiveA);
 const labelB = versionLabel(archiveB);

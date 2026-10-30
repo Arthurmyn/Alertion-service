@@ -4,7 +4,7 @@ import {
   activateButton,
   expectActivationLocked,
   openDomainScenario,
-} from './b5-support.ts';
+} from './support/b5-support.ts';
 
 test('G4 domain and HTTPS states are distinct and verification comes first', async ({
   page,

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { mainText, openDomainScenario } from './b5-support.ts';
+import { mainText, openDomainScenario } from './support/b5-support.ts';
 
 // Screen column: the record is not seen yet, so the owner waits and checks again.
 function expectPendingExplanation(text: string): void {

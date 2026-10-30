@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { accounts, domainExamples } from '../src/data/accounts.ts';
-import { scenarioById } from '../src/data/scenarios.ts';
+import { accounts, domainExamples } from '../../src/data/accounts.ts';
+import { scenarioById } from '../../src/data/scenarios.ts';
 
 const accountA = accounts.find((account) => account.id === 'a');
 

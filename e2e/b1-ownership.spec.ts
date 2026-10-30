@@ -6,7 +6,7 @@ import {
   publicHeader,
   readPath,
   signIn,
-} from './b1-helpers.ts';
+} from './support/b1-helpers.ts';
 
 const nanPrivate = [
   'Пекарня Нан',

@@ -1,9 +1,13 @@
 import { expect, type Browser, type Page } from '@playwright/test';
-import { accounts, baseline, baselineUpdatedAt } from '../src/data/accounts.ts';
-import { archives, type ArchiveFixture } from '../src/data/archives.ts';
-import { sampleSites } from '../src/data/sampleSites.ts';
-import { reducer } from '../src/state/reducer.ts';
-import type { AppState } from '../src/state/types.ts';
+import {
+  accounts,
+  baseline,
+  baselineUpdatedAt,
+} from '../../src/data/accounts.ts';
+import { archives, type ArchiveFixture } from '../../src/data/archives.ts';
+import { sampleSites } from '../../src/data/sampleSites.ts';
+import { reducer } from '../../src/state/reducer.ts';
+import type { AppState } from '../../src/state/types.ts';
 
 const SESSION_KEY = 'alertion.session';
 const seededFlag = 'alertion.e2e.seeded';

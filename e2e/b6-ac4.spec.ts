@@ -5,7 +5,7 @@ import {
   openDashboard,
   openDomainScreen,
   scenarioTourTimeout,
-} from './b6-dashboard.ts';
+} from './support/b6-dashboard.ts';
 
 test('B6-AC4 domain state matches the scenario', async ({ page }) => {
   test.setTimeout(scenarioTourTimeout);

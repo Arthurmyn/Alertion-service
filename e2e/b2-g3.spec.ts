@@ -6,7 +6,7 @@ import {
   openUpload,
   signInAsOwner,
   storageScenarioSite,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 test('G3 unsafe upload is rejected', async ({ page }) => {
   await signInAsOwner(page);

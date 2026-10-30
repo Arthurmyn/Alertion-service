@@ -3,7 +3,7 @@ import {
   deferredDashboardPattern,
   openDashboard,
   scenarioById,
-} from './b6-dashboard.ts';
+} from './support/b6-dashboard.ts';
 
 test('B6-AC6 deferred domain is labelled unavailable', async ({ page }) => {
   const scenario = scenarioById('domain-deferred');

@@ -1,8 +1,8 @@
 import { expect, type Page } from '@playwright/test';
-import { accounts, baselineUpdatedAt } from '../src/data/accounts.ts';
-import { archives } from '../src/data/archives.ts';
-import { LIMITS } from '../src/data/limits.ts';
-import { scenarioById as presetById } from '../src/data/scenarios.ts';
+import { accounts, baselineUpdatedAt } from '../../src/data/accounts.ts';
+import { archives } from '../../src/data/archives.ts';
+import { LIMITS } from '../../src/data/limits.ts';
+import { scenarioById as presetById } from '../../src/data/scenarios.ts';
 
 const deploymentText = {
   published: 'Опубликовано',

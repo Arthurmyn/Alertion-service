@@ -7,7 +7,7 @@ import {
   expectActiveSample,
   openUpload,
   signInAsOwner,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 test('B2-AC1 valid upload reaches the example URL', async ({ page }) => {
   const active = activeVersion(baselineSite());

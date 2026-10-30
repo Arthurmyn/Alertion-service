@@ -37,7 +37,7 @@ import {
   sprintPackageHours,
   workRows,
 } from '../src/data/team.ts';
-import { boundaryText, presentSections } from './b8-support.ts';
+import { boundaryText, presentSections } from './support/b8-support.ts';
 
 function hoursText(item: BacklogItem): string {
   const total = `${workHours(item)} ч`;

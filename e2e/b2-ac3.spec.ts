@@ -6,7 +6,7 @@ import {
   rejectionMessage,
   signInAsOwner,
   unsafePath,
-} from './b2-helpers.ts';
+} from './support/b2-helpers.ts';
 
 test('B2-AC3 unsafe path is rejected', async ({ page }) => {
   const site = baselineSite();

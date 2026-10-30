@@ -4,7 +4,7 @@ import {
   openDashboard,
   ownerScenarios,
   scenarioTourTimeout,
-} from './b6-dashboard.ts';
+} from './support/b6-dashboard.ts';
 
 test('B6-AC2 example URL matches the scenario', async ({ page }) => {
   test.setTimeout(scenarioTourTimeout);

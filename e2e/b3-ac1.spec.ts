@@ -7,7 +7,7 @@ import {
   expectPublicMenu,
   openScenario,
   signInAsOwner,
-} from './b3-helpers.ts';
+} from './support/b3-helpers.ts';
 
 test('B3-AC1 previewing B leaves A active', async ({ page }) => {
   await signInAsOwner(page);

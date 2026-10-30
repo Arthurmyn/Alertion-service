@@ -1,7 +1,7 @@
 import { expect, type Page } from '@playwright/test';
-import { accounts } from '../src/data/accounts.ts';
-import { archives } from '../src/data/archives.ts';
-import { sampleSites } from '../src/data/sampleSites.ts';
+import { accounts } from '../../src/data/accounts.ts';
+import { archives } from '../../src/data/archives.ts';
+import { sampleSites } from '../../src/data/sampleSites.ts';
 
 function ownerAccount() {
   const found = accounts.find((account) => account.slug === 'nan');

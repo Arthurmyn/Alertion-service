@@ -8,7 +8,7 @@ import {
   expectDashboardActive,
   expectPublicMenu,
   openScenario,
-} from './b3-helpers.ts';
+} from './support/b3-helpers.ts';
 
 test('B3-AC2 confirmation makes B active', async ({ page }) => {
   await openScenario(page, 'preview-b');

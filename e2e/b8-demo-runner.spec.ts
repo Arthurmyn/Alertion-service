@@ -9,7 +9,7 @@ import {
   stepLabel,
   urlEnding,
   type DemoStep,
-} from './b8-support.ts';
+} from './support/b8-support.ts';
 
 async function expectStep(page: Page, step: DemoStep): Promise<void> {
   await expect(page.getByText(stepLabel(step.n))).toBeVisible();

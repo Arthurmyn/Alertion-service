@@ -5,7 +5,7 @@ import {
   expectFailedPublication,
   expectPublicMenu,
   openScenario,
-} from './b3-helpers.ts';
+} from './support/b3-helpers.ts';
 
 test('B3-AC3 a failed publication keeps A active', async ({ page }) => {
   await openScenario(page, 'publish-fail');

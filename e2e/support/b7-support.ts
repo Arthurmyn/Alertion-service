@@ -1,8 +1,8 @@
 import { expect, type Page } from '@playwright/test';
-import { accounts, baseline, type Account } from '../src/data/accounts.ts';
-import { archives, type ArchiveFixture } from '../src/data/archives.ts';
-import { LIMITS } from '../src/data/limits.ts';
-import { storageUsedMb } from '../src/state/selectors.ts';
+import { accounts, baseline, type Account } from '../../src/data/accounts.ts';
+import { archives, type ArchiveFixture } from '../../src/data/archives.ts';
+import { LIMITS } from '../../src/data/limits.ts';
+import { storageUsedMb } from '../../src/state/selectors.ts';
 
 export const planGate = 'Сначала выберите пилотный план';
 
