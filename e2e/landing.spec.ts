@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { LIMITS } from '../src/data/limits.ts';
 
 test.describe('landing at /', () => {
   test('opens with the hero, the pilot-plan facts and a way into the service', async ({
@@ -8,7 +9,7 @@ test.describe('landing at /', () => {
     await expect(
       page.getByRole('heading', { level: 1, name: /который можно проверить/ }),
     ).toBeVisible();
-    await expect(page.locator('canvas')).toHaveCount(1);
+    await expect(page.locator('canvas').first()).toBeVisible();
     await expect(page.getByText('архив до 20 МБ')).toBeVisible();
     await expect(
       page.getByRole('link', { name: 'Открыть сервис' }).first(),
@@ -19,6 +20,52 @@ test.describe('landing at /', () => {
     await expect(
       page.getByRole('heading', { level: 1, name: 'Вход' }),
     ).toBeVisible();
+  });
+
+  test('switches the whole page between Russian and English and remembers it', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+    await page.getByRole('button', { name: 'English' }).click();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(
+      page.getByRole('heading', { level: 1, name: /you can verify/ }),
+    ).toBeVisible();
+    await expect(page).toHaveTitle('Alertion: website hosting you can verify');
+    await expect(
+      page.getByText(`archive up to ${LIMITS.archiveMb} MB`, { exact: true }),
+    ).toBeVisible();
+
+    await page.reload();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /you can verify/ }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Русский' }).click();
+    await expect(
+      page.getByRole('heading', { level: 1, name: /который можно проверить/ }),
+    ).toBeVisible();
+  });
+
+  test('opens in the requested language from the address', async ({ page }) => {
+    await page.goto('/?lang=en');
+    await expect(
+      page.getByRole('link', { name: 'Open the service' }).first(),
+    ).toBeVisible();
+  });
+
+  test('lets a visitor publish and roll back in the model', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    const model = page.locator('#how');
+    await model.scrollIntoViewIfNeeded();
+    await expect(model.getByRole('status')).toContainText('Активна версия A');
+    await model.getByRole('button', { name: 'Опубликовать версию B' }).click();
+    await model.getByRole('button', { name: 'Подтвердить' }).click();
+    await expect(model.getByRole('status')).toContainText('Активна версия B');
+    await model.getByRole('button', { name: 'Откатить на версию A' }).click();
+    await expect(model.getByRole('status')).toContainText('Активна версия A');
   });
 
   test('has the sections the navigation points to', async ({ page }) => {
