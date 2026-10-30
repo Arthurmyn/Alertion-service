@@ -67,10 +67,50 @@
   color: #000000;
 }
 
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  margin-left: 4px;
+  background: rgb(255 255 255 / 0.55);
+  border: 1px solid #deded9;
+  border-radius: 999px;
+}
+
+.langButton {
+  min-width: 36px;
+  height: 28px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #6b6b6b;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 999px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.langButton[aria-pressed='true'] {
+  color: #ffffff;
+  background: #111111;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .langButton[aria-pressed='false']:hover {
+    color: #111111;
+  }
+}
+
 .signin {
   display: inline-flex;
   align-items: center;
-  margin-left: 10px;
+  margin-left: 4px;
   padding: 10px 21px;
   font-weight: 500;
   color: #ffffff;
@@ -303,19 +343,8 @@
   top: 40px;
 }
 
-.frame {
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e0e0db;
-  border-radius: 14px;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.04),
-    0 18px 48px rgb(0 0 0 / 0.08);
-}
-
-.frame img {
-  width: 100%;
-  height: auto;
+.model {
+  min-width: 0;
 }
 
 .caption {
@@ -508,7 +537,9 @@
 }
 
 .closing {
+  position: relative;
   padding: clamp(80px, 11vw, 152px) clamp(20px, 5vw, 64px);
+  overflow: hidden;
   text-align: center;
   background: #f7f7f5;
   border-top: 1px solid #e0e0db;
@@ -526,6 +557,11 @@
   margin: 18px auto 0;
   color: #5a5a5a;
   text-wrap: balance;
+}
+
+.closing > :not(canvas) {
+  position: relative;
+  z-index: 3;
 }
 
 .ctaSolo {
@@ -612,9 +648,12 @@
 
 @media (max-width: 760px) {
   .nav {
-    justify-content: space-between;
-    gap: 0;
+    gap: 6px;
     padding: 22px 18px 0;
+  }
+
+  .brand {
+    margin-right: auto;
   }
 
   .navLinks {
@@ -623,6 +662,7 @@
 
   .signin {
     margin-left: 0;
+    padding: 10px 16px;
   }
 
   .copy {

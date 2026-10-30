@@ -1,26 +1,55 @@
+import { AlertField } from './AlertField.tsx';
 import { DotHands } from './DotHands.tsx';
 import {
+  anchors,
   appDefense,
   appHome,
   appLogin,
   appSecurity,
-  features,
-  more,
-  navLinks,
-  path,
-  planFacts,
-  steps,
-  team,
+  locales,
+  type Locale,
 } from './content.ts';
+import { useLocale } from './locale.ts';
 import { useReveal } from './Reveal.ts';
+import {
+  ChecksModel,
+  PublishModel,
+  RiskModel,
+  UsageModel,
+} from './Visuals.tsx';
 import styles from './Landing.module.css';
 
+const localeNames: Record<Locale, string> = { ru: 'RU', en: 'EN' };
+const localeWords: Record<Locale, string> = { ru: 'Русский', en: 'English' };
+
+function LanguageSwitch() {
+  const { locale, setLocale, t } = useLocale();
+  return (
+    <div className={styles.lang} role="group" aria-label={t.languageLabel}>
+      {locales.map((item) => (
+        <button
+          key={item}
+          type="button"
+          lang={item}
+          className={styles.langButton}
+          aria-pressed={item === locale}
+          aria-label={localeWords[item]}
+          onClick={() => setLocale(item)}
+        >
+          {localeNames[item]}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Brand({ dark = false }: { dark?: boolean }) {
+  const { t } = useLocale();
   return (
     <a
       href="/"
       className={dark ? `${styles.brand} ${styles.brandDark}` : styles.brand}
-      aria-label="Alertion, на главную"
+      aria-label={t.brandLabel}
     >
       <img src="/logo.png" alt="" width={26} height={31} />
       <span>Alertion</span>
@@ -29,40 +58,40 @@ function Brand({ dark = false }: { dark?: boolean }) {
 }
 
 function Hero() {
+  const { t } = useLocale();
   return (
     <section className={styles.hero} id="top" aria-labelledby="hero-title">
       <DotHands />
-      <nav className={styles.nav} aria-label="Разделы страницы">
+      <AlertField variant="hero" />
+      <nav className={styles.nav} aria-label={t.navLabel}>
         <Brand />
         <div className={styles.navLinks}>
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className={styles.navLink}>
-              {link.label}
+          {anchors.map((href, index) => (
+            <a key={href} href={href} className={styles.navLink}>
+              {t.nav[index]}
             </a>
           ))}
         </div>
+        <LanguageSwitch />
         <a href={appHome} className={styles.signin}>
-          Открыть сервис
+          {t.open}
         </a>
       </nav>
 
       <div className={styles.copy}>
         <h1 id="hero-title" className={styles.heroTitle}>
-          <span className={styles.line1}>Хостинг сайтов,</span>
-          <span className={styles.line2}>который можно проверить.</span>
+          <span className={styles.line1}>{t.hero.line1}</span>
+          <span className={styles.line2}>{t.hero.line2}</span>
         </h1>
-        <p className={styles.subline}>
-          Загрузка архива, предпросмотр, подтверждённая публикация и откат.
-          Следующий шаг: доказать, что в продакшене именно ваш код.
-        </p>
+        <p className={styles.subline}>{t.hero.subline}</p>
         <div className={styles.cta}>
-          <a href={appLogin}>Открыть сервис</a>
+          <a href={appLogin}>{t.open}</a>
         </div>
       </div>
 
       <div className={styles.facts}>
-        <span className={styles.factsLabel}>Пилотный план</span>
-        {planFacts.map((fact) => (
+        <span className={styles.factsLabel}>{t.planLabel}</span>
+        {t.planFacts.map((fact) => (
           <span key={fact}>{fact}</span>
         ))}
       </div>
@@ -72,13 +101,11 @@ function Hero() {
 
 function Heading({
   id,
-  first,
-  second,
+  heading,
   dark = false,
 }: {
   id: string;
-  first: string;
-  second: string;
+  heading: { first: string; second: string };
   dark?: boolean;
 }) {
   return (
@@ -87,29 +114,25 @@ function Heading({
       className={dark ? `${styles.h2} ${styles.h2Dark}` : styles.h2}
       data-reveal
     >
-      <span className={styles.h2Muted}>{first}</span>
-      <span>{second}</span>
+      <span className={styles.h2Muted}>{heading.first}</span>
+      <span>{heading.second}</span>
     </h2>
   );
 }
 
 function How() {
+  const { t } = useLocale();
   return (
     <section className={styles.section} id="how" aria-labelledby="how-title">
       <div className={styles.inner}>
         <div className={styles.split}>
           <div>
-            <Heading
-              id="how-title"
-              first="От архива до публикации"
-              second="за пять шагов."
-            />
+            <Heading id="how-title" heading={t.how.heading} />
             <p className={styles.lead} data-reveal>
-              Путь, который проходит владелец малого бизнеса. Каждый шаг можно
-              проверить в демо на странице защиты проекта.
+              {t.how.lead}
             </p>
             <ol className={styles.steps}>
-              {steps.map((step) => (
+              {t.how.steps.map((step) => (
                 <li key={step.title} data-reveal>
                   <span className={styles.stepTitle}>{step.title}</span>
                   <span className={styles.stepText}>{step.text}</span>
@@ -118,18 +141,9 @@ function How() {
             </ol>
           </div>
           <figure className={styles.sticky} data-reveal>
-            <div className={styles.frame}>
-              <img
-                src="/landing/shots/publish.png"
-                width={1440}
-                height={900}
-                loading="lazy"
-                alt="Диалог «Опубликовать версию B?»: сейчас активна версия A, после подтверждения активной станет версия B."
-              />
-            </div>
+            <PublishModel />
             <figcaption className={styles.caption}>
-              Публикация требует подтверждения. До него активная версия не
-              меняется.
+              {t.publish.caption}
             </figcaption>
           </figure>
         </div>
@@ -138,7 +152,14 @@ function How() {
   );
 }
 
+function Model({ index }: { index: number }) {
+  if (index === 0) return <ChecksModel />;
+  if (index === 1) return <UsageModel />;
+  return <RiskModel />;
+}
+
 function Features() {
+  const { t } = useLocale();
   return (
     <section
       className={styles.section}
@@ -146,13 +167,9 @@ function Features() {
       aria-labelledby="features-title"
     >
       <div className={styles.inner}>
-        <Heading
-          id="features-title"
-          first="Что уже работает"
-          second="в прототипе."
-        />
+        <Heading id="features-title" heading={t.features.heading} />
         <div className={styles.rows}>
-          {features.map((feature, index) => (
+          {t.features.items.map((feature, index) => (
             <article
               key={feature.title}
               className={
@@ -169,20 +186,14 @@ function Features() {
                   ))}
                 </ul>
               </div>
-              <div className={styles.frame}>
-                <img
-                  src={feature.image}
-                  width={1440}
-                  height={900}
-                  loading="lazy"
-                  alt={feature.alt}
-                />
+              <div className={styles.model}>
+                <Model index={index} />
               </div>
             </article>
           ))}
         </div>
         <dl className={styles.more} data-reveal>
-          {more.map((item) => (
+          {t.features.more.map((item) => (
             <div key={item.term}>
               <dt>{item.term}</dt>
               <dd>{item.text}</dd>
@@ -195,6 +206,7 @@ function Features() {
 }
 
 function Verify() {
+  const { t } = useLocale();
   return (
     <section
       className={`${styles.section} ${styles.inverse}`}
@@ -202,19 +214,12 @@ function Verify() {
       aria-labelledby="verify-title"
     >
       <div className={styles.inner}>
-        <Heading
-          id="verify-title"
-          first="Не просто «опубликовано»,"
-          second="а «проверено»."
-          dark
-        />
+        <Heading id="verify-title" heading={t.verify.heading} dark />
         <p className={`${styles.lead} ${styles.leadDark}`} data-reveal>
-          Идея платформы: подтвердить, что в продакшене работает именно
-          проверенный исходный код, сборка и конфигурация. Прототип проходит
-          только часть пути, и мы показываем это прямо.
+          {t.verify.lead}
         </p>
         <ol className={styles.path} data-reveal>
-          {path.map((item) => (
+          {t.verify.path.map((item) => (
             <li key={item.step}>
               <span
                 className={`${styles.dot} ${styles[`dot_${item.level}`]}`}
@@ -227,10 +232,7 @@ function Verify() {
           ))}
         </ol>
         <p className={styles.principle} data-reveal>
-          Статус «Проверено» не появится, пока нет данных аттестации. Сейчас у
-          прототипа нет git, анклава и источника аттестации, поэтому везде
-          написано «Проверка недоступна».{' '}
-          <a href={appSecurity}>Посмотреть панель безопасности</a>
+          {t.verify.principle} <a href={appSecurity}>{t.verify.link}</a>
         </p>
       </div>
     </section>
@@ -238,26 +240,22 @@ function Verify() {
 }
 
 function Team() {
+  const { t } = useLocale();
   return (
     <section className={styles.section} id="team" aria-labelledby="team-title">
       <div className={styles.inner}>
         <div className={styles.split}>
           <div>
-            <Heading
-              id="team-title"
-              first="Учебный проект,"
-              second="не коммерческий."
-            />
+            <Heading id="team-title" heading={t.team.heading} />
             <p className={styles.lead} data-reveal>
-              Мы делали Alertion как командный проект по Scrum: цели, результаты
-              и журнал доказательств собраны на странице защиты.
+              {t.team.lead}
             </p>
             <p className={styles.textLink} data-reveal>
-              <a href={appDefense}>Страница защиты проекта</a>
+              <a href={appDefense}>{t.team.link}</a>
             </p>
           </div>
           <dl className={styles.team} data-reveal>
-            {team.map((item) => (
+            {t.team.rows.map((item) => (
               <div key={item.term}>
                 <dt>{item.term}</dt>
                 <dd>
@@ -275,30 +273,32 @@ function Team() {
 }
 
 function Closing() {
+  const { t } = useLocale();
   return (
     <section className={styles.closing} aria-labelledby="closing-title">
+      <AlertField variant="closing" />
       <h2 id="closing-title" className={styles.closingTitle} data-reveal>
-        Пройдите путь сами.
+        {t.closing.title}
       </h2>
       <p className={styles.closingText} data-reveal>
-        Регистрации нет: два вымышленных аккаунта, пароля нет, всё это
-        симуляция.
+        {t.closing.text}
       </p>
       <div className={`${styles.cta} ${styles.ctaSolo}`} data-reveal>
-        <a href={appLogin}>Открыть сервис</a>
+        <a href={appLogin}>{t.open}</a>
       </div>
     </section>
   );
 }
 
 function Footer() {
+  const { t } = useLocale();
   return (
     <footer className={styles.footer}>
       <Brand />
-      <nav aria-label="Ссылки внизу страницы">
-        <a href={appHome}>Сервис</a>
-        <a href={appDefense}>Защита проекта</a>
-        <a href="#top">Наверх</a>
+      <nav aria-label={t.footerNavLabel}>
+        <a href={appHome}>{t.footer.service}</a>
+        <a href={appDefense}>{t.footer.defense}</a>
+        <a href="#top">{t.footer.top}</a>
       </nav>
     </footer>
   );
