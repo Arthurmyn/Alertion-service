@@ -1,330 +1,330 @@
 {
-  "capturedAt": "2026-10-29T06:34:01.781Z",
+  "capturedAt": "2026-10-30T20:14:49.862Z",
   "entries": {
     "signed-out": {
       "src": "/evidence/signed-out.png",
       "alt": "Выход",
       "width": 720,
-      "height": 243,
+      "height": 259,
       "route": "/login?scenario=signed-out",
       "capturedRoute": "/login",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:44.938Z"
+      "capturedAt": "2026-10-30T20:14:43.271Z"
     },
     "a-home": {
       "src": "/evidence/a-home.png",
       "alt": "Пекарня Нан",
-      "width": 720,
-      "height": 508,
+      "width": 1032,
+      "height": 868,
       "route": "/manage/nan?scenario=a-home",
       "capturedRoute": "/manage/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:45.593Z"
+      "capturedAt": "2026-10-30T20:14:43.534Z"
     },
     "b-home": {
       "src": "/evidence/b-home.png",
       "alt": "Мастерская Темир",
-      "width": 720,
-      "height": 508,
+      "width": 1032,
+      "height": 868,
       "route": "/manage/temir?scenario=b-home",
       "capturedRoute": "/manage/temir",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:46.129Z"
+      "capturedAt": "2026-10-30T20:14:43.795Z"
     },
     "b-opens-a": {
       "src": "/evidence/b-opens-a.png",
       "alt": "Чужой аккаунт",
-      "width": 720,
-      "height": 251,
+      "width": 1032,
+      "height": 261,
       "route": "/manage/nan?scenario=b-opens-a",
       "capturedRoute": "/manage/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:46.735Z"
+      "capturedAt": "2026-10-30T20:14:44.033Z"
     },
     "plan-not-selected": {
       "src": "/evidence/plan-not-selected.png",
       "alt": "План не выбран",
-      "width": 720,
-      "height": 203,
+      "width": 1032,
+      "height": 417,
       "route": "/manage/nan/upload?scenario=plan-not-selected",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:47.327Z"
+      "capturedAt": "2026-10-30T20:14:44.288Z"
     },
     "reject-no-index": {
       "src": "/evidence/reject-no-index.png",
       "alt": "Нет index.html",
-      "width": 720,
-      "height": 1109,
+      "width": 1032,
+      "height": 1472,
       "route": "/manage/nan/upload?scenario=reject-no-index",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:48.015Z"
+      "capturedAt": "2026-10-30T20:14:44.595Z"
     },
     "reject-unsafe-path": {
       "src": "/evidence/reject-unsafe-path.png",
       "alt": "Небезопасный путь",
-      "width": 720,
-      "height": 1109,
+      "width": 1032,
+      "height": 1472,
       "route": "/manage/nan/upload?scenario=reject-unsafe-path",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:48.641Z"
+      "capturedAt": "2026-10-30T20:14:44.865Z"
     },
     "reject-archive-size": {
       "src": "/evidence/reject-archive-size.png",
       "alt": "Архив больше лимита",
-      "width": 720,
-      "height": 1109,
+      "width": 1032,
+      "height": 1472,
       "route": "/manage/nan/upload?scenario=reject-archive-size",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:49.372Z"
+      "capturedAt": "2026-10-30T20:14:45.136Z"
     },
     "reject-unpacked-size": {
       "src": "/evidence/reject-unpacked-size.png",
       "alt": "Распаковка больше лимита",
-      "width": 720,
-      "height": 1109,
+      "width": 1032,
+      "height": 1472,
       "route": "/manage/nan/upload?scenario=reject-unpacked-size",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:50.111Z"
+      "capturedAt": "2026-10-30T20:14:45.406Z"
     },
     "reject-storage": {
       "src": "/evidence/reject-storage.png",
       "alt": "Хранилище заполнено",
-      "width": 720,
-      "height": 1109,
+      "width": 1032,
+      "height": 1472,
       "route": "/manage/nan/upload?scenario=reject-storage",
       "capturedRoute": "/manage/nan/upload",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:50.868Z"
+      "capturedAt": "2026-10-30T20:14:45.677Z"
     },
     "second-site": {
       "src": "/evidence/second-site.png",
       "alt": "Второй сайт",
-      "width": 720,
-      "height": 894,
+      "width": 1032,
+      "height": 1080,
       "route": "/manage/nan/plan?scenario=second-site",
       "capturedRoute": "/manage/nan/plan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:51.565Z"
+      "capturedAt": "2026-10-30T20:14:45.944Z"
     },
     "preview-b": {
       "src": "/evidence/preview-b.png",
       "alt": "Предпросмотр B",
-      "width": 720,
-      "height": 534,
+      "width": 1032,
+      "height": 748,
       "route": "/manage/nan/preview?scenario=preview-b",
       "capturedRoute": "/manage/nan/preview",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:52.289Z"
+      "capturedAt": "2026-10-30T20:14:46.204Z"
     },
     "publish-ok": {
       "src": "/evidence/publish-ok.png",
       "alt": "Публикация прошла",
-      "width": 720,
-      "height": 508,
+      "width": 1032,
+      "height": 868,
       "route": "/manage/nan?scenario=publish-ok",
       "capturedRoute": "/manage/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:53.037Z"
+      "capturedAt": "2026-10-30T20:14:46.499Z"
     },
     "publish-fail": {
       "src": "/evidence/publish-fail.png",
       "alt": "Публикация не прошла",
-      "width": 720,
-      "height": 540,
+      "width": 1032,
+      "height": 788,
       "route": "/manage/nan/versions?scenario=publish-fail",
       "capturedRoute": "/manage/nan/versions",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:53.696Z"
+      "capturedAt": "2026-10-30T20:14:46.757Z"
     },
     "rollback-ok": {
       "src": "/evidence/rollback-ok.png",
       "alt": "Откат выполнен",
-      "width": 720,
-      "height": 476,
+      "width": 1032,
+      "height": 718,
       "route": "/manage/nan/versions?scenario=rollback-ok",
       "capturedRoute": "/manage/nan/versions",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:54.332Z"
+      "capturedAt": "2026-10-30T20:14:47.051Z"
     },
     "rollback-none": {
       "src": "/evidence/rollback-none.png",
       "alt": "Откат недоступен",
-      "width": 720,
-      "height": 381,
+      "width": 1032,
+      "height": 616,
       "route": "/manage/nan/versions?scenario=rollback-none",
       "capturedRoute": "/manage/nan/versions",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:54.996Z"
+      "capturedAt": "2026-10-30T20:14:47.310Z"
     },
     "rollback-fail": {
       "src": "/evidence/rollback-fail.png",
       "alt": "Откат не прошёл",
-      "width": 720,
-      "height": 504,
+      "width": 1032,
+      "height": 748,
       "route": "/manage/nan/versions?scenario=rollback-fail",
       "capturedRoute": "/manage/nan/versions",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:55.670Z"
+      "capturedAt": "2026-10-30T20:14:47.554Z"
     },
     "domain-pending": {
       "src": "/evidence/domain-pending.png",
       "alt": "Домен: ожидание",
-      "width": 720,
-      "height": 1225,
+      "width": 1032,
+      "height": 1542,
       "route": "/manage/nan/domain?scenario=domain-pending",
       "capturedRoute": "/manage/nan/domain",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:56.344Z"
+      "capturedAt": "2026-10-30T20:14:47.860Z"
     },
     "domain-active": {
       "src": "/evidence/domain-active.png",
       "alt": "Домен активен",
-      "width": 720,
-      "height": 895,
+      "width": 1032,
+      "height": 1183,
       "route": "/manage/nan/domain?scenario=domain-active",
       "capturedRoute": "/manage/nan/domain",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:57.036Z"
+      "capturedAt": "2026-10-30T20:14:48.127Z"
     },
     "domain-failed": {
       "src": "/evidence/domain-failed.png",
       "alt": "Домен: ошибка",
-      "width": 720,
-      "height": 1225,
+      "width": 1032,
+      "height": 1542,
       "route": "/manage/nan/domain?scenario=domain-failed",
       "capturedRoute": "/manage/nan/domain",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:57.834Z"
+      "capturedAt": "2026-10-30T20:14:48.399Z"
     },
     "domain-deferred": {
       "src": "/evidence/domain-deferred.png",
       "alt": "Домен недоступен",
-      "width": 720,
-      "height": 508,
+      "width": 1032,
+      "height": 892,
       "route": "/manage/nan?scenario=domain-deferred",
       "capturedRoute": "/manage/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:58.464Z"
+      "capturedAt": "2026-10-30T20:14:48.660Z"
     },
     "storage-stale": {
       "src": "/evidence/storage-stale.png",
       "alt": "Данные устарели",
-      "width": 720,
-      "height": 620,
+      "width": 1032,
+      "height": 1010,
       "route": "/manage/nan?scenario=storage-stale",
       "capturedRoute": "/manage/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:33:59.175Z"
+      "capturedAt": "2026-10-30T20:14:48.924Z"
     },
     "public-nan": {
       "src": "/evidence/public-nan.png",
       "alt": "Публичная страница Пекарни Нан",
-      "width": 720,
-      "height": 684,
+      "width": 1280,
+      "height": 691,
       "route": "/site/nan?scenario=a-home",
       "capturedRoute": "/site/nan",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:34:00.093Z"
+      "capturedAt": "2026-10-30T20:14:49.226Z"
     },
     "publish-confirm": {
       "src": "/evidence/publish-confirm.png",
       "alt": "Подтверждение публикации версии B",
       "width": 448,
-      "height": 170,
+      "height": 188,
       "route": "/manage/nan/preview?scenario=preview-b",
       "capturedRoute": "/manage/nan/versions",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:34:00.974Z"
+      "capturedAt": "2026-10-30T20:14:49.577Z"
     },
     "goals": {
       "src": "/evidence/goals.png",
       "alt": "Цели G1–G5 и пояснение объёма B5",
-      "width": 672,
-      "height": 920,
+      "width": 656,
+      "height": 961,
       "route": "/defense#goals",
       "capturedRoute": "/defense#goals",
       "viewport": {
         "width": 1280,
         "height": 900
       },
-      "capturedAt": "2026-10-29T06:34:01.776Z"
+      "capturedAt": "2026-10-30T20:14:49.860Z"
     }
   }
 }

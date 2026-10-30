@@ -18,7 +18,7 @@ async function capture(id, title, route, prepare, selector = 'main') {
   });
   const page = await context.newPage();
   try {
-    await page.goto(new URL(route, baseURL).href);
+    await page.goto(new URL(`/app${route}`, baseURL).href);
     await expect(page.locator('main h1')).toBeVisible();
     await expect(page).not.toHaveURL(/scenario=/);
     await page.evaluate(() => document.fonts.ready);
@@ -31,7 +31,9 @@ async function capture(id, title, route, prepare, selector = 'main') {
       width: png.readUInt32BE(16),
       height: png.readUInt32BE(20),
       route,
-      capturedRoute: new URL(page.url()).pathname + new URL(page.url()).hash,
+      capturedRoute:
+        new URL(page.url()).pathname.replace(/^\/app(?=\/|$)/, '') +
+        new URL(page.url()).hash,
       viewport,
       capturedAt: new Date().toISOString(),
     };
@@ -54,7 +56,7 @@ try {
     '/site/nan?scenario=a-home',
     async (page) => {
       // The scenario loads its management route first; keep its saved state.
-      await page.goto(new URL('/site/nan', baseURL).href);
+      await page.goto(new URL('/app/site/nan', baseURL).href);
       await expect(
         page.frameLocator('iframe').getByRole('heading', {
           name: 'Пекарня Нан',
@@ -68,7 +70,7 @@ try {
     'Подтверждение публикации версии B',
     '/manage/nan/preview?scenario=preview-b',
     async (page) => {
-      await page.goto(new URL('/manage/nan/versions', baseURL).href);
+      await page.goto(new URL('/app/manage/nan/versions', baseURL).href);
       await page
         .getByRole('button', {
           name: 'Опубликовать версию B',
