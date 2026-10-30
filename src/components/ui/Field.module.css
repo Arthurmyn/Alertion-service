@@ -23,17 +23,22 @@
   width: 100%;
   color: var(--ink);
   background: var(--surface);
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-input);
   box-shadow: none;
   min-height: var(--control-h);
-  padding: 4px var(--space-sm);
+  padding: 4px var(--space-md);
   font-family: var(--font-ui);
   font-size: var(--text-md);
 }
 
+.input:hover {
+  border-color: var(--ink);
+}
+
 .input[aria-invalid='true'] {
   border-color: var(--danger-text);
+  background: var(--danger-bg);
 }
 
 .error {

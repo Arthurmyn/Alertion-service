@@ -1,20 +1,19 @@
 .error,
 .warn {
-  margin: 0 0 12px;
-  padding: 12px 12px 12px 16px;
-  border: 0;
-  border-left: 4px solid var(--brand);
+  margin: 0 0 var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid color-mix(in srgb, var(--danger-text) 28%, transparent);
   border-radius: var(--radius-block);
   box-shadow: none;
-  background: var(--surface);
-  color: var(--danger-text);
+  background: var(--danger-bg);
+  color: var(--text);
   max-width: var(--measure);
   font-size: var(--text-md);
   line-height: 1.5;
 }
 
 .warn {
-  border-left-color: var(--warn-text);
+  border-color: color-mix(in srgb, var(--warn-text) 30%, transparent);
   background: var(--warn-bg);
   color: var(--ink);
 }

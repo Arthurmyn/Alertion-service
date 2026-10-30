@@ -1,20 +1,33 @@
 .steps {
-  margin: 0 0 16px;
-  padding-left: 1.25rem;
+  margin: 0 0 var(--space-xl);
+  padding-left: 1.5rem;
   list-style: decimal;
 }
 
 .steps li {
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-xs);
+  padding-left: var(--space-xs);
+  color: var(--ink-2);
+}
+
+.steps li::marker {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .current {
   font-weight: 600;
+  color: var(--ink);
 }
 
 .records,
 .states {
   margin: 0 0 var(--space-lg);
+  padding: 0 var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  box-shadow: var(--shadow-panel);
 }
 
 .records > div,
@@ -24,13 +37,13 @@
   gap: var(--space-2xs) var(--kv-gap);
   align-items: baseline;
   margin: 0;
-  padding: 8px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--rule);
 }
 
-.records > div:last-child,
-.states > div:last-child {
-  border-bottom: 1px solid var(--rule);
+.records > div:first-child,
+.states > div:first-child {
+  border-top: 0;
 }
 
 .records dt,

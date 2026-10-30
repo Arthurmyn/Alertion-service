@@ -1,18 +1,22 @@
 .list {
-  margin: 4px 0 8px;
-  padding: 0;
+  margin: var(--space-md) 0 var(--space-lg);
+  padding: 0 var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  box-shadow: var(--shadow-panel);
 }
 
 .row {
   display: grid;
   gap: var(--space-2xs);
   margin: 0;
-  padding: 10px 0;
+  padding: 14px 0;
   border-top: 1px solid var(--rule);
 }
 
-.row:last-child {
-  border-bottom: 1px solid var(--rule);
+.row:first-child {
+  border-top: 0;
 }
 
 .term,
@@ -40,9 +44,11 @@
   scroll-margin: 16px;
 }
 
-.rejection:focus {
+.rejection:focus,
+.rejection:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 4px;
+  border-radius: var(--radius-block);
 }
 
 @media (min-width: 480px) {

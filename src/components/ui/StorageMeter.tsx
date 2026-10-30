@@ -32,15 +32,27 @@ export function StorageMeter({
       >
         <svg
           className={styles.track}
-          viewBox="0 0 100 12"
+          viewBox="0 0 100 10"
           width="100%"
-          height="12"
+          height="10"
           preserveAspectRatio="none"
           aria-hidden="true"
           focusable="false"
         >
-          <rect x="0" y="11" width="100" height="1" fill="var(--ink)" />
-          <rect x="0" y="1" width={percent} height="10" fill="var(--ink)" />
+          <rect
+            className={styles.trackBg}
+            x="0"
+            y="0"
+            width="100"
+            height="10"
+          />
+          <rect
+            className={percent >= 90 ? styles.fillHigh : styles.fill}
+            x="0"
+            y="0"
+            width={percent}
+            height="10"
+          />
         </svg>
       </div>
       <p className={styles.caption}>{caption}</p>

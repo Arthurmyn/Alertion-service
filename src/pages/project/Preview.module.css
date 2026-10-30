@@ -1,7 +1,10 @@
 .frame {
-  margin: 4px 0 0;
+  margin: var(--space-xs) 0 0;
+  overflow: hidden;
   border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
   background: var(--surface);
+  box-shadow: var(--shadow-panel);
 }
 
 .caption {

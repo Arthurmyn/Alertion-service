@@ -6,28 +6,44 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: color-mix(in srgb, var(--ink) 45%, transparent);
+  background: var(--overlay);
+  animation: fade-in 180ms var(--ease-out);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 
 .dialog {
   width: min(100%, 28rem);
   margin: 0;
-  padding: 20px;
+  padding: var(--space-xl);
   background: var(--surface);
   color: var(--ink);
   border: 0;
   border-radius: var(--radius-block);
   box-shadow: var(--shadow-dialog);
+  animation: dialog-in 200ms var(--ease-out);
 }
 
 .title {
-  margin: 0 0 8px;
+  margin: 0 0 var(--space-sm);
   font-size: var(--text-lg);
   font-weight: 600;
+  letter-spacing: -0.012em;
 }
 
 .body {
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-xl);
 }
 
 .actions {
@@ -40,11 +56,15 @@
 .actions button:first-child {
   color: var(--ink);
   background: var(--surface);
+  border-color: var(--line-strong);
 }
 
-.actions button:first-child:hover {
-  color: var(--on-ink);
-  background: var(--ink);
+@media (hover: hover) and (pointer: fine) {
+  .actions button:first-child:hover {
+    color: var(--ink);
+    background: var(--tint);
+    border-color: var(--ink);
+  }
 }
 
 @media (max-width: 420px) {

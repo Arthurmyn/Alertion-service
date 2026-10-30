@@ -1,7 +1,11 @@
 .list {
-  margin: 4px 0 0;
-  padding: 0;
+  margin: var(--space-md) 0 0;
+  padding: 0 var(--space-lg);
   list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-block);
+  box-shadow: var(--shadow-panel);
 }
 
 .row + .row {
@@ -9,7 +13,7 @@
 }
 
 .row {
-  padding: 10px 0;
+  padding: 14px 0;
 }
 
 .head {
@@ -54,11 +58,19 @@
 }
 
 .active {
+  padding: 1px 10px;
+  font-size: var(--text-sm);
   color: var(--ok-text);
+  background: var(--ok-bg);
+  border-radius: var(--radius-pill);
 }
 
 .candidate {
+  padding: 1px 10px;
+  font-size: var(--text-sm);
   color: var(--link);
+  background: color-mix(in srgb, var(--link) 9%, var(--surface));
+  border-radius: var(--radius-pill);
 }
 
 .actions {
@@ -67,7 +79,7 @@
   align-items: flex-start;
   gap: 12px;
   max-width: 100%;
-  margin-top: 16px;
+  margin-top: var(--space-xl);
 }
 
 .rollback {

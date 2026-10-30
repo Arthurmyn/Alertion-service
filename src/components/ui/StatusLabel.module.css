@@ -1,25 +1,41 @@
 .pending,
 .active,
 .failed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px 1px 8px;
   font-family: var(--font-ui);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 600;
-  border-radius: var(--radius-block);
+  line-height: 1.5;
+  border-radius: var(--radius-pill);
   box-shadow: none;
+}
+
+.pending::before,
+.active::before,
+.failed::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
 }
 
 .pending {
   color: var(--warn-text);
   background: var(--warn-bg);
-  padding: 0 4px;
 }
 
 .active {
   color: var(--ok-text);
+  background: var(--ok-bg);
 }
 
 .failed {
   color: var(--danger-text);
+  background: var(--danger-bg);
 }
 
 .deferred {

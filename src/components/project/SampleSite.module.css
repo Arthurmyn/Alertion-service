@@ -4,6 +4,6 @@
   height: 480px;
   border: 1px solid var(--rule);
   border-radius: var(--radius-block);
-  box-shadow: none;
+  box-shadow: var(--shadow-panel);
   background: var(--surface);
 }

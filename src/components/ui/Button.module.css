@@ -4,26 +4,35 @@
   font-weight: 600;
   line-height: 1.25;
   color: var(--on-ink);
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  background: var(--brand);
+  border: 1px solid var(--brand);
   border-radius: var(--radius-button);
   box-shadow: none;
   min-height: var(--control-h);
   padding: 4px var(--control-pad-x);
   cursor: pointer;
-  transition-property: color, background-color, border-color;
+  transition-property: color, background-color, border-color, transform;
   transition-duration: var(--motion);
+  transition-timing-function: var(--ease-out);
 }
 
-.button:hover {
-  color: var(--ink);
-  background: var(--surface);
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    color: var(--on-ink);
+    background: var(--brand-hover);
+    border-color: var(--brand-hover);
+  }
+}
+
+.button:active {
+  transform: scale(0.97);
 }
 
 .button:disabled,
 .button:hover:disabled {
   color: var(--ink-2);
-  background: var(--paper);
-  border-color: var(--ink-2);
+  background: var(--tint);
+  border-color: var(--rule);
   cursor: not-allowed;
+  transform: none;
 }

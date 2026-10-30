@@ -14,7 +14,7 @@
 
 .section {
   margin: 0;
-  padding: var(--space-lg) 0 var(--space-sm);
+  padding: var(--space-xl) 0 var(--space-md);
   scroll-margin-top: calc(var(--topbar-h) + var(--space-sm));
 }
 
@@ -69,9 +69,9 @@
 .scroll {
   overflow-x: auto;
   max-width: 100%;
-  margin: 0 0 16px;
+  margin: 0 0 var(--space-lg);
   border-bottom: 1px solid var(--rule);
-  scrollbar-color: var(--ink-2) var(--paper);
+  scrollbar-color: var(--line-strong) transparent;
 }
 
 .table {
@@ -105,6 +105,17 @@
   font-weight: 600;
 }
 
+.table thead th {
+  color: var(--ink-2);
+  font-size: 13px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.table tbody tr:hover td,
+.table tbody tr:hover th {
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+
 .criteria {
   width: max-content;
   min-width: 100%;
@@ -119,6 +130,7 @@
   max-width: 100%;
   height: auto;
   border: 1px solid var(--rule);
+  border-radius: 4px;
 }
 
 .criteria th,
