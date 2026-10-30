@@ -2,7 +2,7 @@ import { createElement, type ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { App } from '../App.tsx';
+import { App } from '../app/App.tsx';
 import { baseline } from '../data/accounts.ts';
 import { archives, type ArchiveFixture } from '../data/archives.ts';
 import { LIMITS } from '../data/limits.ts';

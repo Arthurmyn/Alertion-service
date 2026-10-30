@@ -7,7 +7,7 @@ import {
 import { LIMITS } from '../../data/limits.ts';
 import { sprintNumbers } from '../../data/metrics.ts';
 import { developers, productOwner, scrumMaster } from '../../data/team.ts';
-import { accountSlug } from '../../routing.ts';
+import { accountSlug } from '../../app/routing.ts';
 import { useStore } from '../../state/store.tsx';
 import styles from './Defense.module.css';
 import { DemoSection } from './DemoSection.tsx';

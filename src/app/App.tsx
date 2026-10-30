@@ -1,18 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AppShell } from './components/AppShell.tsx';
-import { RequireOwner } from './components/RequireOwner.tsx';
-import { Dashboard } from './pages/Dashboard.tsx';
-import { Defense } from './pages/Defense/Defense.tsx';
-import { Domain } from './pages/Domain.tsx';
-import { Login } from './pages/Login.tsx';
-import { NotFound } from './pages/NotFound.tsx';
-import { Plan } from './pages/Plan.tsx';
-import { Preview } from './pages/Preview.tsx';
-import { PublicSite } from './pages/PublicSite.tsx';
-import { Upload } from './pages/Upload.tsx';
-import { Versions } from './pages/Versions.tsx';
+import { AppShell } from '../components/AppShell.tsx';
+import { RequireOwner } from '../components/RequireOwner.tsx';
+import { Dashboard } from '../pages/Dashboard.tsx';
+import { Defense } from '../pages/Defense/Defense.tsx';
+import { Domain } from '../pages/Domain.tsx';
+import { Login } from '../pages/Login.tsx';
+import { NotFound } from '../pages/NotFound.tsx';
+import { Plan } from '../pages/Plan.tsx';
+import { Preview } from '../pages/Preview.tsx';
+import { PublicSite } from '../pages/PublicSite.tsx';
+import { Upload } from '../pages/Upload.tsx';
+import { Versions } from '../pages/Versions.tsx';
 import { homePath } from './routing.ts';
-import { StoreProvider, useStore } from './state/store.tsx';
+import { StoreProvider, useStore } from '../state/store.tsx';
 
 function HomeRedirect() {
   const { state } = useStore();

@@ -1,5 +1,5 @@
-import { accounts } from './data/accounts.ts';
-import type { AccountId } from './state/types.ts';
+import { accounts } from '../data/accounts.ts';
+import type { AccountId } from '../state/types.ts';
 
 export function accountSlug(accountId: AccountId | null): string | null {
   if (accountId === null) return null;

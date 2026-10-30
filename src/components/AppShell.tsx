@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { demoRunning } from '../data/scenarios.ts';
-import { accountSlug, homePath } from '../routing.ts';
+import { accountSlug, homePath } from '../app/routing.ts';
 import { consumeScenarioQuery, useStore } from '../state/store.tsx';
 import {
   IconCollapse,

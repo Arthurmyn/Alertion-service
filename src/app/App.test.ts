@@ -2,11 +2,11 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { baseline } from './data/accounts.ts';
+import { baseline } from '../data/accounts.ts';
 import { App } from './App.tsx';
-import { reducer } from './state/reducer.ts';
-import { NAV_KEY } from './components/navState.ts';
-import { SESSION_KEY, writeSession } from './state/store.tsx';
+import { reducer } from '../state/reducer.ts';
+import { NAV_KEY } from '../components/navState.ts';
+import { SESSION_KEY, writeSession } from '../state/store.tsx';
 
 vi.mock('react-router-dom', async () => {
   const React = await import('react');
