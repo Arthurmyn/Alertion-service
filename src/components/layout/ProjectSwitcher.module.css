@@ -1,0 +1,52 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-height: 36px;
+  padding: 4px 10px;
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trigger:hover {
+    color: var(--text);
+    background: var(--hover);
+    border: 0;
+  }
+}
+
+.trigger[aria-expanded='true'] {
+  background: var(--hover);
+}
+
+.trigger:active {
+  transform: none;
+}
+
+.chevron {
+  display: flex;
+  color: var(--text-2);
+}
+
+.chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--on-ink);
+  background: var(--brand);
+  border-radius: var(--radius-pill);
+}
