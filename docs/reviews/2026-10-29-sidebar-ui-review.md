@@ -10,7 +10,7 @@ No material UI blocker remained in the checked scope after that correction. A fo
 
 | Check                                                       | Recorded result                                            |
 | ----------------------------------------------------------- | ---------------------------------------------------------- |
-| Independent [`e2e/sidebar.spec.ts`](../e2e/sidebar.spec.ts) | 9 passed                                                   |
+| Independent [`e2e/sidebar.spec.ts`](../../e2e/sidebar.spec.ts) | 9 passed                                                   |
 | TypeScript check of browser specs                           | Passed with `npx tsc -p tsconfig.e2e.json`                 |
 | Responsive scan                                             | 30 combinations: 10 routes at each of 1280, 375 and 360 px |
 | Page-width overflow in that scan                            | None found                                                 |
@@ -42,9 +42,9 @@ npx playwright install chromium
 npx playwright test e2e/sidebar.spec.ts --workers=1
 ```
 
-The committed [screenshot directory](../public/evidence/) contains local UI evidence. Individual image files are served at `/evidence/<filename>.png` by the Vite application. The original local review additionally recorded `sidebar-review-red.log`, `sidebar-review-green.log`, `ui-audit.json` and `ui-tables.json`; those executor logs are separate from application source. Current CI results must be read for the exact commit under consideration.
+The committed [screenshot directory](../../public/evidence/) contains local UI evidence. Individual image files are served at `/evidence/<filename>.png` by the Vite application. The original local review additionally recorded `sidebar-review-red.log`, `sidebar-review-green.log`, `ui-audit.json` and `ui-tables.json`; those executor logs are separate from application source. Current CI results must be read for the exact commit under consideration.
 
-The [capture manifest](../public/evidence/manifest.json) indexes 25 current screenshots taken on 2026-10-29. `scripts/capture-evidence.mjs` reproduces the fixture captures; they are not retrospective records of earlier sprint activity. The results table uses them without changing the historical evidence journal.
+The [capture manifest](../../public/evidence/manifest.json) indexes 25 current screenshots taken on 2026-10-29. `scripts/capture-evidence.mjs` reproduces the fixture captures; they are not retrospective records of earlier sprint activity. The results table uses them without changing the historical evidence journal.
 
 ## Limits of this review
 

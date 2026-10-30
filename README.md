@@ -55,7 +55,7 @@ npm run e2e -- --workers=2
 
 Playwright uses Chromium and `http://127.0.0.1:5173`, starting Vite automatically when needed. A manually started server on that address is reused outside CI. If hostname resolution prevents the automatic server check from completing, start the explicit `--host 127.0.0.1` development command above in another terminal. CI installs Chromium with its Linux dependencies and sets `NODE_OPTIONS=--dns-result-order=ipv4first` for the browser tests.
 
-The independent [sidebar checks](e2e/sidebar.spec.ts) cover saved collapse, active routes, repeated mobile dismissal, keyboard focus, demo/dialog Escape priority, public-page boundaries, resizing and reset on the same route. See the [UI review](docs/UI_REVIEW.md) and [screenshots](public/evidence/) for the dated audit scope and evidence. Counts in the audit describe that run; the current CI result belongs to its own commit.
+The independent [sidebar checks](e2e/sidebar.spec.ts) cover saved collapse, active routes, repeated mobile dismissal, keyboard focus, demo/dialog Escape priority, public-page boundaries, resizing and reset on the same route. See the [UI review](docs/reviews/2026-10-29-sidebar-ui-review.md) and [screenshots](public/evidence/) for the dated audit scope and evidence. Counts in the audit describe that run; the current CI result belongs to its own commit.
 
 ## Screenshot evidence
 
