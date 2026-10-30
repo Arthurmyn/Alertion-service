@@ -1,44 +1,21 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import {
-  Link,
-  NavLink,
-  Outlet,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { demoRunning } from '../../data/scenarios.ts';
-import { accountSlug, homePath } from '../../app/routing.ts';
+import { homePath } from '../../app/routing.ts';
 import { consumeScenarioQuery, useStore } from '../../state/store.tsx';
-import {
-  IconCollapse,
-  IconDashboard,
-  IconDefense,
-  IconDomain,
-  IconExpand,
-  IconMenu,
-  IconPlan,
-  IconPreview,
-  IconSignIn,
-  IconUpload,
-  IconVersions,
-} from '../ui/icons.tsx';
+import { IconMenu, IconPlus } from '../ui/icons.tsx';
+import { titleFor } from './navConfig.ts';
 import {
   browserStorage,
   readNavCollapsed,
   writeNavCollapsed,
 } from './navState.ts';
+import { useCreateProject } from '../../pages/overview/useCreateProject.ts';
 import styles from './AppShell.module.css';
 import { DemoBar } from '../demo/DemoBar.tsx';
-import { ScenarioPanel } from './ScenarioPanel.tsx';
-
-const sections = [
-  { suffix: '', label: 'Управление сайтом', Icon: IconDashboard },
-  { suffix: '/upload', label: 'Загрузка', Icon: IconUpload },
-  { suffix: '/preview', label: 'Предпросмотр', Icon: IconPreview },
-  { suffix: '/versions', label: 'Версии', Icon: IconVersions },
-  { suffix: '/domain', label: 'Домен', Icon: IconDomain },
-  { suffix: '/plan', label: 'Пилотный план', Icon: IconPlan },
-] as const;
+import { ProjectSwitcher } from './ProjectSwitcher.tsx';
+import { Sidebar } from './Sidebar.tsx';
+import { WorkspaceSwitcher } from './WorkspaceSwitcher.tsx';
 
 function readSlug(value: string | undefined): string | null {
   if (!value) return null;
@@ -49,16 +26,8 @@ function readSlug(value: string | undefined): string | null {
   }
 }
 
-function manageSlug(pathname: string): string | null {
-  return readSlug(/^\/manage\/([^/]+)/.exec(pathname)?.[1]);
-}
-
 function publicSlug(pathname: string): string | null {
   return readSlug(/^\/site\/([^/]+)$/.exec(pathname)?.[1]);
-}
-
-function linkClass({ isActive }: { isActive: boolean }): string {
-  return isActive ? `${styles.link} ${styles.current}` : styles.link;
 }
 
 function focusMain(): void {
@@ -66,36 +35,6 @@ function focusMain(): void {
   if (!(heading instanceof HTMLElement)) return;
   heading.tabIndex = -1;
   heading.focus({ focusVisible: true });
-}
-
-function NavItem({
-  to,
-  label,
-  iconOnly,
-  onNavigate,
-  children,
-}: {
-  to: string;
-  label: string;
-  iconOnly: boolean;
-  onNavigate: () => void;
-  children: ReactNode;
-}) {
-  return (
-    <li>
-      <NavLink
-        to={to}
-        end
-        className={linkClass}
-        title={iconOnly ? label : undefined}
-        aria-label={iconOnly ? label : undefined}
-        onClick={onNavigate}
-      >
-        {children}
-        <span className={styles.name}>{label}</span>
-      </NavLink>
-    </li>
-  );
 }
 
 export function AppShell() {
@@ -112,6 +51,7 @@ export function AppShell() {
     id: number;
   } | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
+  const { create } = useCreateProject();
   const menuRef = useRef<HTMLButtonElement>(null);
   const topbarRef = useRef<HTMLDivElement>(null);
   const navId = useId();
@@ -131,11 +71,11 @@ export function AppShell() {
     }
   }
 
-  const navSlug = manageSlug(pathname) ?? accountSlug(state.sessionAccountId);
   const siteSlug = publicSlug(pathname);
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
   const isPublic = Boolean(publicSite);
   const running = demoRunning(state.demo);
+  const narrowPage = pathname === '/defense' || pathname === '/login';
 
   useEffect(() => {
     const fallbackPath =
@@ -237,7 +177,7 @@ export function AppShell() {
           </Link>
           <span className={styles.publicName}>{publicSite.businessName}</span>
           <div className={styles.publicTools}>
-            <ScenarioPanel />
+            <WorkspaceSwitcher />
           </div>
         </header>
         <main className={styles.main}>
@@ -248,83 +188,27 @@ export function AppShell() {
     );
   }
 
-  const collapseLabel = collapsed ? 'Развернуть меню' : 'Свернуть меню';
   const menuLabel = drawerOpen ? 'Закрыть меню' : 'Открыть меню';
+  const title = titleFor(pathname);
 
   return (
     <div
       className={[
         styles.app,
-        collapsed ? styles.rail : '',
+        collapsed ? `${styles.rail} rail` : '',
         running ? styles.withDemo : '',
       ]
         .filter(Boolean)
         .join(' ')}
     >
-      <header
-        ref={sidebarRef}
-        className={
-          drawerOpen ? `${styles.sidebar} ${styles.open}` : styles.sidebar
-        }
-      >
-        <div className={styles.brandRow}>
-          <Link
-            to="/"
-            className={styles.brand}
-            title={collapsed ? 'Alertion' : undefined}
-            onClick={onNavigate}
-          >
-            <img src="/logo.png" alt="" width={260} height={308} />
-            <span className={styles.name}>Alertion</span>
-          </Link>
-          <button
-            className={styles.toggle}
-            type="button"
-            aria-expanded={!collapsed}
-            aria-controls={navId}
-            title={collapsed ? collapseLabel : undefined}
-            onClick={toggleCollapsed}
-          >
-            {collapsed ? <IconExpand /> : <IconCollapse />}
-            <span className={styles.name}>{collapseLabel}</span>
-          </button>
-        </div>
-        <nav id={navId} aria-label="Разделы">
-          <ul className={styles.nav}>
-            {state.sessionAccountId === null ? (
-              <NavItem
-                to="/login"
-                label="Вход"
-                iconOnly={collapsed}
-                onNavigate={onNavigate}
-              >
-                <IconSignIn />
-              </NavItem>
-            ) : null}
-            {navSlug
-              ? sections.map((section) => (
-                  <NavItem
-                    key={section.label}
-                    to={`/manage/${navSlug}${section.suffix}`}
-                    label={section.label}
-                    iconOnly={collapsed}
-                    onNavigate={onNavigate}
-                  >
-                    <section.Icon />
-                  </NavItem>
-                ))
-              : null}
-            <NavItem
-              to="/defense"
-              label="Защита проекта"
-              iconOnly={collapsed}
-              onNavigate={onNavigate}
-            >
-              <IconDefense />
-            </NavItem>
-          </ul>
-        </nav>
-      </header>
+      <Sidebar
+        collapsed={collapsed}
+        drawerOpen={drawerOpen}
+        headerRef={sidebarRef}
+        navId={navId}
+        onToggleCollapsed={toggleCollapsed}
+        onNavigate={onNavigate}
+      />
       {drawerOpen ? (
         <button
           className={styles.backdrop}
@@ -347,9 +231,32 @@ export function AppShell() {
             <IconMenu />
             <span className={styles.srOnly}>{menuLabel}</span>
           </button>
-          <ScenarioPanel />
+          <div className={styles.topLeft}>
+            {state.sessionAccountId !== null ? <ProjectSwitcher /> : null}
+          </div>
+          <p className={styles.topTitle}>{title}</p>
+          <div className={styles.topRight}>
+            {state.sessionAccountId !== null ? (
+              <button
+                type="button"
+                className={styles.create}
+                onClick={() => {
+                  create();
+                  navigate('/manage');
+                }}
+              >
+                <IconPlus />
+                <span>Создать проект</span>
+              </button>
+            ) : null}
+          </div>
         </div>
-        <main className={styles.main} inert={drawerOpen ? true : undefined}>
+        <main
+          className={
+            narrowPage ? `${styles.main} ${styles.narrow}` : styles.main
+          }
+          inert={drawerOpen ? true : undefined}
+        >
           <Outlet />
         </main>
         <DemoBar />

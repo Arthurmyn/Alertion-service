@@ -82,8 +82,9 @@ describe('sign-in target', () => {
     expect(manageNext('/manage/nan')).toBe('/manage/nan');
     expect(manageNext('/site/nan')).toBeNull();
     expect(signInPath('a', '/manage/temir')).toBe('/manage/temir');
-    expect(signInPath('b', null)).toBe('/manage/temir');
-    expect(signInPath('a', 'https://evil.example')).toBe('/manage/nan');
+    expect(manageNext('/manage')).toBe('/manage');
+    expect(signInPath('b', null)).toBe('/manage');
+    expect(signInPath('a', 'https://evil.example')).toBe('/manage');
   });
 });
 

@@ -129,24 +129,41 @@ describe('routes', () => {
     expect(storage.getItem(SESSION_KEY)).toContain('"sessionAccountId":"a"');
     vi.stubGlobal('sessionStorage', storage);
 
-    expect(renderAt('/')).toContain('data-redirect="/manage/nan"');
+    expect(renderAt('/')).toContain('data-redirect="/manage"');
 
     const other = memoryStorage();
     writeSession(other, reducer(baseline, { type: 'signIn', accountId: 'b' }));
     vi.stubGlobal('sessionStorage', other);
-    expect(renderAt('/')).toContain('data-redirect="/manage/temir"');
+    expect(renderAt('/')).toContain('data-redirect="/manage"');
   });
 
   it('marks the open section in the nav', () => {
     const upload = renderAt('/manage/nan/upload', 'a');
-    expect(isCurrent(upload, '/manage/nan/upload')).toBe(true);
+    // Upload belongs to the project's deployments tab, and the sidebar keeps
+    // "Проекты" marked while a project is open.
+    expect(isCurrent(upload, '/manage/nan/versions')).toBe(true);
     expect(isCurrent(upload, '/manage/nan')).toBe(false);
+    expect(isCurrent(upload, '/manage')).toBe(true);
     expect(isCurrent(upload, '/defense')).toBe(false);
 
     const home = renderAt('/manage/temir', 'b');
     expect(isCurrent(home, '/manage/temir')).toBe(true);
-    expect(isCurrent(home, '/manage/temir/plan')).toBe(false);
-    expect(home).toContain('href="/manage/temir/plan"');
+    expect(isCurrent(home, '/manage/temir/settings')).toBe(false);
+    expect(home).toContain('href="/manage/temir/settings"');
+    expect(home).toContain('Мастерская Темир');
+
+    const plan = renderAt('/manage/temir/plan', 'b');
+    expect(isCurrent(plan, '/manage/temir/settings')).toBe(true);
+
+    const overview = renderAt('/manage', 'a');
+    expect(isCurrent(overview, '/manage')).toBe(true);
+    expect(isCurrent(overview, '/manage/deployments')).toBe(false);
+
+    // A section with sub-pages drills in: the sub-pages replace the top level.
+    const deployments = renderAt('/manage/deployments', 'a');
+    expect(isCurrent(deployments, '/manage/deployments')).toBe(true);
+    expect(deployments).toContain('href="/manage/builds"');
+    expect(deployments).not.toContain('href="/manage/networking"');
 
     vi.unstubAllGlobals();
     const login = renderAt('/login');
@@ -169,7 +186,8 @@ describe('routes', () => {
     vi.stubGlobal('sessionStorage', storage);
     const signedIn = renderAt('/defense');
     expect(isCurrent(signedIn, '/defense')).toBe(true);
-    expect(signedIn).toContain('href="/manage/temir"');
+    expect(signedIn).toContain('href="/manage"');
+    expect(signedIn).toContain('href="/manage/deployments"');
     expect(signedIn).not.toContain('>Вход</a>');
     expect(upload).toContain('aria-label="Разделы"');
     expect(upload).toContain('Свернуть меню');
@@ -216,7 +234,7 @@ describe('routes', () => {
 
     const html = renderAt('/site/missing');
     expect(html).toContain('<h1>Страница не найдена</h1>');
-    expect(html).toContain('href="/manage/temir"');
+    expect(html).toContain('href="/manage"');
     expect(html).not.toContain('href="/manage/missing');
     expect(html).not.toContain('Публичная страница');
   });

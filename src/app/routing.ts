@@ -7,9 +7,9 @@ export function accountSlug(accountId: AccountId | null): string | null {
   return account ? account.slug : null;
 }
 
+/** Signed-in users land on the workspace overview; everyone else signs in. */
 export function homePath(accountId: AccountId | null): string {
-  const slug = accountSlug(accountId);
-  return slug ? `/manage/${slug}` : '/login';
+  return accountSlug(accountId) ? '/manage' : '/login';
 }
 
 export function projectPath(slug: string, suffix = ''): string {

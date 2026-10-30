@@ -29,66 +29,6 @@ export function IconSignIn() {
   );
 }
 
-export function IconDashboard() {
-  return (
-    <Icon>
-      <rect x="2" y="2" width="12" height="12" />
-      <path d="M2 5.5h12" />
-      <path d="M4.5 8h3.5" />
-      <path d="M4.5 10.5h6" />
-    </Icon>
-  );
-}
-
-export function IconUpload() {
-  return (
-    <Icon>
-      <path d="M8 2.25v6.5" />
-      <path d="M5.25 5 8 2.25 10.75 5" />
-      <path d="M3 10.25V13.5h10V10.25" />
-    </Icon>
-  );
-}
-
-export function IconPreview() {
-  return (
-    <Icon>
-      <path d="M4 2h5.5L13 5.5V14H4z" />
-      <path d="M9.5 2v3.5H13" />
-      <path d="M6.25 8.5h4.5" />
-      <path d="M6.25 11h2.75" />
-    </Icon>
-  );
-}
-
-export function IconVersions() {
-  return (
-    <Icon>
-      <rect x="4.5" y="2" width="9" height="9.5" />
-      <path d="M3.5 5H2.75V14h8.5" />
-    </Icon>
-  );
-}
-
-export function IconDomain() {
-  return (
-    <Icon>
-      <circle cx="8" cy="8" r="5.25" />
-      <path d="M2.75 8h10.5" />
-      <path d="M8 2.75c1.6 1.5 2.4 3.2 2.4 5.25S9.6 11.75 8 13.25C6.4 11.75 5.6 10.05 5.6 8S6.4 4.25 8 2.75" />
-    </Icon>
-  );
-}
-
-export function IconPlan() {
-  return (
-    <Icon>
-      <rect x="2.25" y="2.25" width="11.5" height="11.5" />
-      <path d="M2.25 6h11.5M2.25 9.75h11.5M7.25 2.25v11.5" />
-    </Icon>
-  );
-}
-
 export function IconDefense() {
   return (
     <Icon>

@@ -12,7 +12,7 @@ export function safeNext(value: string | null): string | null {
 
 export function manageNext(next: string | null): string | null {
   const target = safeNext(next);
-  if (target !== null && target.startsWith('/manage/')) return target;
+  if (target === '/manage' || target?.startsWith('/manage/')) return target;
   return null;
 }
 
