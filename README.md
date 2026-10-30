@@ -1,127 +1,95 @@
-# alertion
+# Alertion
 
-Alertion is a Vite, React and TypeScript prototype of a small-business site publishing workflow. The interface demonstrates account ownership, archive checks, preview, confirmed publication and rollback, domain states, storage limits and project evidence. All accounts, archives, sites and domain records are fictional fixtures in [`src/data`](src/data).
+[![ci](https://github.com/Arthurmyn/Alertion-service/actions/workflows/ci.yml/badge.svg)](https://github.com/Arthurmyn/Alertion-service/actions/workflows/ci.yml)
 
-## Run locally
+**Хостинг сайтов, который можно проверить.** Alertion это учебный прототип платформы для владельцев малого бизнеса: загрузить архив сайта, проверить его, посмотреть предпросмотр, опубликовать с подтверждением и при необходимости откатить. Следующий шаг, ради которого задуман проект, это доказать, что в продакшене работает именно тот код, который проверили.
 
-Use Node.js 22 to match [CI](.github/workflows/ci.yml), with npm and the committed lockfile.
+Проект некоммерческий, сделан командой по Scrum в рамках учебного курса. Это фронтенд-прототип: все аккаунты, архивы, сайты и записи домена вымышлены и лежат в [`src/data`](src/data). Сервера, хостинга и платежей в нём нет.
 
-```sh
-npm ci
-npm run dev -- --host 127.0.0.1
-```
+|                       |                                                                               |
+| --------------------- | ----------------------------------------------------------------------------- |
+| Демо                  | [alertion-beta.vercel.app](https://alertion-beta.vercel.app) (сервис: `/app`) |
+| Репозиторий           | [Arthurmyn/Alertion-service](https://github.com/Arthurmyn/Alertion-service)   |
+| Командный репозиторий | [birlikkoshan/alertion](https://github.com/birlikkoshan/alertion)             |
+| Срок                  | 28.10.2026 – 17.11.2026, три спринта                                          |
 
-Open `http://127.0.0.1:5173` for the landing page and `http://127.0.0.1:5173/app` for the service. No environment variables, service credentials or backend setup are required by the current application.
+## Содержание
 
-```sh
-npm run build
-npm run preview -- --host 127.0.0.1
-```
+1. [Идея и контекст](#идея-и-контекст)
+2. [Что умеет прототип](#что-умеет-прототип)
+3. [Что не реализовано](#что-не-реализовано)
+4. [Быстрый старт](#быстрый-старт)
+5. [Маршруты и демонстрационное состояние](#маршруты-и-демонстрационное-состояние)
+6. [Устройство проекта](#устройство-проекта)
+7. [Дизайн и интерфейс](#дизайн-и-интерфейс)
+8. [Проверки и CI](#проверки-и-ci)
+9. [Доказательства и страница защиты](#доказательства-и-страница-защиты)
+10. [Развёртывание](#развёртывание)
+11. [Команда и процесс](#команда-и-процесс)
+12. [Направления развития](#направления-развития)
 
-The production bundle is written to `dist`; the preview server normally uses port 4173.
+## Идея и контекст
 
-## Landing page and the service
+У владельца малого бизнеса уже есть статический сайт: HTML, CSS, браузерный JavaScript и картинки. Его нужно опубликовать или обновить, не ошибившись и не потеряв работающую версию. Второй пользователь это фрилансер, который готовит файлы.
 
-One build serves two products. The landing page is at `/`; the service lives under `/app`, and every route below is relative to it (`/manage` is `/app/manage`). Each is its own chunk with its own stylesheet, chosen in [`src/main.tsx`](src/main.tsx), so a visitor to one downloads nothing of the other. Addresses from before the move (`/manage/...`, `/login`, `/defense`, `/site/...`) forward to `/app/...`.
+Маршрут в Alertion такой: готовый архив, проверка, предпросмотр, публикация и возврат предыдущей версии. Каждое действие, которое меняет сайт, требует подтверждения, а неудача никогда не меняет активную версию.
 
-The landing hero comes from the [Alertion-langing-page](https://github.com/Arthurmyn/Alertion-langing-page) repository: its dot-matrix hands animation is ported to [`src/landing/DotHands.tsx`](src/landing/DotHands.tsx), with the source image saved in `public/landing/` instead of hot-linked. The sections below the hero, the copy and the pilot-plan figures (read from [`src/data/limits.ts`](src/data/limits.ts)) are written for this project. The service uses the same typeface, Inter.
+### Чем должен стать продукт
 
-The landing is available in Russian and English. The switch in the navigation saves the choice in `localStorage` under `alertion.lang`, and `/?lang=en` opens it in English; the copy for both languages lives in [`src/landing/content.ts`](src/landing/content.ts). The service itself is Russian only.
+Идея платформы: не просить доверять серверу или оператору, а дать возможность проверить, что в продакшене работает именно проверенный исходный код, сборка и конфигурация. Такой класс продуктов называют платформами проверяемых вычислений. Ближайший публичный пример, на который мы смотрели при проектировании, это [Caution](https://caution.co): по его публичному описанию, приложения запускаются в аппаратно изолированных средах (например, AWS Nitro Enclaves), а состояние запущенного образа подтверждается аппаратной аттестацией и сопоставляется с воспроизводимой сборкой из исходного кода.
 
-Instead of screenshots, the feature rows show small working models built from the same limits and states as the service ([`src/landing/Visuals.tsx`](src/landing/Visuals.tsx)): publish and rollback you can press, the archive checks, usage meters and the readiness panel. The red 3D alert signs that drift behind the hero and the closing block are drawn with three.js ([`src/landing/alertScene.ts`](src/landing/alertScene.ts)). The scene loads as its own chunk when the canvas comes near the viewport, pauses off screen, and stays still for visitors who prefer reduced motion.
+Alertion с Caution не связан и его технологий не использует. Из него мы взяли только постановку задачи и структуру пути пользователя.
 
-## Project layout
+| Шаг пути               | Что нужно для настоящей проверяемости           | Что есть в Alertion сейчас                           |
+| ---------------------- | ----------------------------------------------- | ---------------------------------------------------- |
+| Подключить репозиторий | Интеграция с git                                | Нет. Показано как «Недоступно»                       |
+| Собрать                | Воспроизводимая сборка из исходников            | Частично: архив проверяется на лимиты, не собирается |
+| Развернуть             | Публикация версий с откатом                     | Есть, на тестовых данных                             |
+| Аттестовать            | Защищённый анклав и аппаратная аттестация       | Нет. Показано как «Недоступно»                       |
+| Проверить              | Проверяющий сверяет аттестацию с исходным кодом | Нет. Статус «Проверено» не появляется                |
 
-```text
-src/
-  main.tsx          Chooses the landing page or the service by address
-  app/              The service: routes, shell entry and path helpers
-  landing/          The landing page: hero canvas, sections and copy
-  components/
-    ui/             Buttons, badges, tables, popovers, icons and other building blocks
-    layout/         Sidebar, top bar, switchers and route guards
-    project/        Project cards and the sample-site frame
-    demo/           The demo runner bar
-  pages/
-    auth/           Sign-in and the access-denied screen
-    overview/       The workspace overview
-    project/        One project: dashboard, upload, preview, versions, domain, plan
-    workspace/      Deployments, observability, security, storage and the other sections
-    public/         The public sample page
-    defense/        The project-defense page and its chart
-  data/             Fixtures, limits, scenarios and selectors over them
-  state/            The reducer, the store and archive validation
-  styles/           Design tokens and global styles
-e2e/                Playwright specs; helpers live in e2e/support
-scripts/            Evidence screenshots, copy checks
-docs/reviews/       Dated review notes
-public/             Logo and the landing hero image
-```
+Принцип интерфейса: статус «Проверено» не показывается, пока нет данных аттестации. Всё, что требует git, анклава или источника аттестации, честно помечено «Недоступно». Даже настоящая проверяемость не доказывает отсутствие уязвимостей в самом коде: она подтверждает только, что запущен именно тот код.
 
-## Routes and demonstration state
+## Что умеет прототип
 
-| Route                                            | Screen                                                                      |
-| ------------------------------------------------ | --------------------------------------------------------------------------- |
-| `/`                                              | Redirects to login or the workspace overview                                |
-| `/login`                                         | Select one of the two fictional accounts                                    |
-| `/manage`                                        | Overview: usage, alerts, recent previews and the project list               |
-| `/manage/deployments`, `/manage/builds`          | Every deployment with filters; build artifacts and source                   |
-| `/manage/observability` (`/logs`, `/query`)      | Metrics cards; logs and queries (not implemented)                           |
-| `/manage/security`, `/attestations`, `/reports`  | Security checklist; attestations and verification reports (not implemented) |
-| `/manage/networking`                             | Domains of all projects                                                     |
-| `/manage/storage`, `/compute`, `/secrets`        | Storage per project; compute and secrets (not implemented)                  |
-| `/manage/connections`                            | Git and registry connections (not implemented)                              |
-| `/manage/billing`, `/settings`, `/team`          | Plan and usage; workspace settings; members                                 |
-| `/manage/:slug`                                  | Project overview: status, verification, repository, storage, activity       |
-| `/manage/:slug/upload`                           | Choose and validate an archive fixture                                      |
-| `/manage/:slug/preview`                          | Candidate version preview                                                   |
-| `/manage/:slug/versions`                         | Publish or roll back through a confirmation dialog                          |
-| `/manage/:slug/builds`, `/attestations`, `/logs` | Project artifacts, attestations and metrics                                 |
-| `/manage/:slug/settings`, `/domain`, `/plan`     | Project settings; simulated DNS and HTTPS; pilot-plan selection             |
-| `/site/:slug`                                    | Public sample page without management navigation                            |
-| `/defense`                                       | Project goals, results, evidence and ten-step demo                          |
+### Лендинг (`/`)
 
-Anything that needs a git repository, an enclave or an attestation source is shown as unavailable: the prototype has none of them, and no screen presents a verification as passed.
+- Первый экран с анимацией «руки» из точек (порт из репозитория [Alertion-langing-page](https://github.com/Arthurmyn/Alertion-langing-page)) и красными 3D-знаками предупреждения на three.js.
+- Разделы: «Как это работает», «Возможности», «Проверяемость», «Команда».
+- Русский и английский язык. Переключатель в углу шапки запоминает выбор в `localStorage` (`alertion.lang`), `/?lang=en` открывает английскую версию.
+- Вместо скриншотов в строках возможностей рабочие модели на тех же лимитах и состояниях, что в сервисе: публикация и откат, которые можно нажимать, порядок проверок архива, счётчики использования, панель готовности.
+- Анимации: поэтапное появление первого экрана, поочерёдное появление строк при прокрутке, кроссфейд при смене языка (View Transitions там, где поддерживаются). При включённом в системе «уменьшении движения» всё показывается сразу, знаки не плавают.
 
-The fixture slugs are `nan` and `temir`. The [scenario catalog](src/data/scenarios.ts) contains 22 ready-made states, available through the workspace switcher at the top of the sidebar (the two workspaces first, then the other scenarios). For example, `/manage/nan?scenario=a-home` opens the first owner's dashboard and `/manage/nan/preview?scenario=preview-b` opens a candidate preview. A recognized `?scenario=` loads its fixture and is removed from the address.
+### Сервис (`/app`)
 
-Application state is saved under `alertion.session` in `sessionStorage`, so a reload in the same browser tab retains the demonstration state. **Сбросить** in that switcher restores the baseline, including the signed-out session. The running demo disables scenario changes and reset; exit the demo first. The sidebar's two levels (a section such as «Развёртывания» opens its own pages) and its collapse are separate from that state; collapse is a preference stored under `alertion.nav` in `localStorage` and survives reloads and scenario reset.
+Панель в духе привычных платформ: двухуровневая боковая панель, переключатели пространства и проекта, у проекта свои вкладки.
 
-Unknown or empty `?scenario=` values are removed while preserving the saved account and state.
+- **Вход.** Два вымышленных аккаунта, пароля нет.
+- **Обзор.** Использование лимитов, уведомления, недавние предпросмотры, список проектов.
+- **Загрузка.** Архив выбирается из готовых образцов и проходит пять проверок в строгом порядке: размер архива, `index.html` в корне, небезопасные пути, размер распакованной версии, остаток хранилища. Отказ называет причину и следующий шаг.
+- **Предпросмотр.** Новая версия открывается как кандидат, активная не меняется.
+- **Версии.** Публикация и откат через диалог подтверждения. Если предыдущей версии нет, кнопка отключена и объясняет почему.
+- **Домен.** Имя, TXT-запись, проверка, активация, CNAME, HTTPS. Проверка DNS и выпуск сертификата симулируются, значения помечены как примеры.
+- **Пилотный план.** Выбор плана и отказы при превышении лимитов, включая попытку создать второй сайт.
+- **Владение.** Страницы управления открывает только владелец сайта, чужой аккаунт получает отказ. Это проверка в браузере, настоящей изоляции нет.
+- **Безопасность, развёртывания, хранилище, наблюдаемость и другие разделы рабочего пространства.** Там, где нужна инфраструктура, которой нет, раздел говорит об этом прямо.
+- **Публичная страница сайта** (`/site/:slug`) без элементов управления и **страница защиты проекта** (`/defense`).
+- **22 готовых сценария** для демонстрации. Сценарии переключаются списком в боковой панели, рабочее пространство выбирается в верхней панели.
+- **Демо на 10 шагов**, которое проходит версию A, отказ из-за лимита, публикацию B и возврат к A.
 
-## Checks
+## Что не реализовано
 
-```sh
-npm run lint
-npm test
-npm run build
-npx tsc -p tsconfig.e2e.json
-node scripts/check-copy.mjs
-npx playwright install chromium
-npm run e2e -- --workers=2
-```
+Это границы прототипа, а не ошибки:
 
-Playwright uses Chromium and `http://127.0.0.1:5173`, starting Vite automatically when needed. A manually started server on that address is reused outside CI. If hostname resolution prevents the automatic server check from completing, start the explicit `--host 127.0.0.1` development command above in another terminal. CI installs Chromium with its Linux dependencies and sets `NODE_OPTIONS=--dns-result-order=ipv4first` for the browser tests.
+- Нет сервера, хостинга, API, файлового хранилища и платёжного сервиса.
+- Выбор архива не загружает и не распаковывает ZIP: образцы описаны метаданными и HTML-строками.
+- Публикация и откат меняют симулированное состояние версий в браузере.
+- Проверка DNS и выпуск HTTPS симулируются.
+- Вход и проверка владельца демонстрируют поведение интерфейса и не заменяют серверную аутентификацию.
+- Нет интеграции с git, анклава, аттестации и проверяющего. Поэтому нигде не показывается успешная проверка.
+- Сервис только на русском языке. Лендинг двуязычный.
 
-The independent [sidebar checks](e2e/sidebar.spec.ts) cover saved collapse, active routes, repeated mobile dismissal, keyboard focus, demo/dialog Escape priority, public-page boundaries, resizing and reset on the same route. See the [UI review](docs/reviews/2026-10-29-sidebar-ui-review.md) and [screenshots](public/evidence/) for the dated audit scope and evidence. Counts in the audit describe that run; the current CI result belongs to its own commit.
-
-## Screenshot evidence
-
-The results table links each B1–B7 criterion to a current prototype screenshot. The [manifest](public/evidence/manifest.json) records 25 PNG files, their actual dimensions, capture times, requested routes and final routes. These captures are current interface evidence; the historical sprint evidence journal remains unfilled.
-
-With the development server running, regenerate them with Node.js 22.18 or later:
-
-```sh
-node scripts/capture-evidence.mjs
-```
-
-The script uses the installed Playwright Chromium and writes only `public/evidence/` and `src/data/evidence.ts`. Set `EVIDENCE_BASE_URL` if the local server uses a different address.
-
-## Prototype boundaries
-
-The reducer operates on fixture metadata and HTML strings in the browser. Selecting a sample archive does not upload or extract a ZIP file. Publication and rollback change simulated version state; domain checking and HTTPS issuance are simulated. Account selection and client-side ownership checks demonstrate the intended UI behavior and do not provide server authentication or access control. There is no hosting API, payment service, production file storage or deployment backend.
-
-The current limits come from [`src/data/limits.ts`](src/data/limits.ts). This machine-readable summary records the prototype scope:
+Текущие лимиты берутся из [`src/data/limits.ts`](src/data/limits.ts). Краткая сводка объёма:
 
 ```json
 {
@@ -142,19 +110,174 @@ The current limits come from [`src/data/limits.ts`](src/data/limits.ts). This ma
 }
 ```
 
-## Vercel configuration notes
+## Быстрый старт
 
-The repository can be configured as a static Vite application with these project settings:
+Нужен Node.js 22 (как в [CI](.github/workflows/ci.yml)) и npm.
 
-| Setting                           | Value for this repository |
-| --------------------------------- | ------------------------- |
-| Framework preset                  | Vite                      |
-| Root directory                    | Repository root           |
-| Install command                   | `npm ci`                  |
-| Build command                     | `npm run build`           |
-| Output directory                  | `dist`                    |
-| Application environment variables | None required             |
+```sh
+npm ci
+npm run dev -- --host 127.0.0.1
+```
 
-These values follow the local scripts and Vercel's [build configuration guidance](https://vercel.com/docs/builds/configure-a-build). [`vercel.json`](vercel.json) already rewrites `/(.*)` to `/index.html` so direct requests to client routes can reach the SPA, matching Vercel's [Vite deep-linking guidance](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).
+Лендинг открывается на `http://127.0.0.1:5173`, сервис на `http://127.0.0.1:5173/app`. Переменные окружения, ключи и бэкенд не нужны.
 
-After deployment, check direct navigation and reload on `/defense`, `/manage/nan` and `/site/nan`, along with the logo and screenshot assets. Hosting this frontend does not add the backend capabilities listed above.
+```sh
+npm run build
+npm run preview -- --host 127.0.0.1
+```
+
+Сборка кладётся в `dist`, предпросмотр обычно на порту 4173.
+
+| Команда                       | Что делает                                    |
+| ----------------------------- | --------------------------------------------- |
+| `npm run dev`                 | Сервер разработки Vite                        |
+| `npm run build`               | Проверка типов и production-сборка            |
+| `npm run lint`                | ESLint                                        |
+| `npm test`                    | Юнит-тесты Vitest                             |
+| `npm run e2e`                 | Сквозные тесты Playwright                     |
+| `node scripts/check-copy.mjs` | Проверка текстов и «магических» чисел лимитов |
+
+## Маршруты и демонстрационное состояние
+
+Лендинг живёт на `/`, сервис под `/app`, и все маршруты ниже даны относительно него (`/manage` это `/app/manage`). Старые адреса (`/manage/...`, `/login`, `/defense`, `/site/...`) перенаправляются на `/app/...`.
+
+| Маршрут                                          | Экран                                                             |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| `/`                                              | Переход ко входу или обзору рабочего пространства                 |
+| `/login`                                         | Выбор одного из двух вымышленных аккаунтов                        |
+| `/manage`                                        | Обзор: использование, уведомления, предпросмотры, список проектов |
+| `/manage/deployments`, `/manage/builds`          | Все развёртывания с фильтрами; артефакты сборки и исходники       |
+| `/manage/observability` (`/logs`, `/query`)      | Карточки метрик; журналы и запросы (не реализовано)               |
+| `/manage/security`, `/attestations`, `/reports`  | Чек-лист безопасности; аттестации и отчёты (не реализовано)       |
+| `/manage/networking`                             | Домены всех проектов                                              |
+| `/manage/storage`, `/compute`, `/secrets`        | Хранилище по проектам; вычисления и секреты (не реализовано)      |
+| `/manage/connections`                            | Подключения git и реестров (не реализовано)                       |
+| `/manage/billing`, `/settings`, `/team`          | План и использование; настройки; участники                        |
+| `/manage/:slug`                                  | Проект: статус, проверка, репозиторий, хранилище, активность      |
+| `/manage/:slug/upload`                           | Выбор и проверка архива                                           |
+| `/manage/:slug/preview`                          | Предпросмотр кандидата                                            |
+| `/manage/:slug/versions`                         | Публикация и откат через диалог подтверждения                     |
+| `/manage/:slug/builds`, `/attestations`, `/logs` | Артефакты, аттестации и метрики проекта                           |
+| `/manage/:slug/settings`, `/domain`, `/plan`     | Настройки проекта; симуляция DNS и HTTPS; выбор пилотного плана   |
+| `/site/:slug`                                    | Публичная страница сайта без навигации управления                 |
+| `/defense`                                       | Цели, результаты, доказательства и демо из десяти шагов           |
+
+Слаги фикстур: `nan` («Пекарня Нан», Айгуль С.) и `temir` («Мастерская Темир», Ерлан Б.). Примеры: `/manage/nan?scenario=a-home` открывает панель первого владельца, `/manage/nan/preview?scenario=preview-b` открывает предпросмотр кандидата. Распознанный параметр `?scenario=` загружает сценарий и убирается из адреса, неизвестный просто убирается.
+
+Состояние хранится в `sessionStorage` под `alertion.session`, поэтому перезагрузка в той же вкладке его сохраняет. **Сбросить** в списке сценариев возвращает исходное состояние, включая выход из аккаунта. Пока идёт демо, смена сценария и сброс отключены. Сворачивание боковой панели хранится отдельно в `localStorage` под `alertion.nav`.
+
+## Устройство проекта
+
+Один сайт, два входа. [`src/main.tsx`](src/main.tsx) по адресу выбирает лендинг или сервис, и каждый грузится отдельным чанком со своими стилями, так что посетитель одного не скачивает другое. Сцена three.js тоже отдельный чанк и стартует, только когда блок подходит к экрану.
+
+```text
+src/
+  main.tsx          Выбор лендинга или сервиса по адресу, загрузка шрифтов
+  app/              Сервис: маршруты, точка входа, помощники путей
+  landing/          Лендинг: холст первого экрана, 3D-сцена, секции и тексты (RU/EN)
+  components/
+    ui/             Кнопки, бейджи, таблицы, поповеры, иконки
+    layout/         Боковая панель, верхняя панель, переключатели, защита маршрутов
+    project/        Карточки проектов и рамка образца сайта
+    demo/           Панель запуска демо
+  pages/
+    auth/           Вход и экран отказа
+    overview/       Обзор рабочего пространства
+    project/        Проект: панель, загрузка, предпросмотр, версии, домен, план
+    workspace/      Развёртывания, наблюдаемость, безопасность, хранилище и др.
+    public/         Публичная страница сайта
+    defense/        Страница защиты проекта и график сгорания
+  data/             Фикстуры, лимиты, сценарии и выборки по ним
+  state/            Редьюсер, хранилище и проверка архивов
+  styles/           Токены дизайна и глобальные стили
+e2e/                Спецификации Playwright; помощники в e2e/support
+scripts/            Скриншоты доказательств, проверка текстов
+docs/reviews/       Заметки об аудитах интерфейса с датами
+public/             Логотип, изображение лендинга, скриншоты доказательств
+```
+
+**Стек:** Vite 8, React 19, TypeScript 6, react-router-dom 7, CSS-модули, three.js (3D на лендинге), Vitest, Playwright, ESLint и Prettier. Шрифты: Inter (интерфейс и лендинг), IBM Plex Mono (код и имена файлов), Literata (проза на странице защиты).
+
+**Модель проверки.** Статус проверки версии это одно из `verified`, `failed`, `pending`, `unavailable`. Пока в прототипе нет данных аттестации, [`verificationFor()`](src/data/verification.ts) всегда возвращает `unavailable`, и интерфейс показывает «Проверка недоступна».
+
+## Дизайн и интерфейс
+
+- Светлая тема с акцентом `#dc2626` (насыщенный красный), нейтральные серые поверхности, статусы с отдельными цветами текста, которые проходят контраст 4.5:1.
+- Структура навигации взята у привычных платформ: рабочее пространство, проекты, у проекта вкладки и вложенные страницы. Поиск по страницам и проектам открывается клавишей `F`.
+- Интерфейс без приукрашивания: недоступное помечено как недоступное, «Выполнено» стоит только у того, что есть в интерфейсе.
+- Доступность: управление с клавиатуры, возврат фокуса после диалогов, приоритет `Esc` (демо, диалог), метки у групп и переключателей, поддержка `prefers-reduced-motion`.
+- Адаптивность: боковая панель превращается в выдвижную на узких экранах, горизонтальной прокрутки на телефоне нет.
+- На лендинге курсор заменён на пиксельную руку (только для мыши и только на лендинге).
+
+Заметка об аудите боковой панели лежит в [`docs/reviews`](docs/reviews/2026-10-29-sidebar-ui-review.md).
+
+## Проверки и CI
+
+```sh
+npm run lint
+npm test
+npm run build
+npx tsc -p tsconfig.e2e.json
+node scripts/check-copy.mjs
+npx playwright install chromium
+npm run e2e -- --workers=2
+```
+
+- **Юнит-тесты (Vitest):** 199 тестов в 27 файлах: данные, редьюсер, проверка архивов, рендер страниц, тексты лендинга на двух языках.
+- **Сквозные тесты (Playwright, Chromium):** 92 теста: каждая задача B1 – B8, навигация, боковая панель, лендинг, переключение языка, модель публикации.
+- **`check-copy`:** следит за формулировками (запрещённые слова, длинные тире, пустые якоря) и за тем, чтобы числа лимитов 20, 50 и 150 жили только в `src/data/limits.ts`.
+- **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) запускает всё выше на каждый pull request и на `main`.
+
+Playwright использует `http://127.0.0.1:5173` и запускает Vite сам. Если имя хоста мешает автоматической проверке, поднимите сервер вручную командой из раздела «Быстрый старт». В CI выставлено `NODE_OPTIONS=--dns-result-order=ipv4first`.
+
+## Доказательства и страница защиты
+
+Страница `/defense` собирает цели проекта, путь пользователя, запуск демо, статус B1 – B8, результаты сценариев, цели G1 – G5, невыполненные критерии, план, сгорание и скорость, обратную связь, ретроспективу, роли и журнал доказательств.
+
+[Манифест](public/evidence/manifest.json) описывает 25 PNG-файлов в [`public/evidence`](public/evidence/): размеры, время съёмки, запрошенные и итоговые маршруты. Это снимки интерфейса на момент съёмки, а исторический журнал спринтов остаётся незаполненным. Обновить снимки (сервер разработки запущен, Node.js 22.18 или новее):
+
+```sh
+node scripts/capture-evidence.mjs
+```
+
+Скрипт пишет только в `public/evidence/` и `src/data/evidence.ts`. Если сервер на другом адресе, задайте `EVIDENCE_BASE_URL`. Цифры сгорания на странице защиты помечены как симуляция.
+
+## Развёртывание
+
+Репозиторий настраивается как статическое приложение Vite:
+
+| Параметр             | Значение           |
+| -------------------- | ------------------ |
+| Framework preset     | Vite               |
+| Root directory       | Корень репозитория |
+| Install command      | `npm ci`           |
+| Build command        | `npm run build`    |
+| Output directory     | `dist`             |
+| Переменные окружения | Не нужны           |
+
+[`vercel.json`](vercel.json) перенаправляет `/(.*)` на `/index.html`, чтобы прямые обращения к клиентским маршрутам доходили до SPA ([руководство Vercel](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas)). После деплоя проверьте прямой заход и перезагрузку на `/`, `/app/defense`, `/app/manage/nan` и `/app/site/nan`, а также логотип и изображения. Хостинг фронтенда не добавляет серверных возможностей, перечисленных выше.
+
+## Команда и процесс
+
+| Роль          | Участник                                           |
+| ------------- | -------------------------------------------------- |
+| Product Owner | Birlik Koshan                                      |
+| Scrum Master  | Alikhan Nurzhan                                    |
+| Разработка    | Arthur Jaxygaliyev, Arlan Tulegenov, Berdibek Amir |
+| Преподаватель | Zhansaya Shinbergenova                             |
+
+Работа шла тремя спринтами: 28.10, 04.11 и 11.11.2026. Backlog из восьми задач (B1 – B8) покрывает границы аккаунтов, загрузку и публикацию, предпросмотр, откат, состояния домена и HTTPS, панель статуса и хранилища, выбор плана и лимиты, сводные доказательства.
+
+Правила репозитория: небольшие коммиты по одной функции для лёгкого отката, сообщения в стиле `feat(scope): ...`, `fix`, `style`, `test`, `docs`, `chore`, проверки из раздела выше перед пушем. Основная ветка `main`.
+
+## Направления развития
+
+Это идеи, а не обещания и не подтверждённый план:
+
+1. **Git и сборки.** Подключение репозитория, история сборок, воспроизводимая сборка из исходников.
+2. **Аттестация и проверка.** Приём данных аттестации, отчёты о проверке, статус «Проверено» только на реальных данных.
+3. **Окружение.** Секреты, журналы, мониторинг, управление анклавами.
+4. **Команда и сеть.** Роли, настройка доменов и сети, биллинг и аналитика использования.
+5. **Бэкенд.** Настоящая аутентификация, загрузка и распаковка ZIP, DNS-проверки и выпуск сертификатов.
+
+Лицензия в репозитории пока не указана.
