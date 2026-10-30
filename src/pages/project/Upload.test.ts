@@ -336,7 +336,9 @@ describe('upload screen', () => {
       'Переименуйте стартовую страницу в index.html и загрузите архив снова.',
     );
     expect(result.nextStep).not.toContain('Лимит');
-    expect(html).not.toContain('href="/site/nan"');
+    // The project header always links to the public site; the rejection itself
+    // must not offer it as a way forward.
+    expect(liveRegion(html)).not.toContain('href="/site/nan"');
   });
 
   it('B2-AC3 quotes the unsafe path', () => {

@@ -11,3 +11,7 @@ export function homePath(accountId: AccountId | null): string {
   const slug = accountSlug(accountId);
   return slug ? `/manage/${slug}` : '/login';
 }
+
+export function projectPath(slug: string, suffix = ''): string {
+  return `/manage/${slug}${suffix}`;
+}

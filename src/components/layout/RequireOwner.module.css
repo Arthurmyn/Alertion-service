@@ -1,4 +1,11 @@
 .note {
   width: fit-content;
   max-width: 100%;
+  margin: 0 0 var(--space-lg);
+  padding: 2px var(--space-md);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--ink-2);
+  background: var(--tint);
+  border-radius: var(--radius-pill);
 }
