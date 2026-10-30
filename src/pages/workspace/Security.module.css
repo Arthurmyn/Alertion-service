@@ -1,0 +1,110 @@
+.posture {
+  margin: 0 0 var(--space-2xl);
+  padding: var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.bar {
+  display: flex;
+  gap: var(--space-sm);
+  height: 6px;
+  margin-bottom: var(--space-xl);
+}
+
+.bar span {
+  min-width: 6px;
+  border-radius: var(--radius-pill);
+}
+
+.high {
+  flex-basis: 0;
+  background: var(--error);
+}
+
+.medium {
+  flex-basis: 0;
+  background: var(--warning);
+}
+
+.done {
+  flex-basis: 0;
+  background: var(--success);
+}
+
+.summary {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--text-lg);
+  letter-spacing: -0.012em;
+}
+
+.lead {
+  margin: 0;
+  color: var(--text-2);
+}
+
+.section {
+  margin: 0 0 var(--space-2xl);
+}
+
+.section h2 {
+  margin: 0 0 var(--space-md);
+  font-size: var(--text-md);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  min-width: 0;
+  padding: var(--space-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.card h3 {
+  margin: var(--space-xs) 0 0;
+  font-size: var(--text-md);
+  letter-spacing: 0;
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+
+.action {
+  margin-top: auto;
+  padding-top: var(--space-md);
+  font-size: var(--text-sm);
+}
+
+.tick {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--on-ink);
+  background: var(--success);
+  border-radius: var(--radius-pill);
+}
+
+.tick svg {
+  width: 14px;
+  height: 14px;
+}
