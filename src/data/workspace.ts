@@ -92,3 +92,9 @@ export function initials(name: string): string {
 }
 
 export { baselineUpdatedAt };
+
+/**
+ * The two fixture accounts are the workspaces and are chosen in the top bar's
+ * switcher; the sidebar's list holds every other scenario.
+ */
+export const workspaceScenarios = ['a-home', 'b-home'] as const;

@@ -13,7 +13,7 @@ import {
   scenarios,
   scenarioState,
 } from '../../data/scenarios.ts';
-import { initials } from '../../data/workspace.ts';
+import { initials, workspaceScenarios } from '../../data/workspace.ts';
 import { useStore } from '../../state/store.tsx';
 import { IconCheck, IconChevronsUpDown } from '../ui/icons.tsx';
 import { Popover } from '../ui/Popover.tsx';
@@ -21,15 +21,6 @@ import popover from '../ui/Popover.module.css';
 import styles from './WorkspaceSwitcher.module.css';
 
 export const lockedReason = 'Смена сценария недоступна, пока идёт демо.';
-
-/** The two fixture accounts are the workspaces; every other preset is a scenario. */
-const workspaceScenarios = ['a-home', 'b-home'] as const;
-
-function ownerOf(scenarioId: string): string | null {
-  const id =
-    scenarioId === 'a-home' ? 'a' : scenarioId === 'b-home' ? 'b' : null;
-  return accounts.find((item) => item.id === id)?.ownerName ?? null;
-}
 
 export function WorkspaceList({
   query,
@@ -46,11 +37,6 @@ export function WorkspaceList({
 }) {
   const needle = query.trim().toLowerCase();
   const match = (title: string) => title.toLowerCase().includes(needle);
-  const workspaces = scenarios.filter(
-    (item) =>
-      (workspaceScenarios as readonly string[]).includes(item.id) &&
-      match(item.title),
-  );
   const others = scenarios.filter(
     (item) =>
       !(workspaceScenarios as readonly string[]).includes(item.id) &&
@@ -72,7 +58,7 @@ export function WorkspaceList({
     target.focus({ focusVisible: true });
   }
 
-  function option(id: string, title: string, meta?: string | null) {
+  function option(id: string, title: string) {
     const current = currentId === id;
     return (
       <li key={id}>
@@ -82,10 +68,7 @@ export function WorkspaceList({
           aria-current={current ? 'true' : undefined}
           onClick={() => onChoose(id)}
         >
-          <span className={popover.itemText}>
-            {title}
-            {meta ? <span className={popover.itemMeta}>{meta}</span> : null}
-          </span>
+          <span className={popover.itemText}>{title}</span>
           {current ? (
             <span className={popover.check}>
               <IconCheck />
@@ -102,23 +85,13 @@ export function WorkspaceList({
         <input
           type="text"
           role="searchbox"
-          aria-label="Найти пространство или сценарий"
-          placeholder="Найти пространство или сценарий…"
+          aria-label="Найти сценарий"
+          placeholder="Найти сценарий…"
           value={query}
           onChange={(event) => onQuery(event.target.value)}
         />
       </div>
       <div className={popover.list}>
-        {workspaces.length > 0 ? (
-          <>
-            <p className={popover.heading}>Рабочие пространства</p>
-            <ul className={styles.options}>
-              {workspaces.map((item) =>
-                option(item.id, item.title, ownerOf(item.id)),
-              )}
-            </ul>
-          </>
-        ) : null}
         {others.length > 0 ? (
           <>
             <p className={popover.heading}>Сценарии</p>
@@ -127,7 +100,7 @@ export function WorkspaceList({
             </ul>
           </>
         ) : null}
-        {workspaces.length + others.length === 0 ? (
+        {others.length === 0 ? (
           <p className={popover.empty}>Ничего не найдено.</p>
         ) : null}
       </div>
@@ -217,7 +190,7 @@ export function WorkspaceSwitcher({
         anchor={triggerRef}
         open={open && !locked}
         onClose={close}
-        label="Рабочие пространства и сценарии"
+        label="Сценарии"
         width={296}
       >
         <WorkspaceList

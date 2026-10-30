@@ -8,6 +8,7 @@ import {
   scenarios,
   scenarioState,
 } from '../../data/scenarios.ts';
+import { workspaceScenarios } from '../../data/workspace.ts';
 import { reducer } from '../../state/reducer.ts';
 import { StoreProvider, writeSession } from '../../state/store.tsx';
 import {
@@ -102,16 +103,18 @@ describe('WorkspaceSwitcher', () => {
 });
 
 describe('WorkspaceList', () => {
-  it('lists the two workspaces first and every other preset as a scenario', () => {
+  it('lists every preset except the two workspaces, which the top bar offers', () => {
     const html = renderList('', null);
-    expect(html.indexOf('Рабочие пространства')).toBeLessThan(
-      html.indexOf('Сценарии'),
-    );
+    expect(html).not.toContain('Рабочие пространства');
+    expect(html).toContain('Сценарии');
     for (const item of scenarios) {
-      expect(html, item.id).toContain(item.title);
+      if (workspaceScenarios.some((id) => id === item.id)) {
+        expect(html, item.id).not.toContain(`>${item.title}<`);
+      } else {
+        expect(html, item.id).toContain(item.title);
+      }
     }
     expect(html).toContain('>Сбросить<');
-    expect(html).toContain('Айгуль С.');
   });
 
   it('marks the loaded scenario as current', () => {
