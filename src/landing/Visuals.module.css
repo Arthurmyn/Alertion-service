@@ -194,6 +194,7 @@
 }
 
 .status {
+  animation: settle 0.3s var(--ease-out, ease-out) both;
   font-size: 13px;
   color: #6b6b6b;
   text-wrap: pretty;
@@ -459,4 +460,11 @@
 
 :global([data-state='hidden']) .fill {
   transform: scaleX(0);
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
 }

@@ -95,7 +95,7 @@ export function PublishModel() {
           </button>
         )}
       </div>
-      <p className={styles.status} role="status">
+      <p key={active} className={styles.status} role="status">
         {active === 'A' ? copy.statusA : copy.statusB}
       </p>
     </div>
