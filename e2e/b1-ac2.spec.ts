@@ -20,11 +20,11 @@ test('B1-AC2 account B is denied access to account A management screens', async 
   await signIn(page, 'b');
 
   for (const path of managePaths('nan')) {
-    await page.goto(path);
+    await page.goto(`/app${path}`);
     expect(readPath(page)).toBe(path);
     await expect(page).not.toHaveURL(/\/login/);
 
-    const ownSite = page.locator('a[href="/manage/temir"]');
+    const ownSite = page.locator('a[href="/app/manage/temir"]');
     await expect(ownSite.first()).toBeVisible();
 
     for (const text of accountAData) {

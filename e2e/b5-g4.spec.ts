@@ -53,6 +53,6 @@ test('G4 domain and HTTPS states are distinct and verification comes first', asy
 });
 
 test('G4 records that the domain scope was not reduced', async ({ page }) => {
-  await page.goto('/defense#goals');
+  await page.goto('/app/defense#goals');
   await expect(page.getByText(/объём не сокращали/i)).toBeVisible();
 });

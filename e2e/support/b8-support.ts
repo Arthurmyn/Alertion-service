@@ -392,14 +392,15 @@ export async function readSession(page: Page): Promise<{
 }
 
 export async function startDemo(page: Page): Promise<void> {
-  await page.goto('/defense#demo');
+  await page.goto('/app/defense#demo');
   const launch = page.getByRole('button', { name: 'Запустить демо' });
   await expect(launch).toBeVisible();
   await launch.click();
 }
 
+/** The workspace switcher doubles as the scenario picker. */
 export const scenarioSelect = (page: Page): Locator =>
-  page.getByRole('combobox', { name: 'Сценарий' });
+  page.getByRole('button', { name: /^Рабочее пространство/ });
 
 export const presentSections = [
   ['#goal', '1. Цель проекта'],

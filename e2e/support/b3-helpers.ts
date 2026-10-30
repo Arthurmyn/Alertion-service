@@ -59,7 +59,7 @@ function escapeRegExp(value: string): string {
 }
 
 export async function signInAsOwner(page: Page): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/preview`);
+  await page.goto(`/app/manage/${owner.slug}/preview`);
   await expect(page).toHaveURL(/\/login/);
   await expect(page.getByText('Войдите, чтобы управлять сайтом')).toBeVisible();
   await page
@@ -73,14 +73,16 @@ export async function signInAsOwner(page: Page): Promise<void> {
 }
 
 export async function openScenario(page: Page, id: string): Promise<void> {
-  await page.goto(`/?scenario=${encodeURIComponent(id)}`);
+  await page.goto(`/app/?scenario=${encodeURIComponent(id)}`);
   await expect(page).not.toHaveURL(/[?&]scenario=/);
   await expect(page).not.toHaveURL(/\/login(?:\?|$)/);
 }
 
 export async function expectNoCandidatePreview(page: Page): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/preview`);
-  const upload = page.locator(`main a[href="/manage/${owner.slug}/upload"]`);
+  await page.goto(`/app/manage/${owner.slug}/preview`);
+  const upload = page
+    .locator('main')
+    .getByRole('link', { name: 'Загрузить архив', exact: true });
   await expect(upload).toBeVisible();
   await expect(upload).not.toHaveText(/^\s*$/);
 
@@ -100,7 +102,7 @@ export async function expectNoCandidatePreview(page: Page): Promise<void> {
 }
 
 export async function expectCandidatePreview(page: Page): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/preview`);
+  await page.goto(`/app/manage/${owner.slug}/preview`);
   const preview = page.frameLocator('iframe[title="Страница сайта"]');
   for (const item of candidateMenu) {
     await expect(preview.getByText(item, { exact: true })).toBeVisible();
@@ -109,7 +111,7 @@ export async function expectCandidatePreview(page: Page): Promise<void> {
 }
 
 export async function confirmPublish(page: Page): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/versions`);
+  await page.goto(`/app/manage/${owner.slug}/versions`);
   await page
     .getByRole('main')
     .getByRole('button', { name: publishButtonName })
@@ -120,7 +122,7 @@ export async function confirmPublish(page: Page): Promise<void> {
 }
 
 export async function expectFailedPublication(page: Page): Promise<void> {
-  await page.goto(`/manage/${owner.slug}/versions`);
+  await page.goto(`/app/manage/${owner.slug}/versions`);
   await expect(page.getByRole('main')).toContainText(
     publishFailed(activeLabel),
   );
@@ -131,7 +133,7 @@ export async function expectDashboardActive(
   page: Page,
   label: string,
 ): Promise<void> {
-  await page.goto(`/manage/${owner.slug}`);
+  await page.goto(`/app/manage/${owner.slug}`);
   await expect(page.getByRole('main')).toContainText(
     new RegExp(`Активн(?:ая|а) версия:?\\s*${escapeRegExp(label)}\\b`),
   );
@@ -142,7 +144,7 @@ export async function expectPublicMenu(
   present: readonly string[],
   absent: readonly string[],
 ): Promise<void> {
-  await page.goto(`/site/${owner.slug}`);
+  await page.goto(`/app/site/${owner.slug}`);
   const frame = page.frameLocator('iframe[title="Страница сайта"]');
   for (const item of present) {
     await expect(frame.getByText(item, { exact: true })).toBeVisible();

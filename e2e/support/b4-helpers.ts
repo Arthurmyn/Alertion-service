@@ -139,7 +139,7 @@ export async function withApp(
     const page = await context.newPage();
     page.setDefaultTimeout(10000);
     await seed(page, state);
-    await page.goto('/login');
+    await page.goto('/app/login');
     await run(page);
   } finally {
     await context.close();
@@ -173,7 +173,7 @@ export async function openVersions(
   page: Page,
   account: FixtureAccount,
 ): Promise<void> {
-  await page.goto(`/manage/${account.slug}/versions`);
+  await page.goto(`/app/manage/${account.slug}/versions`);
   await expect(page).toHaveURL(new RegExp(`/manage/${account.slug}/versions$`));
 }
 
@@ -229,7 +229,7 @@ export async function expectPublicSite(
   hiddenName?: string,
 ): Promise<void> {
   await waitForActiveArchive(page, slug, name);
-  await page.goto(`/site/${slug}`);
+  await page.goto(`/app/site/${slug}`);
   await expectFrameMenu(page, name, hiddenName);
 }
 

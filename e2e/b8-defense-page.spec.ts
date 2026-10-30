@@ -52,13 +52,13 @@ function hoursText(item: BacklogItem): string {
 test.use({ viewport: { width: 1280, height: 800 } });
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/defense');
+  await page.goto('/app/defense');
 });
 
 test('defense page is one linked column reached from the nav', async ({
   page,
 }) => {
-  await page.goto('/login');
+  await page.goto('/app/login');
   await page
     .getByRole('navigation', { name: 'Разделы' })
     .getByRole('link', { name: 'Защита проекта' })
@@ -131,7 +131,9 @@ test('defense user path lists five linked steps', async ({ page }) => {
     const link = links.nth(index);
     await expect(link).toHaveText(labels[index] ?? /.^/);
     const href = await link.getAttribute('href');
-    expect(href === '/login' || href?.startsWith('/manage/')).toBe(true);
+    expect(href === '/app/login' || href?.startsWith('/app/manage/')).toBe(
+      true,
+    );
   }
 });
 
@@ -147,10 +149,10 @@ test('defense status lists every backlog item with hours, sprint and a link', as
     await expect(block).toContainText(`Спринт ${item.sprint}`);
     const href = await block.getByRole('link').getAttribute('href');
     expect(
-      href === '/login' ||
-        href === '/defense' ||
-        href?.startsWith('/manage/') ||
-        href?.startsWith('/site/'),
+      href === '/app/login' ||
+        href === '/app/defense' ||
+        href?.startsWith('/app/manage/') ||
+        href?.startsWith('/app/site/'),
     ).toBe(true);
   }
 });

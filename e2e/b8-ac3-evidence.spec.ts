@@ -8,7 +8,7 @@ import {
 
 test('B8-AC3 members capture evidence during each sprint', async ({ page }) => {
   await test.step('each sprint has a labelled empty slot per check', async () => {
-    await page.goto('/defense#evidence-log');
+    await page.goto('/app/defense#evidence-log');
     const log = page.locator('#evidence-log');
     await expect(
       log.getByRole('heading', { name: /Журнал доказательств/ }),
@@ -31,7 +31,7 @@ test('B8-AC3 members capture evidence during each sprint', async ({ page }) => {
   });
 
   await test.step('the process criterion is listed with the other non-checks', async () => {
-    await page.goto('/defense');
+    await page.goto('/app/defense');
     const heading = page.getByRole('heading', {
       name: /Невыполненные и непроверяемые/,
     });

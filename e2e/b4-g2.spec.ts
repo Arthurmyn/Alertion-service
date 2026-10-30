@@ -31,7 +31,7 @@ test('G2 preview with A still active, publish B, rollback to A, failed actions k
   await test.step('preview B while A is active, then publish B and roll back to A', async () => {
     await withApp(browser, candidateOf(archiveB), async (page) => {
       await signIn(page, accountA);
-      await page.goto(`/manage/${accountA.slug}/preview`);
+      await page.goto(`/app/manage/${accountA.slug}/preview`);
       await expect(
         page.getByText(activeLine(labelA), { exact: true }),
       ).toBeVisible();

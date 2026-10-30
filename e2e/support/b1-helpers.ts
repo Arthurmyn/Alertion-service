@@ -10,7 +10,7 @@ export const ownerOnlyLine = 'Управление сайтом, видно то
 export const signInPrompt = 'Войдите, чтобы управлять сайтом';
 
 /** Ink header on management screens, white header on the public site. */
-export const inkHeader = 'rgb(35, 31, 32)';
+export const inkHeader = 'rgb(250, 250, 250)';
 export const publicHeader = 'rgb(255, 255, 255)';
 
 const manageSuffixes = [
@@ -27,14 +27,15 @@ export function managePaths(slug: string): string[] {
 }
 
 export function readPath(page: Page): string {
-  return new URL(page.url()).pathname;
+  // The service lives under /app; the specs think in app-relative paths.
+  return new URL(page.url()).pathname.replace(/^\/app(?=\/|$)/, '') || '/';
 }
 
 export async function signIn(
   page: Page,
   account: keyof typeof accountButton,
 ): Promise<void> {
-  await page.goto('/login');
+  await page.goto('/app/login');
   await page
     .getByRole('button', { name: accountButton[account] })
     .click({ timeout: 5_000 });

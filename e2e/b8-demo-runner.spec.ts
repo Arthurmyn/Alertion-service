@@ -32,7 +32,7 @@ async function expectMenu(page: Page, extra: boolean): Promise<void> {
 test('demo section opens failure, denial and domain scenarios', async ({
   page,
 }) => {
-  await page.goto('/defense#demo');
+  await page.goto('/app/defense#demo');
   const demo = page.locator('#demo');
   await expect(
     demo.getByRole('heading', { level: 2, name: '3. Демо' }),
@@ -67,7 +67,9 @@ test('B8 demo runner walks the ten steps', async ({ page }) => {
         page
           .getByRole('banner')
           .getByText(accountA.businessName, { exact: true })
-          .and(page.locator('span')),
+          .and(page.locator('span'))
+          // The header names the site first; the workspace switcher repeats it.
+          .first(),
       ).toBeVisible();
       await expectMenu(page, false);
     }

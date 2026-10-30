@@ -21,7 +21,7 @@ test('B2-AC1 valid upload reaches the example URL', async ({ page }) => {
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute(
     'href',
-    new RegExp(`^(?:https?:\\/\\/[^/]+)?${path}/?$`),
+    new RegExp(`^(?:https?:\\/\\/[^/]+)?(?:/app)?${path}/?$`),
   );
   await link.click();
   await expect(page).toHaveURL(new RegExp(`${path}$`));

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { goalCases, goalMarks, scopeNote } from './support/b8-support.ts';
 
 test('B8-AC2 every goal is marked met, unmet or deferred', async ({ page }) => {
-  await page.goto('/defense#goals');
+  await page.goto('/app/defense#goals');
   const goals = page.locator('#goals');
   await expect(
     goals.getByRole('heading', { level: 2, name: /Цели G1–G5/ }),

@@ -7,6 +7,7 @@ import {
   readPath,
   signIn,
 } from './support/b1-helpers.ts';
+import { openOwnProject } from './support/nav.ts';
 
 const nanPrivate = [
   'Пекарня Нан',
@@ -28,15 +29,17 @@ test('B1 task ownership rules with two fictional accounts', async ({
 }) => {
   await test.step('account A is at home on nan', async () => {
     await signIn(page, 'a');
-    await page.goto('/');
-    await expect(page).toHaveURL(/\/manage\/nan$/);
+    await page.goto('/app');
+    await expect(page).toHaveURL(/\/manage$/);
     await expect(page.getByRole('banner')).toHaveCSS(
       'background-color',
       inkHeader,
     );
+    await openOwnProject(page, 'Пекарня Нан');
+    await expect(page).toHaveURL(/\/manage\/nan$/);
     await expect(page.getByText(ownerOnlyLine)).toBeVisible();
 
-    await page.goto('/site/nan');
+    await page.goto('/app/site/nan');
     await expect(page.getByRole('banner')).toHaveCSS(
       'background-color',
       publicHeader,
@@ -48,9 +51,11 @@ test('B1 task ownership rules with two fictional accounts', async ({
     await expect(nan.getByText('Баурсак, 500 ₸')).toBeVisible();
     await expectTextAbsent(page, 'Заточка ножа, 2 000 ₸');
 
-    await page.goto('/manage/temir');
+    await page.goto('/app/manage/temir');
     expect(readPath(page)).toBe('/manage/temir');
-    await expect(page.locator('a[href="/manage/nan"]').first()).toBeVisible();
+    await expect(
+      page.locator('a[href="/app/manage/nan"]').first(),
+    ).toBeVisible();
     for (const text of temirPrivate) {
       await expectTextAbsent(page, text);
     }
@@ -60,15 +65,17 @@ test('B1 task ownership rules with two fictional accounts', async ({
     const context = await browser.newContext();
     const other = await context.newPage();
     await signIn(other, 'b');
-    await other.goto('/');
-    await expect(other).toHaveURL(/\/manage\/temir$/);
+    await other.goto('/app');
+    await expect(other).toHaveURL(/\/manage$/);
     await expect(other.getByRole('banner')).toHaveCSS(
       'background-color',
       inkHeader,
     );
+    await openOwnProject(other, 'Мастерская Темир');
+    await expect(other).toHaveURL(/\/manage\/temir$/);
     await expect(other.getByText(ownerOnlyLine)).toBeVisible();
 
-    await other.goto('/site/temir');
+    await other.goto('/app/site/temir');
     await expect(other.getByRole('banner')).toHaveCSS(
       'background-color',
       publicHeader,
@@ -80,10 +87,10 @@ test('B1 task ownership rules with two fictional accounts', async ({
     await expect(temir.getByText('Заточка ножа, 2 000 ₸')).toBeVisible();
     await expectTextAbsent(other, 'Баурсак, 500 ₸');
 
-    await other.goto('/manage/nan');
+    await other.goto('/app/manage/nan');
     expect(readPath(other)).toBe('/manage/nan');
     await expect(
-      other.locator('a[href="/manage/temir"]').first(),
+      other.locator('a[href="/app/manage/temir"]').first(),
     ).toBeVisible();
     for (const text of nanPrivate) {
       await expectTextAbsent(other, text);

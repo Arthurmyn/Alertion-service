@@ -32,7 +32,7 @@ test('B2 task lists the sample and rejection fixtures', async ({ page }) => {
 
 test('B2 task serves harmless sample HTML', async ({ page }) => {
   const active = activeVersion(baselineSite());
-  await page.goto(`/site/${ownerA.slug}`);
+  await page.goto(`/app/site/${ownerA.slug}`);
   await expectActiveSample(page, active.archiveName);
   await expect(
     page.frameLocator('iframe[title="Страница сайта"]').locator('style'),

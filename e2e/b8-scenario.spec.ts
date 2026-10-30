@@ -11,7 +11,7 @@ test('?scenario= replaces the saved session and drops the query', async ({
   page,
 }) => {
   await plantSession(page, 'b');
-  await page.goto('/defense?scenario=a-home');
+  await page.goto('/app/defense?scenario=a-home');
   await expect(page).not.toHaveURL(/scenario=/);
   await expect(page).toHaveURL(new RegExp(`/manage/${accountA.slug}$`));
   await expect(page.getByRole('link', { name: 'Вход' })).toHaveCount(0);
@@ -22,7 +22,7 @@ test('?scenario= replaces the saved session and drops the query', async ({
 
 test('?scenario=signed-out clears the saved account', async ({ page }) => {
   await plantSession(page, 'a');
-  await page.goto('/?scenario=signed-out');
+  await page.goto('/app/?scenario=signed-out');
   await expect(page).not.toHaveURL(/scenario=/);
   await expect(page).toHaveURL(/\/login$/);
   const session = await readSession(page);
@@ -31,7 +31,7 @@ test('?scenario=signed-out clears the saved account', async ({ page }) => {
 });
 
 test('?scenario=b-opens-a opens account A as account B', async ({ page }) => {
-  await page.goto('/?scenario=b-opens-a');
+  await page.goto('/app/?scenario=b-opens-a');
   await expect(page).not.toHaveURL(/scenario=/);
   await expect(page).toHaveURL(new RegExp(`/manage/${accountA.slug}$`));
   const session = await readSession(page);
@@ -41,16 +41,19 @@ test('?scenario=b-opens-a opens account A as account B', async ({ page }) => {
 
 test('an unknown scenario id is ignored and removed', async ({ page }) => {
   await plantSession(page, 'b');
-  await page.goto('/?scenario=not-a-real-scenario');
+  await page.goto('/app/?scenario=not-a-real-scenario');
   await expect(page).not.toHaveURL(/scenario=/);
-  await expect(page).toHaveURL(new RegExp(`/manage/${accountB.slug}$`));
+  await expect(page).toHaveURL(/\/manage$/);
   const session = await readSession(page);
   expect(session.sessionAccountId).toBe(accountB.id);
   expect(session.scenarioId).toBeNull();
 });
 
-test('the shell offers a scenario select and reset', async ({ page }) => {
-  await page.goto('/defense');
+test('the shell offers a workspace and scenario switcher with reset', async ({
+  page,
+}) => {
+  await page.goto('/app/defense');
   await expect(scenarioSelect(page)).toBeEnabled();
+  await scenarioSelect(page).click();
   await expect(page.getByRole('button', { name: 'Сбросить' })).toBeEnabled();
 });

@@ -4,7 +4,7 @@ import { results } from '../src/data/results.ts';
 test('each result loads its labelled screenshot at the recorded dimensions', async ({
   page,
 }) => {
-  await page.goto('/defense#results');
+  await page.goto('/app/defense#results');
   const section = page.locator('#results');
   await expect(section.getByRole('img')).toHaveCount(results.length);
   for (const item of results) {

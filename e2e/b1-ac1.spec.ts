@@ -7,6 +7,7 @@ import {
   readPath,
   signIn,
 } from './support/b1-helpers.ts';
+import { openOwnProject, projectTabs } from './support/nav.ts';
 
 const managementOnPublic = [
   'nan-v1.zip',
@@ -23,24 +24,25 @@ test('B1-AC1 public website content and private management data are distinguishe
 }) => {
   await signIn(page, 'a');
 
-  await page.goto('/');
-  await expect(page).toHaveURL(/\/manage\/nan$/);
-  expect(readPath(page)).toBe('/manage/nan');
+  await page.goto('/app');
+  await expect(page).toHaveURL(/\/manage$/);
   await expect(page.getByRole('banner')).toHaveCSS(
     'background-color',
     inkHeader,
   );
+  await openOwnProject(page, 'Пекарня Нан');
+  expect(readPath(page)).toBe('/manage/nan');
   await expect(page.getByText(ownerOnlyLine)).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'Версии', exact: true }),
+    projectTabs(page).getByRole('link', { name: 'Развёртывания', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'Домен', exact: true }),
+    projectTabs(page).getByRole('link', { name: 'Настройки', exact: true }),
   ).toBeVisible();
   await expectTextAbsent(page, 'Заточка ножа, 2 000 ₸');
   await expectTextAbsent(page, 'Мастерская Темир');
 
-  await page.goto('/site/nan');
+  await page.goto('/app/site/nan');
   await expect(page).toHaveURL(/\/site\/nan$/);
   await expect(page.getByRole('banner')).toHaveCSS(
     'background-color',

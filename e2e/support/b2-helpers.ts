@@ -1,4 +1,5 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
+import { openOwnProject, openProjectSection } from './nav.ts';
 import {
   accounts,
   baseline,
@@ -73,12 +74,8 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function nav(page: Page): Locator {
-  return page.getByRole('navigation', { name: 'Разделы' });
-}
-
 export async function signInAsOwner(page: Page): Promise<void> {
-  await page.goto('/login');
+  await page.goto('/app/login');
   await page
     .getByRole('button', {
       name: new RegExp(
@@ -86,18 +83,20 @@ export async function signInAsOwner(page: Page): Promise<void> {
       ),
     })
     .click();
+  await expect(page).toHaveURL(/\/manage$/);
+  await openOwnProject(page, ownerA.businessName);
   await expect(page).toHaveURL(new RegExp(`/manage/${ownerA.slug}$`));
 }
 
 export async function openUpload(page: Page): Promise<void> {
-  await nav(page).getByRole('link', { name: 'Загрузка' }).click();
+  await openProjectSection(page, 'Загрузка');
   await expect(page).toHaveURL(new RegExp(`/manage/${ownerA.slug}/upload$`));
 }
 
 export async function openScenario(page: Page, id: string): Promise<void> {
-  await page.goto(`/?scenario=${id}`);
+  await page.goto(`/app/?scenario=${id}`);
   await expect(page).not.toHaveURL(/[?&]scenario=/);
-  await page.goto(`/manage/${ownerA.slug}/upload`);
+  await page.goto(`/app/manage/${ownerA.slug}/upload`);
   await expect(page).toHaveURL(new RegExp(`/manage/${ownerA.slug}/upload$`));
 }
 
@@ -122,14 +121,14 @@ export async function expectRejection(
     expect(message).not.toContain('Лимит пилотного плана');
   }
   await expect(page.locator('main').getByText(message)).toBeVisible();
-  await nav(page).getByRole('link', { name: 'Управление сайтом' }).click();
+  await openProjectSection(page, 'Управление сайтом');
   await expect(page).toHaveURL(new RegExp(`/manage/${ownerA.slug}$`));
   const activeFact = page.locator('main dl > div').filter({
     has: page.getByRole('term').filter({ hasText: /^Активная версия$/ }),
   });
   await expect(activeFact).toHaveCount(1);
   await expect(activeFact.getByRole('definition')).toHaveText(active.label);
-  await page.goto(`/site/${ownerA.slug}`);
+  await page.goto(`/app/site/${ownerA.slug}`);
   await expectActiveSample(page, active.archiveName);
 }
 

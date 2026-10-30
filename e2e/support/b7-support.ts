@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { openOwnProject, openProjectSection } from './nav.ts';
 import { accounts, baseline, type Account } from '../../src/data/accounts.ts';
 import { archives, type ArchiveFixture } from '../../src/data/archives.ts';
 import { LIMITS } from '../../src/data/limits.ts';
@@ -106,13 +107,9 @@ export function main(page: Page) {
   return page.getByRole('main');
 }
 
-function sections(page: Page) {
-  return page.getByRole('navigation', { name: 'Разделы' });
-}
-
 export async function signIn(page: Page): Promise<Account> {
   const account = accountById('a');
-  await page.goto('/login');
+  await page.goto('/app/login');
   await page
     .getByRole('button', {
       name: new RegExp(
@@ -120,6 +117,8 @@ export async function signIn(page: Page): Promise<Account> {
       ),
     })
     .click();
+  await expect(page).toHaveURL(/\/manage$/);
+  await openOwnProject(page, account.businessName);
   await expect(page).toHaveURL(
     new RegExp(`/manage/${account.slug}(?:/|\\?|$)`),
   );
@@ -127,14 +126,14 @@ export async function signIn(page: Page): Promise<Account> {
 }
 
 export async function openSection(page: Page, name: string): Promise<void> {
-  await sections(page).getByRole('link', { name, exact: true }).click();
+  await openProjectSection(page, name);
 }
 
 /** `plan-not-selected` is the only signed-in state with no plan: selection has no off toggle. */
 export async function openScenario(page: Page, id: string): Promise<string> {
-  await page.goto(`/?scenario=${id}`);
+  await page.goto(`/app/?scenario=${id}`);
   await expect(page).not.toHaveURL(/[?&]scenario=/);
-  const match = new URL(page.url()).pathname.match(/^\/manage\/([^/]+)/);
+  const match = new URL(page.url()).pathname.match(/^\/app\/manage\/([^/]+)/);
   const slug = match?.[1];
   if (!slug) throw new Error(`scenario ${id} did not open a management route`);
   return decodeURIComponent(slug);

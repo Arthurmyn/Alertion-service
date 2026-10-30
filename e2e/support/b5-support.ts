@@ -49,9 +49,9 @@ export async function openDomainScenario(
   }
 
   const domainPath = `/manage/${owner.slug}/domain`;
-  await page.goto('/login');
+  await page.goto('/app/login');
   await page.evaluate(() => sessionStorage.clear());
-  await page.goto(domainPath);
+  await page.goto(`/app${domainPath}`);
   await expect(page).toHaveURL(/\/login\?next=/);
   await expect(page.getByText('Войдите, чтобы управлять сайтом')).toBeVisible();
   await page
@@ -61,10 +61,10 @@ export async function openDomainScenario(
     .click();
   await expect(page).toHaveURL(new RegExp(`${escapeRegExp(domainPath)}$`));
 
-  await page.goto(`/?scenario=${scenarioId}`);
+  await page.goto(`/app/?scenario=${scenarioId}`);
   await expect(page).toHaveURL(new RegExp(`${escapeRegExp(scenario.route)}$`));
   if (scenario.route !== domainPath) {
-    await page.goto(domainPath);
+    await page.goto(`/app${domainPath}`);
   }
   await expect(page).toHaveURL(new RegExp(`${escapeRegExp(domainPath)}$`));
   await expect(

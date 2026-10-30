@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { openProjectSection } from './nav.ts';
 import { accounts, baselineUpdatedAt } from '../../src/data/accounts.ts';
 import { archives } from '../../src/data/archives.ts';
 import { LIMITS } from '../../src/data/limits.ts';
@@ -187,15 +188,12 @@ export async function openDashboard(
   const preset = presetById(scenarioId);
   if (!preset) throw new Error(`missing scenario ${scenarioId}`);
 
-  await page.goto(`/?scenario=${encodeURIComponent(scenarioId)}`);
+  await page.goto(`/app/?scenario=${encodeURIComponent(scenarioId)}`);
   await settledPath(page, new RegExp(`${escapeRegExp(preset.route)}$`));
 
   const dashboard = new RegExp(`/manage/${escapeRegExp(slug)}$`);
   if (!dashboard.test(pathOf(page))) {
-    await page
-      .getByRole('navigation', { name: 'Разделы' })
-      .getByRole('link', { name: 'Управление сайтом', exact: true })
-      .click();
+    await openProjectSection(page, 'Управление сайтом');
     await settledPath(page, dashboard);
   }
   await expect(
@@ -291,10 +289,7 @@ export async function openDomainScreen(
   page: Page,
   slug: string,
 ): Promise<void> {
-  await page
-    .getByRole('navigation', { name: 'Разделы' })
-    .getByRole('link', { name: 'Домен', exact: true })
-    .click();
+  await openProjectSection(page, 'Домен');
   await settledPath(page, new RegExp(`/manage/${escapeRegExp(slug)}/domain$`));
   await expect(
     page.getByRole('heading', { level: 1, name: 'Домен' }),

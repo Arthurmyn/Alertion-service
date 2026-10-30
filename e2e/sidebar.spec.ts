@@ -1,7 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
+import { scenarioSelect } from './support/b8-support.ts';
 
 async function ownerHome(page: Page) {
-  await page.goto('/manage/nan?scenario=a-home');
+  await page.goto('/app/manage/nan?scenario=a-home');
   await expect(
     page.getByRole('heading', { name: 'Управление сайтом', exact: true }),
   ).toBeVisible();
@@ -21,10 +22,8 @@ test('desktop rail keeps section names, active route and saved collapse choice',
   await page.setViewportSize({ width: 1280, height: 900 });
   await ownerHome(page);
   const nav = page.getByRole('navigation', { name: 'Разделы', exact: true });
-  const home = nav.getByRole('link', {
-    name: 'Управление сайтом',
-    exact: true,
-  });
+  // Inside a project the sidebar keeps "Проекты" marked.
+  const home = nav.getByRole('link', { name: 'Проекты', exact: true });
   await expect(home).toHaveAttribute('aria-current', 'page');
   await page
     .getByRole('button', { name: 'Свернуть меню', exact: true })
@@ -32,11 +31,12 @@ test('desktop rail keeps section names, active route and saved collapse choice',
   await expect(
     page.getByRole('button', { name: 'Развернуть меню', exact: true }),
   ).toBeVisible();
-  await expect(home).toHaveAccessibleName('Управление сайтом');
-  await expect(home).toHaveAttribute('title', 'Управление сайтом');
-  await nav.getByRole('link', { name: 'Загрузка', exact: true }).click();
+  await expect(home).toHaveAccessibleName('Проекты');
+  await expect(home).toHaveAttribute('title', 'Проекты');
+  // "Развёртывания" has sub-pages, so the sidebar drills into them.
+  await nav.getByRole('link', { name: 'Развёртывания', exact: true }).click();
   await expect(
-    nav.getByRole('link', { name: 'Загрузка', exact: true }),
+    nav.getByRole('link', { name: 'Обзор', exact: true }),
   ).toHaveAttribute('aria-current', 'page');
   await page.reload();
   await expect(
@@ -61,15 +61,10 @@ for (const width of [375, 360]) {
       await opener.click();
       await expect(nav).toBeVisible();
       await expect(
-        nav.getByRole('link', { name: 'Управление сайтом', exact: true }),
+        nav.getByRole('link', { name: 'Проекты', exact: true }),
       ).toBeFocused();
       await expect(page.locator('main')).toHaveAttribute('inert', '');
-      await expect(
-        page.getByRole('combobox', { name: 'Сценарий', exact: true }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole('button', { name: 'Сбросить', exact: true }),
-      ).toBeVisible();
+      await expect(scenarioSelect(page)).toBeVisible();
       if (cycle === 1) {
         await page.mouse.click(width - 12, 300);
       } else {
@@ -83,10 +78,10 @@ for (const width of [375, 360]) {
       );
     }
     await opener.click();
-    await nav.getByRole('link', { name: 'Загрузка', exact: true }).click();
+    await nav.getByRole('link', { name: 'Развёртывания', exact: true }).click();
     await expect(nav).toBeHidden();
     await expect(
-      page.getByRole('heading', { name: 'Загрузка', exact: true }),
+      page.getByRole('heading', { name: 'Развёртывания', exact: true }),
     ).toBeFocused();
     await expectNoPageOverflow(page);
   });
@@ -95,7 +90,7 @@ for (const width of [375, 360]) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 812 });
-    await page.goto('/defense#demo');
+    await page.goto('/app/defense#demo');
     await page
       .getByRole('button', { name: 'Запустить демо', exact: true })
       .click();
@@ -122,7 +117,7 @@ test('public demo steps keep public navigation boundaries and the demo controls'
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/defense#demo');
+  await page.goto('/app/defense#demo');
   await page
     .getByRole('button', { name: 'Запустить демо', exact: true })
     .click();
@@ -138,7 +133,9 @@ test('public demo steps keep public navigation boundaries and the demo controls'
       await expect(
         page.getByRole('button', { name: 'Открыть меню', exact: true }),
       ).toHaveCount(0);
-      await expect(page.locator('header a[href^="/manage/"]')).toHaveCount(0);
+      await expect(page.locator('header a[href^="/app/manage/"]')).toHaveCount(
+        0,
+      );
       await expectNoPageOverflow(page);
     }
     if (step < 7)
@@ -150,7 +147,7 @@ test('mobile confirmation Escape cancels only the dialog and restores its action
   page,
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/defense#demo');
+  await page.goto('/app/defense#demo');
   await page
     .getByRole('button', { name: 'Запустить демо', exact: true })
     .click();
@@ -158,10 +155,9 @@ test('mobile confirmation Escape cancels only the dialog and restores its action
   for (let step = 1; step < 4; step++) {
     await demo.getByRole('button', { name: 'Далее', exact: true }).click();
   }
-  await page.getByRole('button', { name: 'Открыть меню', exact: true }).click();
   await page
-    .getByRole('navigation', { name: 'Разделы', exact: true })
-    .getByRole('link', { name: 'Версии', exact: true })
+    .getByRole('navigation', { name: 'Разделы проекта', exact: true })
+    .getByRole('link', { name: 'Развёртывания', exact: true })
     .click();
   const publish = page.getByRole('button', {
     name: 'Опубликовать версию B',
@@ -198,7 +194,7 @@ test('a stored desktop rail becomes a labelled mobile drawer and survives resizi
   await page.setViewportSize({ width: 375, height: 812 });
   await page.getByRole('button', { name: 'Открыть меню', exact: true }).click();
   const nav = page.getByRole('navigation', { name: 'Разделы', exact: true });
-  await expect(nav.getByText('Загрузка', { exact: true })).toBeVisible();
+  await expect(nav.getByText('Развёртывания', { exact: true })).toBeVisible();
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(
     page.getByRole('button', { name: 'Развернуть меню', exact: true }),
@@ -215,17 +211,18 @@ test('reset on the same route keeps keyboard focus and updates the open drawer',
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await ownerHome(page);
-  await page.goto('/defense');
+  await page.goto('/app/defense');
   await page.getByRole('button', { name: 'Открыть меню', exact: true }).click();
-  const reset = page.getByRole('button', { name: 'Сбросить', exact: true });
-  await reset.click();
+  const picker = scenarioSelect(page);
+  await picker.click();
+  await page.getByRole('button', { name: 'Сбросить', exact: true }).click();
   await expect(page).toHaveURL(/\/defense$/);
-  await expect(reset).toBeFocused();
+  await expect(picker).toBeFocused();
   const nav = page.getByRole('navigation', { name: 'Разделы', exact: true });
   await expect(
     nav.getByRole('link', { name: 'Вход', exact: true }),
   ).toBeVisible();
-  await expect(nav.locator('a[href^="/manage/"]')).toHaveCount(0);
+  await expect(nav.locator('a[href^="/app/manage/"]')).toHaveCount(0);
   await page.keyboard.press('Escape');
   await expect(nav).toBeHidden();
   await expect(
