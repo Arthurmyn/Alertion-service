@@ -1,0 +1,27 @@
+.ring {
+  display: block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.track,
+.fill,
+.high {
+  fill: none;
+  stroke-width: 2;
+}
+
+.track {
+  stroke: var(--tint-ink);
+}
+
+.fill {
+  stroke: var(--text);
+  stroke-linecap: round;
+}
+
+.high {
+  stroke: var(--error);
+  stroke-linecap: round;
+}
