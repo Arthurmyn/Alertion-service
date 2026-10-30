@@ -26,7 +26,9 @@ One build serves two products. The landing page is at `/`; the service lives und
 
 The landing hero comes from the [Alertion-langing-page](https://github.com/Arthurmyn/Alertion-langing-page) repository: its dot-matrix hands animation is ported to [`src/landing/DotHands.tsx`](src/landing/DotHands.tsx), with the source image saved in `public/landing/` instead of hot-linked. The sections below the hero, the copy and the pilot-plan figures (read from [`src/data/limits.ts`](src/data/limits.ts)) are written for this project. The service uses the same typeface, Inter.
 
-The screenshots in the landing's feature rows come from the running service. With the dev server running, regenerate them with `node scripts/capture-landing.mjs`.
+The landing is available in Russian and English. The switch in the navigation saves the choice in `localStorage` under `alertion.lang`, and `/?lang=en` opens it in English; the copy for both languages lives in [`src/landing/content.ts`](src/landing/content.ts). The service itself is Russian only.
+
+Instead of screenshots, the feature rows show small working models built from the same limits and states as the service ([`src/landing/Visuals.tsx`](src/landing/Visuals.tsx)): publish and rollback you can press, the archive checks, usage meters and the readiness panel. The red 3D alert signs that drift behind the hero and the closing block are drawn with three.js ([`src/landing/alertScene.ts`](src/landing/alertScene.ts)). The scene loads as its own chunk when the canvas comes near the viewport, pauses off screen, and stays still for visitors who prefer reduced motion.
 
 ## Project layout
 
@@ -51,9 +53,9 @@ src/
   state/            The reducer, the store and archive validation
   styles/           Design tokens and global styles
 e2e/                Playwright specs; helpers live in e2e/support
-scripts/            Evidence and landing screenshots, copy checks
+scripts/            Evidence screenshots, copy checks
 docs/reviews/       Dated review notes
-public/             Logo, the landing hero image and screenshots
+public/             Logo and the landing hero image
 ```
 
 ## Routes and demonstration state
