@@ -75,7 +75,12 @@ export function AppShell() {
   const publicSite = siteSlug ? state.sites[siteSlug] : undefined;
   const isPublic = Boolean(publicSite);
   const running = demoRunning(state.demo);
-  const narrowPage = pathname === '/defense' || pathname === '/login';
+  const pageWidth =
+    pathname === '/login'
+      ? styles.narrow
+      : pathname === '/defense'
+        ? styles.document
+        : null;
 
   useEffect(() => {
     const fallbackPath =
@@ -252,9 +257,7 @@ export function AppShell() {
           </div>
         </div>
         <main
-          className={
-            narrowPage ? `${styles.main} ${styles.narrow}` : styles.main
-          }
+          className={pageWidth ? `${styles.main} ${pageWidth}` : styles.main}
           inert={drawerOpen ? true : undefined}
         >
           <Outlet />

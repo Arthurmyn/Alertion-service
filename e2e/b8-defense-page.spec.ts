@@ -71,7 +71,7 @@ test('defense page is one linked column reached from the nav', async ({
 
   const box = await page.getByRole('main').boundingBox();
   if (!box) throw new Error('main column is missing');
-  expect(Math.round(box.width)).toBe(720);
+  expect(Math.round(box.width)).toBe(960);
 
   const contents = page.getByRole('navigation', { name: 'Содержание' });
   for (const [href, title] of presentSections) {

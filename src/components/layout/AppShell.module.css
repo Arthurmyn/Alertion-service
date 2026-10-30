@@ -218,6 +218,10 @@
   width: min(720px, 100%);
 }
 
+.document {
+  width: min(960px, 100%);
+}
+
 .main > * {
   animation: page-in 260ms var(--ease-out) both;
 }
